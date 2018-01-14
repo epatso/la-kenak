@@ -31,7 +31,7 @@ to help in many ways:
 - **[html to docx](http://sourceforge.net/projects/simplehtmldom/)** for fast phpword export.
 - **[pchart 2.0](http://www.pchart.net)** for some small climate charts.
 - **[filemanager](https://github.com/simogeo/Filemanager)** to give control over files to the user.
-- **[three.js](https://github.com/mrdoob/three.js)** , **[csg.js](https://github.com/jscad/csg.js)**and [ThreeCSG.js](https://github.com/chandlerprall/ThreeCSG)** to show the building model in 3d.
+- **[three.js](https://github.com/mrdoob/three.js)** with **[csg.js](https://github.com/jscad/csg.js)** and [ThreeCSG.js](https://github.com/chandlerprall/ThreeCSG)** to show the building model in 3d.
 - **[dxfclass](https://www.phpclasses.org/package/7954-PHP-Generate-CAD-files-in-the-AutoCAD-DXF-format.html)** to produce the 3d dxf.
 - **[phpmathpublisher](https://github.com/Tux-oid/phpmathpublisher)** to produce some equation images.
 - **[jQuery-File-Upload Widget](https://github.com/blueimp/jQuery-File-Upload)** to help in user images.
