@@ -1,5 +1,5 @@
-# lakenak
-Kenak energy calculations
+# La-kenak V.5.0
+Energy calculations in Greece (K.EN.A.K. legislation)
 
 Introduction
 ============
