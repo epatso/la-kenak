@@ -1,0 +1,21 @@
+
+@page { 
+	size 21cm 29.7cm; 
+	margin: 2cm; 
+}
+
+.PrintArea {
+    width: 100%;
+}
+
+.PrintArea table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.PrintArea td{
+  border: 1px solid black;
+  padding:5px;
+  line-height:30px;
+}
+
