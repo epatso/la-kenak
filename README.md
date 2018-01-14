@@ -15,6 +15,8 @@ to help in many ways:
 - Calculations during the energy studies that without the software depend on many data and take a lot of time. 
 - Viewing 600-700 pages of data from the Greek legislation that otherwise require a lot of reading and effort. 
 
+!["La-kenak v.5.0"](http://www.chem-lab.gr/lakenak/images/lakenak5.png "La-kenak v.5.0")
+
 ### Used libraries
 - **[AdminLTE.IO](https://adminlte.io)** Higly responsive template based on Bootstrap 3 without any changes in the core of the template.
 - The original components (bower_components) used in AdminLTE.IO template with no changes (just the libraries).
@@ -35,6 +37,8 @@ to help in many ways:
 - **[jQuery-File-Upload Widget](https://github.com/blueimp/jQuery-File-Upload)** to help in user images.
 - **[suncalc js library](https://github.com/mourner/suncalc)** by mourner as the js library for sun position.
 - **[suncalc php library](https://github.com/gregseth/suncalc-php)** as the js library for sun position.
+- **[iconarchive](http://www.iconarchive.com/)** as an icon library for the user interface.
+- **[class upload php](https://www.verot.net/php_class_upload.htm)** for uploading and resizing the user image.
 - Various and long list articles and documentation about all the above. 
 - Google Login Auth for helping connecting instead of registration. 
 
@@ -58,8 +62,16 @@ Contribution are **welcome and recommended**! Here is how:
 La-kenak is an open source project that is licensed under GPLv3 Lisence (the files and calculations). All the libraries keep their lisencing. 
 
 ### Ready to use release - Dependancies on install
-Keep in mind that this is written in a server side language (php) with a mysql database behind so this has to be inside a websserver environment with PHP>5.4. Apache is needed 
-and phpmydmin makes life easier. So under windows install it using xampp or mampp or any other web server. A ready to use version (out of the box for ex. in a usb stick) will be provided soon.  
+Keep in mind that this is written in a server side language (php) with a mysql database behind so this has to be inside a websserver environment with PHP. Also Apache is a good option  
+and phpmydmin makes life easier for mysql entries. So under windows install it using xampp or mampp or any other web server. 
+
+A ready to use version (out of the box for ex. in a usb stick) will be provided soon.  
+
+- PHP version >5.4 (as PDO was used in medoo)
+- mysql
+- javascript enabled browsers (all browsers are supported exept old explorer)
+- webgl capable browser for the 3d building menu
+- 
 
 ### Image Credits
 - [Iconarchive](http://www.iconarchive.com/)
