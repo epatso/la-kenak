@@ -71,6 +71,9 @@ Keep in mind that this is written in a server side language (php) with a mysql d
 Also Apache is a good option and phpmydmin makes life easier for mysql entries. So under windows install it using xampp or mampp or any other web server. 
 
 A ready to use version (out of the box for ex. in a usb stick) will be provided soon.  
+For a web-server implementation several changes have to be made mainly in the text production and saving to mysql 
+(right now LARGETEXT is used to store the text chapters in the database which incresses the DB dramatically). Some limits have been implemented for this reason. 
+You can change those limits by the administration interface for every user or the main user. 
 
 - PHP version >5.4 (as PDO was used in medoo)
 - mysql
