@@ -71,7 +71,8 @@ A ready to use version (out of the box for ex. in a usb stick) will be provided 
 - mysql
 - javascript enabled browsers (all browsers are supported exept old explorer)
 - webgl capable browser for the 3d building menu
-- 
+- Google maps api for the google maps implementations
+- Google auth api (if users will be login in through google accounts)
 
 ### Image Credits
 - [Iconarchive](http://www.iconarchive.com/)
