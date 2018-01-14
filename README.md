@@ -1,6 +1,8 @@
 # La-kenak V.5.0
 Energy calculations in Greece (K.EN.A.K. legislation)
 
+14/1/2018 - Right now the code is being uploaded in pieces. Keep up for the few more days. 
+
 Introduction
 ============
 
@@ -40,7 +42,10 @@ to help in many ways:
 - **[iconarchive](http://www.iconarchive.com/)** as an icon library for the user interface.
 - **[class upload php](https://www.verot.net/php_class_upload.htm)** for uploading and resizing the user image.
 - Various and long list articles and documentation about all the above. 
-- Google Login Auth for helping connecting instead of registration. 
+- Google Login Auth for helping creating an account. 
+- Google maps api (this software is free for everyone to use).
+- OpenStreetMaps **[OSM](https://www.openstreetmap.org/)** as a free mapping service.
+- **[Open Layers](https://openlayers.org/)** with OSM, Ktimatologio base-layers. 
 
 **A working example is available in [www.chem-lab.gr/lakenak](http://www.chem-lab.gr/lakenak)**
 
@@ -62,8 +67,8 @@ Contribution are **welcome and recommended**! Here is how:
 La-kenak is an open source project that is licensed under GPLv3 Lisence (the files and calculations). All the libraries keep their lisencing. 
 
 ### Ready to use release - Dependancies on install
-Keep in mind that this is written in a server side language (php) with a mysql database behind so this has to be inside a websserver environment with PHP. Also Apache is a good option  
-and phpmydmin makes life easier for mysql entries. So under windows install it using xampp or mampp or any other web server. 
+Keep in mind that this is written in a server side language (php) with a mysql database behind so this has to be inside a websserver environment with PHP. 
+Also Apache is a good option and phpmydmin makes life easier for mysql entries. So under windows install it using xampp or mampp or any other web server. 
 
 A ready to use version (out of the box for ex. in a usb stick) will be provided soon.  
 
@@ -71,7 +76,7 @@ A ready to use version (out of the box for ex. in a usb stick) will be provided 
 - mysql
 - javascript enabled browsers (all browsers are supported exept old explorer)
 - webgl capable browser for the 3d building menu
-- Google maps api for the google maps implementations
+- Google maps api for the google maps implementations (used geocoder, elevation data)
 - Google auth api (if users will be login in through google accounts)
 
 ### Image Credits
