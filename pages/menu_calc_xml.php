@@ -1,0 +1,198 @@
+<?php
+/*
+Copyright (C) 2013 - Labros Asfaleia v.1.0 beta
+Author: Labros Karoyntzos 
+
+Labros Asfaleia v.1.0 beta from Labros Karountzos is free software: 
+you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License version 3
+along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
+
+Το παρόν με την ονομασία Labros Asfaleia v.1.0 beta με δημιουργό τον Λάμπρο Καρούντζο
+στοιχεία επικοινωνίας info@chem-lab.gr www.chem-lab.gr
+είναι δωρεάν λογισμικό. Μπορείτε να το τροποποιήσετε και επαναδιανείμετε υπό τους
+όρους της άδειας GNU General Public License όπως δίδεται από το Free Software Foundation
+στην έκδοση 3 αυτής της άδειας.
+Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
+*/
+//error_reporting(E_ALL);
+require("include_check.php");
+?>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+<section class="content-header">
+	<h1>
+	La-kenak
+	<small>Εργαλεία XML</small>
+	</h1>
+	<ol class="breadcrumb">
+	<li><a href="#"><i class="fa fa-dashboard"></i> La-kenak</a></li>
+	<li><a href="#"><i class="fa fa-edit"></i> Υπολογισμοί</a></li>
+	<li class="active"> Εργαλεία XML</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	
+<!-- Main row -->
+<div class="row">
+	
+		<div class="col-md-2">
+			
+			<div class="alert alert-success">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<h4>Εργαλεία XML</h4>
+				Βοηθητικά εργαλεία εξαγωγής σεναρίου και ανακατανομής σεναρίων ως νέο xml.
+			</div>
+		</div>
+		
+		<div class="col-md-10">
+		<div id='wait' style="display:none;position:absolute;top:130px;left:500px;z-index:9999;"><img src="images/interface/ajax-loader.gif"></div>
+			<div class="nav-tabs-custom">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tabs-1" data-toggle="tab"><i class="fa fa-random"></i> Εξαγωγή σεναρίου</a></li>
+				<li><a href="#tabs-2" data-toggle="tab"><i class="fa fa-reorder"></i> Αλλαγή σειράς σεναρίων</a></li>
+			</ul>
+			
+		<!-- ########################## XML TEE KENAK ################################# -->
+		<div class="tab-content">
+			
+			<div class="tab-pane active" id="tabs-1"><!--tab-->
+				<br/>
+				<div class="form-group">
+					<label for="teexmlfile1">Αρχείο προς εξαγωγή...</label>
+					<input type="file" id="teexmlfile1">
+					<p class="help-block">Επιτρέπονται μόνο xml. Σε ένα xml με το υπάρχον κτίριο και 3 σενάρια. Σώζει ένα νέο xml 
+					με υπάρχον κτίριο το επιλεγμένο σενάριο. (Ισχύει για 10Ζώνες, 10ΜΘΧ, 10Ηλιακούς χώρους)</p>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Σενάριο προς εξαγωγή</span>
+					<select class="form-control" id="teexmlfile1_senario">
+					<option value=0></option>
+					<option value=1>Υπάρχον</option>
+					<option value=2>Σενάριο 1</option>
+					<option value=3>Σενάριο 2</option>
+					<option value=4>Σενάριο 3</option>
+					</select>
+				</div>
+				<br/><br/>
+				<button type="submit" class="btn btn-znx" onclick=export_senario();><i class="fa fa-file-code-o"></i> Εξαγωγή xml σεναρίου</button>
+				<hr>
+				<div id="xml_fulltxt1"></div>
+						
+<script>						
+function export_senario(){
+
+document.getElementById('wait').style.display="inline";
+//AJAX call
+	var bldrid = document.getElementById('teexmlfile1_senario').value;
+	var fileInput = document.getElementById('teexmlfile1');
+	var file = fileInput.files[0];
+	var formData = new FormData();
+	formData.append('file', file);
+	
+	var link="includes/functions_xml.php?export_senario=1&bldrid="+bldrid;
+	
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open('POST', link, true);
+	xmlhttp.send(formData);
+	
+	xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById('wait').style.display="none";
+			document.getElementById('xml_fulltxt1').innerHTML = xmlhttp.responseText;
+		}
+	}
+}
+</script>
+			</div><!--tabs-1-->
+			
+			<div class="tab-pane" id="tabs-2"><!--tab-->
+				<br/>
+				<div class="form-group">
+					<label for="teexmlfile2">Αρχείο προς ταξινόμηση...</label>
+					<input type="file" id="teexmlfile2">
+					<p class="help-block">Επιτρέπονται μόνο xml. Σε ένα xml αλλάζει σειρά στα σενάρια 
+					(Ισχύει για 10Ζώνες, 10ΜΘΧ, 10Ηλιακούς χώρους)</p>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Σενάριο 1</span>
+					<select class="form-control" id="teexmlfile2_senario1">
+					<option value=0></option>
+					<option value=2>1ο</option>
+					<option value=3>2ο</option>
+					<option value=4>3ο</option>
+					</select>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Σενάριο 2</span>
+					<select class="form-control" id="teexmlfile2_senario2">
+					<option value=0></option>
+					<option value=2>1ο</option>
+					<option value=3>2ο</option>
+					<option value=4>3ο</option>
+					</select>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">Σενάριο 3</span>
+					<select class="form-control" id="teexmlfile2_senario3">
+					<option value=0></option>
+					<option value=2>1ο</option>
+					<option value=3>2ο</option>
+					<option value=4>3ο</option>
+					</select>
+				</div>
+				<br/><br/>
+				<button type="submit" class="btn btn-znx" onclick=reorder_senario();><i class="fa fa-file-code-o"></i> Εξαγωγή διορθωμένου xml</button>
+				<hr>
+				<div id="xml_fulltxt2"></div>
+			</div><!--tab-->
+						
+<script>						
+function reorder_senario(){
+
+document.getElementById('wait').style.display="inline";
+//AJAX call
+	var bld2rid = document.getElementById('teexmlfile2_senario1').value;
+	var bld3rid = document.getElementById('teexmlfile2_senario2').value;
+	var bld4rid = document.getElementById('teexmlfile2_senario3').value;
+	var fileInput = document.getElementById('teexmlfile2');
+	var file = fileInput.files[0];
+	var formData = new FormData();
+	formData.append('file', file);
+	
+	var link="includes/functions_xml.php?reorder_senario=1&bld2rid="+bld2rid+"&bld3rid="+bld3rid+"&bld4rid="+bld4rid;
+	
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open('POST', link, true);
+	xmlhttp.send(formData);
+	
+	xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById('wait').style.display="none";
+			document.getElementById('xml_fulltxt2').innerHTML = xmlhttp.responseText;
+		}
+	}
+}
+</script>
+			</div><!--tabs-2-->
+			
+					</div><!--tab content-->
+				</div><!--tabs-->
+			</div><!--col-md-10-->
+		</div>
+		 <!-- /.row (main row) -->
+	</section>
+	<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

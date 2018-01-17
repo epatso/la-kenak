@@ -1,0 +1,99 @@
+#
+# Apaxy by @adamwhitcroft
+#
+# For a full breakdown of the mod_autoindex module:
+# http://apache.org/docs/2.2/mod/mod_autoindex.html
+#
+
+	# ENABLE INDEXING
+	Options +Indexes
+
+	# INDEX OPTIONS
+	IndexOptions +FancyIndexing +IgnoreCase +FoldersFirst +XHTML +HTMLTable +SuppressRules +SuppressDescription
+
+	# HIDE /theme DIRECTORY
+	IndexIgnore .htaccess /theme
+	IndexIgnore .htaccess /includes
+	IndexIgnore .htaccess /includes/ckeditor
+	IndexIgnore .htaccess /includes/F_webgl
+	IndexIgnore .htaccess /includes/old
+	IndexIgnore .htaccess /includes/PDFMerger
+	IndexIgnore .htaccess /includes/uploadphp
+	IndexIgnore .htaccess /includes/XY_Plot
+	IndexIgnore .htaccess /includes/filemanager
+	IndexIgnore .htaccess /includes/fpdi
+	IndexIgnore .htaccess /includes/htmltodocx
+	IndexIgnore .htaccess /includes/pchart
+	IndexIgnore .htaccess /includes/PHPExcel
+	IndexIgnore .htaccess /includes/PHPWord
+	IndexIgnore .htaccess /includes/tcpdf
+	IndexIgnore .htaccess /includes/file_upload
+	IndexIgnore .htaccess /includes/totee_html
+	IndexIgnore .htaccess /includes/cache
+	IndexIgnore .htaccess /includes/dxfwrite
+	IndexIgnore .htaccess /includes/suncalc
+	IndexIgnore .htaccess /*.php
+	IndexIgnore .htaccess /*.ttf
+	IndexIgnore .htaccess /*.js
+	IndexIgnore .htaccess /*.css
+	
+
+#
+# GENERAL ICONS (BLANK, DIRECTORY, PARENT DIRECTORY)
+#
+
+#
+# Replace kenakv5 with your directory URL eg:
+# If your directory is http://mywebsite.com/share/
+# you would change to:
+#
+# AddIcon /share/theme/icons/blank.png ^^BLANKICON^^
+#
+
+	AddIcon /kenakv5/theme/icons/blank.png ^^BLANKICON^^
+	AddIcon /kenakv5/theme/icons/folder.png ^^DIRECTORY^^
+	AddIcon /kenakv5/theme/icons/folder-home.png ..
+
+#
+# EXTENSION SPECIFIC ICONS
+#
+	
+	AddIcon /kenakv5/theme/icons/audio.png .aif .iff .m3u .m4a .mid .mp3 .mpa .ra .wav .wma
+	AddIcon /kenakv5/theme/icons/bin.png .bin
+	AddIcon /kenakv5/theme/icons/c.png .c
+	AddIcon /kenakv5/theme/icons/calc.png .xlsx .xlsm .xltx .xltm .xlam .xlr .xls .csv 
+	AddIcon /kenakv5/theme/icons/css.png .css
+	AddIcon /kenakv5/theme/icons/doc.png .doc .docx .docm .dot .dotx .dotm .log .msg .odt .pages .rtf .tex .wpd .wps
+	AddIcon /kenakv5/theme/icons/draw.png .svg
+	AddIcon /kenakv5/theme/icons/eps.png .ai .eps
+	AddIcon /kenakv5/theme/icons/gif.png .gif
+	AddIcon /kenakv5/theme/icons/html.png .html .xhtml .shtml .htm
+	AddIcon /kenakv5/theme/icons/ico.png .ico
+	AddIcon /kenakv5/theme/icons/java.png .jar
+	AddIcon /kenakv5/theme/icons/jpg.png .jpg .jpeg
+	AddIcon /kenakv5/theme/icons/js.png .js .json
+	AddIcon /kenakv5/theme/icons/markdown.png .md
+	AddIcon /kenakv5/theme/icons/package.png .pkg .dmg 
+	AddIcon /kenakv5/theme/icons/kenakv5.png .kenakv5
+	AddIcon /kenakv5/theme/icons/php.png .php
+	AddIcon /kenakv5/theme/icons/png.png .png
+	AddIcon /kenakv5/theme/icons/ps.png .ps
+	AddIcon /kenakv5/theme/icons/psd.png .psd
+	AddIcon /kenakv5/theme/icons/rar.png .rar
+	AddIcon /kenakv5/theme/icons/rb.png .rb
+	AddIcon /kenakv5/theme/icons/rss.png .rss
+	AddIcon /kenakv5/theme/icons/sql.png .sql
+	AddIcon /kenakv5/theme/icons/tiff.png .tiff
+	AddIcon /kenakv5/theme/icons/text.png .txt
+	AddIcon /kenakv5/theme/icons/video.png .asf .asx .avi .flv .mov .mp4 .mpg .rm .srt .swf .vob .wmv
+	AddIcon /kenakv5/theme/icons/xml.png .xml
+	AddIcon /kenakv5/theme/icons/zip.png .zip
+	DefaultIcon /kenakv5/theme/icons/default.png
+
+#
+# THEME FILES
+#
+
+	HeaderName /kenakv5/theme/header.html
+	ReadmeName /kenakv5/theme/footer.html
+	IndexStyleSheet "/kenakv5/theme/style.css"
