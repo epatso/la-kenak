@@ -58,7 +58,9 @@ confirm_meleti_isset();
 				<li><a href="#tabs-2" data-toggle="tab"><i class="fa fa-cube" aria-hidden="true"></i> Όψεις</a></li>
 				<li><a href="#tabs-3" data-toggle="tab"><i class="fa fa-cubes" aria-hidden="true"></i> 3D</a></li>
 				<li><a href="#tabs-4" data-toggle="tab"><i class="fa fa-file-code-o" aria-hidden="true"></i> DXF</a></li>
-				<li><a href="#tabs-5" data-toggle="tab"><i class="fa fa-info-circle" aria-hidden="true"></i> Βοήθεια</a></li>
+				<li><a href="#tabs-5" data-toggle="tab"><i class="fa fa-map" aria-hidden="true"></i> Οδοιπορικό</a></li>
+				<li><a href="#tabs-6" data-toggle="tab"><i class="fa fa-file-archive-o" aria-hidden="true"></i> zip</a></li>
+				<li><a href="#tabs-7" data-toggle="tab"><i class="fa fa-info-circle" aria-hidden="true"></i> Βοήθεια</a></li>
 			</ul>
 			
 			<div class="tab-content">
@@ -70,7 +72,11 @@ confirm_meleti_isset();
 .dg.a { position: absolute; margin-left:1em; margin-top:100px; height: 1400px;!important; }
 </style>
 	
+	<h2>Θερμικές ζώνες</h2>
 	<div id="tb_draworder"></div>
+	<hr/>
+	<h2>ΜΘΧ-Ηλιακοί χώροι</h2>
+	<div id="tb_draworder_mthx"></div>
 
 	<script>
 	//Εμφάνιση των στοιχείων αδιαφανών σε πίνακα με λίστα
@@ -89,7 +95,25 @@ confirm_meleti_isset();
 			document.getElementById('wait').style.display="none";
 		}}	
 	}
+	
+	function get_meleti_preview_mthx(){
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		
+		xmlhttp.open("GET","includes/functions_meleti_draw.php?create_draworder_mthx=1",true);
+		xmlhttp.send();
+		
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			var arr = xmlhttp.responseText;
+			document.getElementById("tb_draworder_mthx").innerHTML=arr;
+			document.getElementById('wait').style.display="none";
+		}}	
+	}
+	
 	get_meleti_preview();
+	get_meleti_preview_mthx();
 	</script>
 </div><!-- tabs1 -->
 
@@ -271,7 +295,7 @@ confirm_meleti_isset();
 		<script src="includes/three.js/js/controls/OrbitControls.js"></script>
 		<script src="includes/three.js/js/geometries/ConvexGeometry.js"></script>
 		<script src="includes/three.js/js/Detector.js"></script>
-		<script src="includes/three.js/threeCSG1.js"></script>
+		<script src="includes/three.js/ThreeCSG1.js"></script>
 		<script src="includes/three.js/SolarSystem.js"></script>
 		<script src="includes/three.js/sunCalc.js"></script>
 		<!--fonts και text-->
@@ -381,7 +405,7 @@ function savecanvas() {
 				//Υλικό δαπέδου
 				floorMat = new THREE.MeshStandardMaterial( {
 					roughness: 0.8,
-					color: 0xffffff,
+					color: 0xF3F8F2,
 					metalness: 0.2,
 					bumpScale: 0.0005
 				});
@@ -390,10 +414,23 @@ function savecanvas() {
 				//ΥΛΙΚΟ ΤΟΙΧΟΠΟΙΙΑΣ
 				cubeMat = new THREE.MeshStandardMaterial( {
 					roughness: 0.7,
-					color: 0xffffff,
+					color: 0xEBE1DB,
 					bumpScale: 0.002,
 					metalness: 0.2
 				});
+				
+				var wall_ap = [
+					"0xffffff",
+					"0xF1F2F1",
+					"0xC0C1C0",
+					"0x4A4A49",
+					"0xA52A2A",
+					"0xE4BFBF",
+					"0xFDB1D5",
+					"0xFEF7FA",
+					"0x00FF00"
+				];
+				/*
 				textureLoader.load( "includes/three.js/textures/brick_diffuse.jpg", function( map ) {
 					map.wrapS = THREE.RepeatWrapping;
 					map.wrapT = THREE.RepeatWrapping;
@@ -410,6 +447,7 @@ function savecanvas() {
 					cubeMat.bumpMap = map;
 					cubeMat.needsUpdate = true;
 				} );
+				*/
 				//ΥΛΙΚΟ ΤΟΙΧΟΠΟΙΙΑΣ
 				
 				//ΥΛΙΚΟ ΕΜΠΟΔΙΩΝ ΟΡΙΖΟΝΤΑ
@@ -520,6 +558,10 @@ function savecanvas() {
 				$wall_g=$wall_g-360;
 			}
 			
+			$wall_b = deg2rad(90-$wall["b"]);
+			
+			$wall_ap = $wall["ap"];
+			
 			$x1=$current_x;
 			$y1=$current_y;
 			$x2=$current_x+$wall_l* cos(deg2rad($wall_g));
@@ -551,7 +593,10 @@ function savecanvas() {
 			var tri_h=<?php echo $wall_dy;?>;
 			var tri_x2=<?php echo $tri_x2;?>;
 			var tri_y2=<?php echo $tri_y2;?>;
+			var b=<?php echo $wall_b;?>;
 			
+			/*
+			//Γραμμή τριγώνου
 			if(tri_y2!==0){
 				var material = new THREE.LineBasicMaterial({
 					color: 0x0000ff
@@ -565,10 +610,11 @@ function savecanvas() {
 				var line = new THREE.Line( geometry, material );
 				group_triangles.add( line );
 			}
+			*/
 			
 			
 			//Γεωμετρία τοίχου - παραθύρων - μετατροπή σε BSP
-			wallMesh = draw_wall(x1, y1, x2, y2, h, d, tri_h, tri_x2, tri_y2, cubeMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
+			wallMesh = draw_wall(x1, y1, x2, y2, h, d, tri_h, tri_x2, tri_y2, b, cubeMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
 			wall_bsp = new ThreeBSP( wallMesh );
 
 <?php
@@ -581,7 +627,7 @@ if($fhor[0]!=0){//Ορίζοντας
 			var y2_hor=<?php echo $y2_hor;?>;
 			var fhor_h=<?php echo $fhor_h;?>;
 			
-			horMesh = draw_wall(x1_hor, y1_hor, x2_hor, y2_hor, fhor_h, d,0,0,0, cubeMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
+			horMesh = draw_wall(x1_hor, y1_hor, x2_hor, y2_hor, fhor_h, d,0,0,0, 0, cubeMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
 			hor_bsp = new ThreeBSP( horMesh );
 			
 <?php
@@ -626,14 +672,19 @@ if($fov!=0){//Πρόβολος
 				$win_p=$window["p"];
 				$win_apoar=$window["apoar"];
 				
+				$win_gw=$window["g_w"];
+				
 				$win_x1=$leftside_x+$win_apoar* cos(deg2rad($wall_g-180));
 				$win_y1=$leftside_y-$win_apoar* sin(deg2rad($wall_g-180));
 				$win_x2=$win_x1+$win_l* cos(deg2rad($wall_g-180));
 				$win_y2=$win_y1-$win_l* sin(deg2rad($wall_g-180));
 				
 ?>
-				windowMesh = draw_window(<?php echo $win_x1;?>, <?php echo $win_y1;?>, <?php echo $win_x2;?>, <?php echo $win_y2;?>, <?php echo $win_h;?>, <?php echo $win_p;?>, <?php echo $d;?>, winMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
+				windowMesh = draw_window(<?php echo $win_x1;?>, <?php echo $win_y1;?>, <?php echo $win_x2;?>, <?php echo $win_y2;?>, <?php echo $win_h;?>, <?php echo $win_p;?>, <?php echo $d;?>, b, winMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
 				window_bsp = new ThreeBSP( windowMesh );
+				
+				//αξονας z
+				var axis_z = new THREE.Vector3( 0, 0, 1 ).normalize();
 				
 <?php 
 if($i==1){//Την 1η φορά αφαιρεί από τον τοίχο
@@ -647,7 +698,15 @@ if($i==1){//Την 1η φορά αφαιρεί από τον τοίχο
 }//τέλος if
 ?>
 			//σχεδίαση παραθύρου
+			winMat.opacity = <?php echo $win_gw;?>;
 			result1 = window_bsp.toMesh( winMat );//Εδώ το υλικό παίζει ρόλο. Παράθυρο
+			
+			//κλιση παραθύρου ως προς κατακόρυφο
+			if(b!=0){
+				result1.geometry.translate( 1, 0, 0 );
+				result1.rotateOnAxis( axis_z, -b );
+			}
+			
 			result1.castShadow = true;
 			result1.receiveShadow = true;
 			result1.geometry.computeVertexNormals();
@@ -658,6 +717,7 @@ if($i==1){//Την 1η φορά αφαιρεί από τον τοίχο
 			}//για κάθε άνοιγμα
 if($count_win!=0){//εάν υπάρχουν παράθυρα (με τις αφαιρέσεις) - σχεδίαση
 ?>
+			//cubeMat.color = wall_ap[<?php echo $wall_ap;?>-1];
 			result = subtract_bsp.toMesh( cubeMat );//Εδώ το υλικό παίζει ρόλο. Τοίχος
 <?php 
 }else{//δεν υπάρχουν παράθυρα (χωρίς τις αφαιρέσεις) - σχεδίαση
@@ -666,6 +726,13 @@ if($count_win!=0){//εάν υπάρχουν παράθυρα (με τις αφα
 <?php 
 }//τέλος if (εάν μετρώνται ανοίγματα) - σχεδίαση
 ?>
+
+			//κλιση τοίχου ως προς κατακόρυφο
+			if(b!=0){
+				result.geometry.translate( -1, 0, 0 );
+				result.rotateOnAxis( axis_z, b );
+			}
+			
 			result.castShadow = true;
 			result.receiveShadow = true;
 			result.geometry.computeVertexNormals();
@@ -960,7 +1027,7 @@ scene.add(textsprite);
 			
 			var rotWorldMatrix;
 			
-			function draw_wall(x1, y1, x2, y2, h, d, tri_h, tri_x2, tri_y2, mat){
+			function draw_wall(x1, y1, x2, y2, h, d, tri_h, tri_x2, tri_y2, b, mat){
 				var dx=x2-x1;
 				var dy=y2-y1;
 				var l=Math.sqrt(Math.pow(dy,2)+Math.pow(dx,2));
@@ -975,6 +1042,10 @@ scene.add(textsprite);
 				wallMesh.castShadow = true;
 				wallMesh.receiveShadow = true;
 				
+					//Άξονας περιστροφής (όπως έχει στηθεί ο τοίχος κατά x)
+					var axis_x = new THREE.Vector3( 1, 0, 0 ).normalize();
+					var axis_z = new THREE.Vector3( 0, 0, 1 ).normalize();
+					
 				if(tri_h!==0){
 					//Ο τοίχος σε γεωμετρία BSP για join-substract
 					wall_bsp = new ThreeBSP( wallMesh );
@@ -989,9 +1060,6 @@ scene.add(textsprite);
 					var top_bsp = new ThreeBSP( topMesh );
 					var wallwithtop = wall_bsp.union( top_bsp );
 					
-					//Άξονας περιστροφής (όπως έχει στηθεί ο τοίχος κατά x)
-					var axis_x = new THREE.Vector3( 1, 0, 0 ).normalize(); // create once and reu
-					
 					//Αριστερά
 					var left_dx = x2-tri_x2;
 					var left_dy = y2-tri_y2;
@@ -999,13 +1067,13 @@ scene.add(textsprite);
 					var left_lx = dist(x2,y2,h,tri_x2,tri_y2,h);
 					var radians_left = Math.atan2(tri_h , left_lx );
 					
-					var leftGeometry = new THREE.BoxGeometry( d, tri_h, l );
+					var leftGeometry = new THREE.BoxGeometry( d, tri_h, left_l*2 );
 					var leftMesh = new THREE.Mesh( leftGeometry, mat );
 					//Ίδιο με προσανατολισμό τοίχου
 					leftMesh.rotation.y = radians ;
 					
 					//Το μετακινώ από την αριστερή άκρη και όχι από το κέντρο του (με βάση διαστάσεις)
-					leftMesh.geometry.translate( 0, tri_h/2, -l/2 );
+					leftMesh.geometry.translate( 0, tri_h/2, -left_l );
 					//Το βάζω στη γωνία με βάση την αριστερή του γωνία
 					leftMesh.position.set( y2, h, x2 );
 					
@@ -1023,12 +1091,12 @@ scene.add(textsprite);
 					var right_lx = dist(x1,y1,h,tri_x2,tri_y2,h);
 					var radians_right = -Math.atan2( tri_h , right_lx );
 					
-					var rightGeometry = new THREE.BoxGeometry( d, tri_h, l );
+					var rightGeometry = new THREE.BoxGeometry( d, tri_h, right_l*2 );
 					var rightMesh = new THREE.Mesh( rightGeometry, mat );
 					rightMesh.rotation.y = radians ;
 					
 					//Το μετακινώ από την δεξιά άκρη και όχι από το κέντρο του (με βάση διαστάσεις)
-					rightMesh.geometry.translate( 0, tri_h/2, l/2 );
+					rightMesh.geometry.translate( 0, tri_h/2, right_l );
 					//Το βάζω στη γωνία με βάση την δεξιά του γωνία
 					rightMesh.position.set( y1, h, x1 );
 					
@@ -1039,16 +1107,29 @@ scene.add(textsprite);
 					var wallwithtop2 = wallwithtop1.subtract( right_bsp );
 					
 					result = wallwithtop2.toMesh( mat );
+					if(b!=0){
+						//result.geometry.translate( -1, 0, 0 );
+						//result.rotateOnAxis( axis_z, b );
+					}
 					return result;
 					
 					
 					//return wallMesh;
 				}else{
+					//result = wallMesh.toMesh( mat );
+					if(b!=0){
+						//wallMesh.geometry.translate( -1, 0, 0 );
+						//wallMesh.rotateOnAxis( axis_z, b );
+					}
 					return wallMesh;
 				}
 			}
 			
-			function draw_window(x1, y1, x2, y2, h, p, d, mat){
+			function draw_window(x1, y1, x2, y2, h, p, d, b, mat){
+					//Άξονας περιστροφής (όπως έχει στηθεί ο τοίχος κατά x)
+					var axis_x = new THREE.Vector3( 1, 0, 0 ).normalize();
+					var axis_z = new THREE.Vector3( 0, 0, 1 ).normalize();
+					
 				var dx=x2-x1;
 				var dy=y2-y1;
 				var l=Math.sqrt(Math.pow(dy,2)+Math.pow(dx,2));
@@ -1062,6 +1143,10 @@ scene.add(textsprite);
 				windowMesh.castShadow = true;
 				windowMesh.receiveShadow = true;
 				//scene.add( windowMesh );
+					if(b!=0){
+						//windowMesh.geometry.translate( 1, 0, 0 );
+						//windowMesh.rotateOnAxis( axis_z, -b );
+					}
 				return windowMesh;
 			}
 			
@@ -1146,9 +1231,74 @@ function save_dxf(){
 	}
 }
 </script>
-	</div><!--tab3-->
+	</div><!--tab4-->
 	
 	<div class="tab-pane" id="tabs-5">
+		<?php
+		//TO ΙΔΙΟ ΚΑΙ ΣΕ FUNCTION_TEYXOS.PHP - > teyxos_imgzone(){}
+			$database = new medoo(DB_NAME);
+			$tb_meleti = "user_meletes";
+			$col = "*";
+			$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+			$select_meleti = $database->select($tb_meleti,$col,$where_meleti);
+			
+			$meleti_zone = $select_meleti[0]["zone"];
+			$meleti_climate = $select_meleti[0]["climate"];
+			$meleti_address_x = $select_meleti[0]["address_x"];
+			$meleti_address_y = $select_meleti[0]["address_y"];
+			$meleti_address_z = $select_meleti[0]["address_z"];
+			
+			
+		//Εικόνες κλιματικής ζώνης και τοπογραφικό
+		$image_location = 'http://staticmap.openstreetmap.de/staticmap.php?center='.$meleti_address_x.','.$meleti_address_y.'&zoom=14&size=512x512&maptype=mapnik';
+		$image_location .= '&markers='.$meleti_address_x.','.$meleti_address_y.',lightblue1';
+		$image_dest = 'includes/file_upload/server/php/files/user_'.$_SESSION['user_id'].'/meleti_'.$_SESSION['meleti_id'].'/location_osm.jpg';
+		if(file_exists($image_dest)){
+			
+		}else{
+			copy($image_location , $image_dest );
+		}
+		$imgzone = "Θέση κτιρίου:<br/>";
+		$imgzone .= "<img src=\"".APPLICATION_FOLDER.$image_dest."\"><br/><br/>";
+		$imgzone .= "(Lat:".$meleti_address_x." ,Lon:".$meleti_address_y.")<br/><br/>";
+		echo $imgzone;
+		?>
+	</div><!--tab5-->
+	
+	<div class="tab-pane" id="tabs-6">
+		<br/><br/>
+		Το αρχείο ZIP θα περιλαμβάνει τις κατόψεις, τις όψεις και τη θέση του ακινήτου σε χάρτη. 
+		<br/><br/>
+		<button type="submit" class="btn btn-znx" onclick=save_ziparchive();>
+		<i class="fa fa-file-archive-o"></i> Παραγωγή σκαριφημάτων 
+		</button>
+		<br/><br/>
+		<div id="txt_ziparchive"></div>
+		
+		<script>				
+			
+			function save_ziparchive(){
+
+				document.getElementById('wait').style.display="inline";
+				var link="includes/functions_xml.php?export_ziparchive=1";
+				//AJAX call
+				var xmlhttp = new XMLHttpRequest();
+				xmlhttp.open('GET', link, true);
+				xmlhttp.send();
+				
+				xmlhttp.onreadystatechange=function()  {
+					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+						document.getElementById('wait').style.display="none";
+						document.getElementById('txt_ziparchive').innerHTML = xmlhttp.responseText;
+					}
+				}
+			}
+		</script>
+	
+	</div><!--tab6-->
+	
+	
+	<div class="tab-pane" id="tabs-7">
 	
 		<br/>
 		Στην 1η καρτέλα σχεδιάζεται ο τοίχος με έναν εξειδικευμένο αλγόριθμο ο οποίος με δεδομένα:

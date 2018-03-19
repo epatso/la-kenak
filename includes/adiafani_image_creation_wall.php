@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 /*
 Copyright (C) 2013 - Labros kenak v.4.0 beta
 Author: Labros Karoyntzos 
@@ -23,25 +23,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 στην έκδοση 3 αυτής της άδειας.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
-/*
-***********************************************************************
-tsak mods - Κώστας Τσακίρης - πολιτικός μηχανικός - ktsaki@tee.gr     *
-                                                                      *
-Ρουτίνα που σχεδιάζει το σκαρίφημα των δομικών στοιχείων              *
-Καλείται από το domika_kelyfos (από την showgraph(pout) )             *
-Με pout=0 εμφανίζει το σκαρίφημα                                      *
-Με pout=1 εκτυπώνει το φύλλο υπολογισμού σε pdf                       *
-                                                                      *
-***********************************************************************
-*/
 //Στο φάκελο includes πρέπει να περιέχεται η γραμματοσειρά. 
-		//πάρε τις τιμές
+//πάρε τις τιμές
+//ini_set('display_errors',1); 
 define('INCLUDE_CHECK',true);
 //include ('database.php');
-require_once("connection.php");
+//require_once("connection.php");
 require("medoo.php");
 require("session.php");
-
 	for ($i = 1; $i <= 10; $i++) {
 		${"paxos".$i}=$_GET["pax".$i];
 		${"strwsi".$i}=$_GET["str".$i];
@@ -58,7 +47,6 @@ require("session.php");
 	$ru=$_GET["ru"];
 	$rd=$_GET["rd"];
 	$umax=$_GET["umax"];
-
 if ($pout==1){
 
 ?>
@@ -79,10 +67,8 @@ ob_flush();
 flush();	
 
 }
-
 include ('hatch.php');
 $values = array();
-
 // Θέσε το πλάτος και μήκος της εικόνας σε pixels
 $width = 960;
 if ($pout==1){$width = 960;}
@@ -91,7 +77,6 @@ $height = 300;
 $im = ImageCreateTrueColor($width, $height); 
 // switch on image antialising if it is available
 if (function_exists('imageantialias')) ImageAntiAlias($im, true);
-
 //imagealphablending($im, false);
 //imagesavealpha($im, true);
 // Θέσε το background σε άσπρο
@@ -105,7 +90,6 @@ $roz = imagecolorallocate($im, 103, 16, 81);
 $font = './verdana.ttf';
 ImageFillToBorder($im, 0, 0, $black, $black);
 imagefilledrectangle ($im,1,1,$width-2,$height-2,$white);
-
 $l=50;
 $c=30;
 $tl=60;
@@ -167,22 +151,24 @@ imagefttext($im, 12, 90, $l+30, 250, $black, $font, $x);
 
 
 if ($pout==1){
-
-$s=imagepng($im,"./temp.png");
-ImageDestroy($im);
-ImageDestroy($linev);
-ob_clean();
-include "adiafani_print.php";
-exit;
+	$s=imagepng($im,"./temp.png");
+	ImageDestroy($im);
+	ImageDestroy($linev);
+	ob_clean();
+	include "adiafani_print.php";
+	exit;
 }else{
 // θέσε HTTP header type σε PNG
-header("Content-type: image/png");
-// στείλε την PNG εικόνα στο browser
+//header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+//header('Expires: January 01, 2013'); // Date in the past
+//header('Pragma: no-cache');
+header("Content-Type: image/png");
+// dump the picture and stop the script
 ob_clean();
-ImagePNG($im);
-}
+//στείλε την PNG εικόνα στο browser
+ImagePng($im);
 // κατέστρεψε τον pointer για την εικόνα στη μνήμη για να απελευθερώσεις πόρους
 ImageDestroy($im);
 ImageDestroy($linev);
-			
+}
 ?>

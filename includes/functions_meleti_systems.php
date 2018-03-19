@@ -245,7 +245,8 @@ require("include_check.php");
 //require("functions_meleti_general.php");
 
 //Υπολογισμός παράπλευρης Α
-function systems_calc_ea(){
+//type=0 όλο το κτίριο, 1: ζώνες, 2: μθχ
+function systems_calc_ea($zone_id=0){
 	confirm_logged_in();
 	$database = new medoo(DB_NAME);
 	$tb_xwroi = "meletes_xwroi";
@@ -253,11 +254,23 @@ function systems_calc_ea(){
 	$tb_floors = "meletes_zone_dapeda";
 	$tb_roofs = "meletes_zone_orofes";
 	$col = "*";
-	$session_array=array("AND"=>array(
-		"user_id"=>$_SESSION['user_id'],
-		"meleti_id"=>$_SESSION['meleti_id']
-		)
-	);
+	
+	if($zone_id==0){
+		//μόνο ζώνες
+		$session_array=array("AND"=>array(
+			"user_id"=>$_SESSION['user_id'],
+			"meleti_id"=>$_SESSION['meleti_id'],
+			"zone_id[!]"=>0
+			)
+		);
+	}else{
+		$session_array=array("AND"=>array(
+			"user_id"=>$_SESSION['user_id'],
+			"meleti_id"=>$_SESSION['meleti_id'],
+			"zone_id"=>$zone_id
+			)
+		);
+	}
 	
 	//Εμβαδόν Ε
 	$bld_e = 0;
@@ -300,6 +313,508 @@ function systems_calc_ea(){
 	}
 	return array($bld_e,$bld_a);
 }
+
+//Υπολογισμός Um
+//Εκτύπωση πίνακα U αδιαφανών
+//type: 1: Επαφή σε άερα, 2: Επαφή με ΜΘΧ, 3: Επαφή σε έδαφος
+function systems_calc_um($zone_id=0){
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+	
+	//Γενικά στοιχεία μελέτης
+	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+	$tb_meleti = "user_meletes";
+	$select_meleti = $database->select($tb_meleti, $col, $where_meleti);
+	$zwni = $select_meleti[0]["zone"];
+	$bld_type = $select_meleti[0]["type"];
+	
+	//Στοιχεία ζώνης
+	$tb_zones = "meletes_zones";
+	$tb_walls="meletes_zone_adiafani";
+	$table_windows="meletes_zone_diafani";
+	$tb_zone_dapeda = "meletes_zone_dapeda";
+	$tb_zone_orofes = "meletes_zone_orofes";
+	$tb_zone_thermo = "meletes_zone_thermo";
+	
+	$select_zones = $database->select($tb_zones, $col, $where);
+	
+	$tb_ummax = "vivliothiki_ummax_new";
+	if($zwni==0){$col_umax="a";}
+	if($zwni==1){$col_umax="b";}
+	if($zwni==2){$col_umax="c";}
+	if($zwni==3){$col_umax="d";}
+	
+	$array_thermo_dbs = array(
+		0=>"ksg",
+		1=>"sg",
+		2=>"ss",
+		3=>"ds",
+		4=>"dp",
+		5=>"oe",
+		6=>"dy",
+		7=>"ed",
+		8=>"df",
+		9=>"pr",
+		10=>"lp",
+		11=>"yp"
+	);
+	
+	$bld_ua_adiafani=0;
+	$bld_ua_diafani=0;
+	$bld_ua_orizontia=0;
+	$bld_psi=0;
+	$bld_ua=0;
+	$bld_a=0;
+	$bld_e=0;
+	$bld_v=0;
+	
+	$i=1;	
+	
+	foreach($select_zones as $zone){
+	if($zone_id==0 OR ($zone_id==$zone["id"])){
+		$zone_ua_adiafani=0;
+		$zone_ua_diafani=0;
+		$zone_ua_orizontia=0;
+		$zone_ua_psi=0;
+		$zone_ua=0;
+		
+		$where_walls=array(
+			"AND"=>array(
+				"user_id"=>$_SESSION['user_id'],
+				"meleti_id"=>$_SESSION['meleti_id'],
+				"zone_id"=>$zone["id"]
+			)
+		);
+		$walls = $database->select($tb_walls, $col, $where_walls );
+		$count_walls = $database->count($tb_walls, $where_walls );
+		
+		if($count_walls>0){
+		
+		foreach($walls as $wall){
+			
+			$wall_l = $wall["l"];
+			$wall_h = $wall["h"];
+			$wall_d = $wall["d"];
+			$wall_dy = $wall["dy"];
+			$wall_dx = $wall["dx"];
+			
+			$psi_dok_l = 0;
+			$psi_yp_l = 0;
+			$psi_syr_l = 0;
+			$psi_array = explode("^", $wall["psi"]);
+			$psi_array_dap = explode("|", $psi_array[0]);
+			$psi_array_or = explode("|", $psi_array[1]);
+			$psi_array_dok = explode("|", $psi_array[2]);
+			$psi_array_yp = explode("|", $psi_array[3]);
+			$psi_array_syr = explode("|", $psi_array[4]);
+			
+			$tb_thermo_dap = "vivliothiki_thermo_".$array_thermo_dbs[$psi_array_dap[0]];
+			$tb_thermo_or = "vivliothiki_thermo_".$array_thermo_dbs[$psi_array_or[0]];
+			$tb_thermo_dok = "vivliothiki_thermo_".$array_thermo_dbs[$psi_array_dok[0]];
+			$tb_thermo_yp = "vivliothiki_thermo_".$array_thermo_dbs[$psi_array_yp[0]];
+			$tb_thermo_syr = "vivliothiki_thermo_".$array_thermo_dbs[$psi_array_syr[0]];
+			
+			$data_psi_dap = $database->select($tb_thermo_dap,"*",array("id"=>$psi_array_dap[1]) );
+			$data_psi_or = $database->select($tb_thermo_or,"*",array("id"=>$psi_array_or[1]) );
+			$data_psi_dok = $database->select($tb_thermo_dok,"*",array("id"=>$psi_array_dok[1]) );
+			$data_psi_yp = $database->select($tb_thermo_yp,"*",array("id"=>$psi_array_yp[1]) );
+			$data_psi_syr = $database->select($tb_thermo_syr,"*",array("id"=>$psi_array_syr[1]) );
+			
+			$psi_dap_name=$data_psi_dap[0]["name"];
+			$psi_dap_y=$data_psi_dap[0]["y"];
+			$psi_or_name=$data_psi_or[0]["name"];
+			$psi_or_y=$data_psi_or[0]["y"];
+			$psi_dok_name=$data_psi_dok[0]["name"];
+			$psi_dok_y=$data_psi_dok[0]["y"];
+			$psi_yp_name=$data_psi_yp[0]["name"];
+			$psi_yp_y=$data_psi_yp[0]["y"];
+			$psi_syr_name=$data_psi_syr[0]["name"];
+			$psi_syr_y=$data_psi_syr[0]["y"];
+			
+			//Συντελεστές U - Χρειάζεται διόρθωση
+			// u δρομικό
+			if($wall["u"]!=0){
+				$u=$wall["u"];
+			}else{
+				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
+				$u=$data_u[0];
+			}
+			
+			// u υποστυλωμάτων
+			if($wall["yp_u_id"]!=0){
+				$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
+				$yp_u=$data_yp_u[0];
+			}else{
+				$yp_u=$wall["yp_u"];
+			}
+			
+			// u δοκών	
+			if($wall["dok_u_id"]!=0){
+				$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
+				$dok_u=$data_dok_u[0];
+			}else{
+				$dok_u=$wall["dok_u"];
+			}
+			
+			// u συρομένων	
+			if($wall["syr_u_id"]!=0){
+				$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
+				$syr_u=$data_syr_u[0];
+			}else{
+				$syr_u=$wall["syr_u"];
+			}
+			
+			if($wall["type"]==0){
+				$uis=$u;
+				$dok_uis=$dok_u;
+				$yp_uis=$yp_u;
+				$syr_uis=$syr_u;
+			}
+			if($wall["type"]==1){
+				$b=0.5;
+				$uis=$u*$b;
+				$dok_uis=$dok_u*$b;
+				$yp_uis=$yp_u*$b;
+				$syr_uis=$syr_u*$b;
+			}
+			if($wall["type"]==2){
+				$z1=$wall['z1'];
+				$z2=$wall['z2'];
+				$uis=isodynamos_katakoryfoy($u, $z1, $z2);
+				$dok_uis=isodynamos_katakoryfoy($dok_u, $z1, $z2);
+				$yp_uis=isodynamos_katakoryfoy($yp_u, $z1, $z2);
+				$syr_uis=isodynamos_katakoryfoy($syr_u, $z1, $z2);
+			}
+			
+			//Εμβαδόν σύνολο
+			$wall_e_sum = $wall_l*$wall_h + ($wall_l*$wall_dy)/2;
+			$bld_a+=$wall_e_sum;
+			
+			//Φέρων οργανισμός
+			$per = $wall["per"];
+			if($per==0){
+				//Δοκοί	
+				$data_dok = explode("^", $wall["dok"]);
+				$dok_e_sum = 0;
+				$dok_h_sum = 0;
+				$dok_ua=0;
+					for($doki=1; $doki<=count($data_dok)-1; $doki++){
+					$dok = explode("|", $data_dok[$doki-1]);
+						$dok_h = $dok[0];
+						$dok_ar = $dok[1];
+						$dok_e = $dok_h*$wall_l;
+						$dok_ua = $dok_uis*$dok_e;
+						$dok_e_sum += $dok_e;
+						$dok_h_sum += $dok_h;
+						$zone_ua_adiafani+=$dok_ua;
+						
+						$psi_dok_l+=$wall_l*2;
+						
+					}
+				
+				//Υποστηλώματα
+				$data_yp = explode("^", $wall["yp"]);
+				$yp_e_sum = 0;
+				$yp_ua=0;
+					for($ypi=1; $ypi<=(count($data_yp)-1); $ypi++){
+					$yp = explode("|", $data_yp[$ypi-1]);
+						$yp_l = $yp[0];
+						$yp_h = ($wall_h-$dok_h_sum);
+						$yp_e = $yp_l*($wall_h-$dok_h_sum);
+						$yp_ua = $yp_uis*$yp_e;
+						$yp_e_sum += $yp_e;
+						$zone_ua_adiafani+=$yp_ua;
+						
+						$psi_yp_l+=$yp_h*2;
+						$psi_dok_l-=$yp_l*2;
+					}
+			}
+			
+			//Συρόμενα
+			$data_syr = explode("^", $wall["syr"]);
+			$syr_e_sum = 0;
+			$syr_ua = 0;
+				for($syri=1; $syri<=count($data_syr)-1; $syri++){
+				$syr = explode("|", $data_syr[$syri-1]);
+					$syr_l = $syr[0];
+					$syr_h = $syr[1];
+					$syr_e = $syr[0]*$syr[1];
+					$syr_ua = $syr_uis*$syr_e;
+					$syr_e_sum += $syr_e;
+					$zone_ua_adiafani+=$syr_ua;
+					
+					$psi_syr_l=2*$syr_l + 2*$syr_h;
+				}
+			
+			//με ποσοστό φέρων οργανισμού
+			if($per!=0){
+				$dok_e_sum=0;
+				$dok_ua=0;
+				$yp_e_sum=$wall_e_sum*$per/100;
+				$yp_ua=$yp_uis*$yp_e_sum;
+				$syr_e_sum=0;
+				$syr_ua=0;
+				$zone_ua_adiafani+=$yp_ua;
+				
+				$psi_dok_l=0;
+				$psi_syr_l=0;
+			}
+			
+			$window_sume=0;
+			//Παράθυρα
+			$data_window = $database->select($table_windows,"*",array("wall_id"=>$wall['id']) );
+			foreach($data_window as $window){
+				$window_ua=0;
+				$window_w=$window["w"];
+				$window_h=$window["h"];
+				$window_e=$window["w"]*$window["h"];
+				$window_u=$window["u"];
+				$window_psi_l = $window["psi_l"];
+				$window_psi_a = $window["psi_a"];
+				
+					if($wall["type"]==0){
+						$window_uis=$window_u;
+					}
+					if($wall["type"]==1){
+						$b=0.5;
+						$window_uis=$window_u*$b;
+					}
+					if($wall["type"]==2){
+						$b=0.5;
+						$window_uis=$window_u*$b;
+					}
+					$window_ua=$window_uis*$window_e;
+					$window_sume += $window_e;			
+			
+					$data_thermo_l = $database->select("vivliothiki_thermo_lp","*",array("id"=>$window_psi_l) );
+					$data_thermo_ak = $database->select("vivliothiki_thermo_yp","*",array("id"=>$window_psi_a) );
+					
+					$psi_lam_name=$data_thermo_l[0]["name"];
+					$psi_lam=$data_thermo_l[0]["y"];
+					$psi_anw_name=$data_thermo_ak[0]["name"];
+					$psi_anw=$data_thermo_ak[0]["y"];
+					
+					$psi_lam_l=2*$window_h;
+					$psi_anw_l=2*$window_w;
+					
+					$psi_lampas = $psi_lam_l*$psi_lam;
+					$psi_anwkasi = $psi_anw_l*$psi_anw;
+					$psi_window = $psi_lampas+$psi_anwkasi;
+					
+					$zone_ua_psi+=$psi_window;
+					
+					//Χρειάζεται διόρθωση για τις αδιαφανείς πόρτες
+					$zone_ua_diafani+=$window_ua;
+			}
+			
+			//Καθαρό εμβαδόν τοίχου
+			$wall_e_adiafanes = $wall_e_sum - $window_sume;//Ο τοίχος χωρίς παράθυρα
+			$wall_e = $wall_e_sum - $syr_e_sum - $yp_e_sum - $dok_e_sum - $window_sume;//Ο τοίχος χωρίς φέρων/παράθυρα
+			$u_sum = ($wall_e*$u + $syr_e_sum*$syr_u + $yp_e_sum*$yp_u + $dok_e_sum*$dok_u)/$wall_e_adiafanes;//Μέσος συντελεστής
+			$wall_ua=$uis*$wall_e;
+			$zone_ua_adiafani+=$wall_ua;
+			
+			//Θερμογέφυρες
+			if($wall["type"]==1){
+				$psi_b=0.5;
+			}else{
+				$psi_b=1;
+			}
+			$psi_dap=$psi_dap_y*$wall_l*$psi_b;
+			$psi_or=$psi_or_y*$wall_l*$psi_b;
+			$psi_yp=$psi_yp_y*$psi_yp_l*$psi_b;
+			$psi_dok=$psi_dok_y*$psi_dok_l*$psi_b;
+			$psi_syr=$psi_syr_y*$psi_syr_l*$psi_b;
+			$psi_wall=$psi_dap+$psi_or+$psi_yp+$psi_dok+$psi_syr;
+			$zone_ua_psi+=$psi_wall;
+		}//για κάθε τοίχο
+		
+		}//Υπάρχουν τοίχοι
+		
+		//ΔΑΠΕΔΑ ΖΩΝΗΣ
+		$where_dapeda=array(
+			"AND"=>array(
+				"user_id"=>$_SESSION['user_id'],
+				"meleti_id"=>$_SESSION['meleti_id'],
+				"zone_id"=>$zone["id"]
+			)
+		);
+		$select_zone_dapeda = $database->select($tb_zone_dapeda, $col, $where_dapeda);
+		$count_zone_dapeda = $database->count($tb_zone_dapeda, $where_dapeda);
+		if($count_zone_dapeda!=0){
+			foreach($select_zone_dapeda as $dapeda){
+				$dapeda_ua=0;
+				if($dapeda["u"]!=0){
+					$dapeda_u=$dapeda["u"];
+				}else{
+					$dapeda_u_data = $database->select("user_adiafani","u",array("id"=>$dapeda["u_id"]) );
+					$dapeda_u=$dapeda_u_data[0];
+				}
+				
+				if($dapeda["type"]==2){
+					$dapeda_uis=$dapeda_u;
+				}
+				if($dapeda["type"]==1){
+					$b=0.5;
+					$dapeda_uis=$dapeda_u*$b;
+				}
+				if($dapeda["type"]==0){
+					$z=$dapeda['z'];
+					$xar=2*$dapeda["e"]/$dapeda['p'];
+					$dapeda_uis=isodynamos_dapedoy($dapeda_u, $z, $xar);
+				}
+				
+				$dapeda_ua=$dapeda_uis*$dapeda["e"];
+				$zone_ua_orizontia+=$dapeda_ua;
+				
+				$bld_a+=$dapeda["e"];
+			}//Για κάθε δάπεδο
+			
+		}//Υπάρχουν δάπεδα
+		
+		//ΟΡΟΦΕΣ ΖΩΝΗΣ
+		$where_orofes=array(
+			"AND"=>array(
+				"user_id"=>$_SESSION['user_id'],
+				"meleti_id"=>$_SESSION['meleti_id'],
+				"zone_id"=>$zone["id"]
+			)
+		);
+		$select_zone_orofes = $database->select($tb_zone_orofes, $col, $where_orofes);
+		$count_zone_orofes = $database->count($tb_zone_orofes, $where_orofes);
+		if($count_zone_orofes!=0){
+			foreach($select_zone_orofes as $orofes){
+				$orofes_ua=0;
+				if($orofes["u"]!=0){
+					$orofes_u=$orofes["u"];
+				}else{
+					$orofes_u_data = $database->select("user_adiafani","u",array("id"=>$orofes["u_id"]) );
+					$orofes_u=$orofes_u_data[0];
+				}
+				
+				if($orofes["type"]==0){
+					$b=1;
+				}
+				if($orofes["type"]==1){
+					$b=0.5;
+				}
+				
+				$window_sume=0;
+				//Παράθυρα οροφών
+				$data_windowor = $database->select($table_windows,"*",array("roof_id"=>$orofes['id']) );
+				foreach($data_windowor as $window){
+					$window_name=$window["name"];
+					$window_w=$window["w"];
+					$window_h=$window["h"];
+					$window_e=$window["w"]*$window["h"];
+					$window_u=$window["u"];
+					
+					$window_sume+=$window_e;
+					
+					$window_ub=$window_u*$b;
+					$window_ua=$window_ub*$window_e;
+					$zone_ua_orizontia+=$window_ua;
+					$zone_ua_orizontia_diaf+=$window_ua;
+				}//Παράθυρα οροφών
+				
+				$roof_e=0;
+				$roof_e=$orofes["e"]-$window_sume;
+				
+				$orofes_uis=$orofes_u*$b;
+				$orofes_ua=$orofes_uis*$roof_e;
+				$zone_ua_orizontia+=$orofes_ua;
+				
+				$bld_a+=$orofes["e"];
+			}//για κάθε οροφή
+		}//Υπάρχουν οροφές
+		
+		//ΘΕΡΜΟΓΕΦΥΡΕΣ ΣΤΟ ΜΕΝΟΥ ΖΩΝΗΣ - ΕΚΤΟΣ ΤΟΙΧΩΝ ΟΡΟΦΩΝ
+		$select_zone_thermo = $database->select($tb_zone_thermo, $col, array("zone_id"=>$zone["id"]) );
+		$count_zone_thermo = $database->count($tb_zone_thermo, array("zone_id"=>$zone["id"]));
+		$zone_yl = 0;
+		if($count_zone_thermo!=0){
+			foreach($select_zone_thermo as $thermo){
+				$vivliothiki_thermo = "vivliothiki_thermo_".$array_thermo_dbs[$thermo["type"]];
+				$data_u = $database->select($vivliothiki_thermo,"*",array("id"=>$thermo["u"]) );
+				$data_yl = $data_u[0]["y"]*$thermo["n"]*$thermo["h"];
+				
+				$zone_yl += $data_yl;
+			}//για κάθε θερμογέφυρα
+		}//έλεγχος μήπως δεν υπάρχει καμία
+		$zone_ua_psi+=$zone_yl;
+		//ΘΕΡΜΟΓΕΦΥΡΕΣ ΣΤΟ ΜΕΝΟΥ ΖΩΝΗΣ - ΕΚΤΟΣ ΤΟΙΧΩΝ ΟΡΟΦΩΝ
+		
+		
+		$zone_ua=$zone_ua_adiafani+$zone_ua_diafani+$zone_ua_orizontia+$zone_ua_psi;		
+		
+		$bld_ua_adiafani+=$zone_ua_adiafani;
+		$bld_ua_diafani+=$zone_ua_diafani;
+		$bld_ua_orizontia+=$zone_ua_orizontia;
+		$bld_psi+=$zone_ua_psi;
+		$bld_ua+=$zone_ua;
+		
+		$data_zone_ev=teyxos_zone_ev($zone["id"]);
+		$zone_e=$data_zone_ev[0];
+		$zone_v=$data_zone_ev[1];
+		$bld_e+=$zone_e;
+		$bld_v+=$zone_v;
+	
+		$i++;
+	}
+	}//για κάθε ζώνη
+	
+	$bld_um = $bld_ua/$bld_a;
+	$bld_av = $bld_a/$bld_v;
+	$ummax=get_ummax($col_umax, $bld_av, $bld_type);
+	
+	return array($bld_um,$bld_av,$ummax);
+}
+
+//Εύρεση pgen ανά ζώνη
+function systems_calc_pgen(){
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$tb_zones = "meletes_zones";
+	$tb_meleti = "user_meletes";
+	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+	
+	$select_meleti = $database->select($tb_meleti, $col, $where_meleti);
+	$zwni = $select_meleti[0]["zone"];
+	if($zwni==0){$dt=18;}
+	if($zwni==1){$dt=20;}
+	if($zwni==2){$dt=23;}
+	if($zwni==3){$dt=28;}
+	
+	$select_zones = $database->select($tb_zones, $col, $where);
+	
+	$array = array();
+	
+	$i=0;
+	foreach($select_zones as $zone){
+		$zone_ea=systems_calc_ea($zone["id"]);
+		$zone_e=$zone_ea[0];
+		$zone_a=$zone_ea[1];
+		$zone_ump=systems_calc_um($zone["id"]);
+		$zone_um=$zone_ump[0];
+		
+		$zone_data = $database->select("vivliothiki_conditions_zone","*",array("id"=>$zone["xrisi"]));
+		$air=$zone_data[0]["air_perm2"];
+		
+		$zone_pgen = ( ($zone_a * $zone_um * 1.5) +  ($zone_e*$air)/3 )* $dt /1000;
+		
+		$array[$i]["name"]=$zone["name"];
+		$array[$i]["a"]=round($zone_a,2);
+		$array[$i]["e"]=round($zone_e,2);
+		$array[$i]["pgen"]=round($zone_pgen,2);
+	$i++;
+	}
+	
+	return $array;
+}
+
+
 
 //Εισαγωγή θεωρητικών συστημάτων για όλες τις ζώνες του κτιρίου
 function systems_theoretical(){

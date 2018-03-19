@@ -25,6 +25,53 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 */
 
 
+//ajax call για την επιστροφή των ticket υποστήριξης - ΧΡΗΣΤΗΣ
+if (isset($_GET['get_usertickets'])){
+	$state = $_GET['state'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = get_usertickets($state);
+	echo $tb;
+	exit;
+}
+//ajax call για την εισαγωγή νέου ticket - ΧΡΗΣΤΗΣ
+if (isset($_GET['insert_usertickets'])){
+	$title = $_GET['title'];
+	$text = $_GET['text'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = insert_usertickets($title,$text);
+	echo $tb;
+	exit;
+}
+//ajax call για τον σχολιασμό ticket - ΧΡΗΣΤΗΣ
+if (isset($_GET['comment_usertickets'])){
+	$id = $_GET['id'];
+	$text = $_GET['text'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = comment_usertickets($id,$text);
+	echo $tb;
+	exit;
+}
+//ajax call για το κλείσιμο ticket - ΧΡΗΣΤΗΣ
+if (isset($_GET['close_usertickets'])){
+	$id = $_GET['id'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = close_usertickets($id);
+	echo $tb;
+	exit;
+}
+
 //ajax call για την επιστροφή event για το ημερολόγιο - ΧΡΗΣΤΗΣ
 if (isset($_GET['get_usercalendar'])){
 	$start = $_GET['start'];
@@ -155,16 +202,16 @@ $dir_pics = $dir_dest;
         // we check if everything went OK
         if ($handle->processed) {
             // everything was fine !
-            $retrun.= '<p class="result">';
-            $retrun.= '  <b>Το αρχείο ανέβηκε με επιτυχία</b><br />';
-            $retrun.= '  Εικόνα(' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB): <img src="includes/'.$dir_pics . $handle->file_dst_name . '">';
-            $retrun.= '</p>';
+            $return.= '<p class="result">';
+            $return.= '  <b>Το αρχείο ανέβηκε με επιτυχία</b><br />';
+            $return.= '  Εικόνα(' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB): <img src="includes/'.$dir_pics . $handle->file_dst_name . '">';
+            $return.= '</p>';
         } else {
             // one error occured
-            $retrun.= '<p class="result">';
-            $retrun.= '  <b>Το αρχείο δεν ανέβηκε εκεί που πρέπει.</b><br />';
-            $retrun.= '  Error: ' . $handle->error . '';
-            $retrun.= '</p>';
+            $return.= '<p class="result">';
+            $return.= '  <b>Το αρχείο δεν ανέβηκε εκεί που πρέπει.</b><br />';
+            $return.= '  Error: ' . $handle->error . '';
+            $return.= '</p>';
         }
 
         // we delete the temporary files
@@ -173,14 +220,14 @@ $dir_pics = $dir_dest;
     } else {
         // if we're here, the upload file failed for some reasons
         // i.e. the server didn't receive the file
-        $retrun.= '<p class="result">';
-        $retrun.= '  <b>Το αρχείο δεν ανέβηκε στο server.</b><br />';
-        $retrun.= '  Error: ' . $handle->error . '';
-        $retrun.= '</p>';
+        $return.= '<p class="result">';
+        $return.= '  <b>Το αρχείο δεν ανέβηκε στο server.</b><br />';
+        $return.= '  Error: ' . $handle->error . '';
+        $return.= '</p>';
     }
 		
 		
-	echo $retrun;
+	echo $return;
 }
 
 
@@ -188,8 +235,216 @@ require("include_check.php");
 //require("functions_meleti_general.php");
 
 
+//TICKETS ΥΠΟΣΤΗΡΙΞΗΣ ΧΡΗΣΤΗ
+//Επιστροφη των ticket από τη βάση
+//state: 1 ανοικτά, 2: κλειστά
+function get_usertickets($state=0){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$tb_users= "core_users";
+	$tb_tickets= "user_tickets";
+	$tb_responses= "user_tickets_response";
+	chdir("../");
+	
+	if($state==0){
+		$where_user=array("user_id"=>$_SESSION['user_id']);
+	}else{
+		$where_user=array("AND"=>array("user_id"=>$_SESSION['user_id'],"state"=>$state));
+	}
+	
+	
+	$data_tickets = $database->select($tb_tickets,$col,$where_user);
+	
+	$txt="";
+	
+	$array_state=array(
+		1=>'<i class="fa fa-envelope-open-o" aria-hidden="true"></i> Ανοικτό',
+		2=>'<i class="fa fa-envelope-o" aria-hidden="true"></i> Κλειστό'
+	);
+	$array_state_class=array(
+		1=>'badge bg-red',
+		2=>'badge bg-green'
+	);
+	$array_state_color=array(
+		1=>'red',
+		2=>'green'
+	);
+	$array_state_img=array(
+		1=>'',
+		2=>'<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>'
+	);
+	
+	foreach($data_tickets as $ticket){
+		$txt.='<div class="box box-widget collapsed-box">';
+		$txt.='<div class="box-header with-border">';
+		$txt.='<div class="user-block">';
+		
+			$user_image_location = "includes/file_upload/server/php/files/user_".$_SESSION['user_id']."/user_image.jpg";
+			if(file_exists($user_image_location)){
+				$txt.='<img class="img-circle" src="'.$user_image_location.'" alt="User Image">';
+			}else{
+				$txt.='<img class="img-circle" src="dist/img/avatar5.png" alt="User Image">';
+			}
+		$txt.='<span class="username"><font color="'.$array_state_color[$ticket["state"]].'">'.$ticket["title"].' '.$array_state_img[$ticket["state"]].'</font></span>';
+			$user_data=$database->select($tb_users,$col,array("id"=>$ticket["user_id"]));
+		$txt.='<span class="description">Δημιουργήθηκε από: ';
+		$txt.=$user_data[0]["usr"].' - '.$user_data[0]["onoma"].' '.$user_data[0]["epwnymo"].'</span>';
+		$txt.='</div>';
+		
+			$where_responses=array("ticket_id"=>$ticket["id"]);
+			$data_responses = $database->select($tb_responses,$col,$where_responses);
+			$count_responses = $database->count($tb_responses,$where_responses);
+		
+		$txt.='<div class="box-tools">';
+		$txt.='<span class="label label-default"><i class="fa fa-clock-o" aria-hidden="true"></i> '.$ticket["datetime"].'</span> ';
+		$txt.='<span class="label label-primary"><i class="fa fa-reply" aria-hidden="true"></i> '.$count_responses.'</span> ';
+		$txt.='<span class="'.$array_state_class[$ticket["state"]].'">'.$array_state[$ticket["state"]].'</span> ';
+		$txt.='<button type="button" class="btn btn-box-tool" data-widget="collapse">';
+		$txt.='<i class="fa fa-plus"></i>';
+		$txt.='</button>';
+		$txt.='</div>';
+		$txt.='</div>';
+				
+		$txt.='<div class="box-body" style="display:none;">';
+		$txt.='<p>'.$ticket["text"].'</p>';
+		$txt.='</div>';
+			
+		$txt.='<div class="box-footer box-comments" style="display:none;">';
+			
+			if($count_responses>0){
+			foreach($data_responses as $response){
+				$txt.='<div class="box-comment">';
+					$responder_image_location = "includes/file_upload/server/php/files/user_".$response["responder_id"]."/user_image.jpg";
+					if(file_exists($responder_image_location)){
+						$txt.='<img class="img-circle img-sm" src="'.$responder_image_location.'" alt="User Image">';
+					}else{
+						$txt.='<img class="img-circle img-sm" src="dist/img/avatar5.png" alt="User Image">';
+					}
+
+				$txt.='<div class="comment-text">';
+					$responder_data=$database->select($tb_users,$col,array("id"=>$response["responder_id"]));
+				$txt.='<span class="username">'.$responder_data[0]["usr"].' - '.$responder_data[0]["onoma"].' '.$responder_data[0]["epwnymo"];
+				$txt.='<span class="text-muted pull-right"><i class="fa fa-clock-o" aria-hidden="true"></i> '.$response["datetime"].'</span>';
+				$txt.='</span>';
+				$txt.=$response["text"];
+				$txt.='</div>';
+				$txt.='</div>';
+			}
+			}else{
+				$txt.='Δεν υπάρχουν απαντήσεις. Σύντομα θα απαντήσει κάποιος διαχειριστής.';
+			}
+				
+		$txt.='</div>';
+			
+		$txt.='<div class="box-footer" style="display:none;">';
+			if(file_exists($user_image_location)){
+				$txt.='<img class="img-responsive img-circle img-sm" src="'.$user_image_location.'" alt="Alt Text">';
+			}else{
+				$txt.='<img class="img-responsive img-circle img-sm" src="dist/img/avatar5.png" alt="Alt Text">';
+			}
+		
+		$txt.='<div class="img-push">';
+		
+		$txt.='<div class="input-group">';
+		$txt.='<input type="text" class="form-control input-sm" placeholder="Απαντήστε στο ticket" id="tickets_comment'.$ticket["id"].'">';
+		$txt.='<div class="input-group-btn">';
+		$txt.='<button type="button" class="btn btn-sm btn-success" onclick="comment_ticket('.$ticket["id"].');">Υποβολή απάντησης</button>';
+		$txt.='<button type="button" class="btn btn-sm btn-danger" onclick="openmodal_closeticket('.$ticket["id"].');">Κλείσιμο ticket</button>';
+		$txt.='</div>';//input-group-btn
+		$txt.='</div>';//input-group
+		
+		$txt.='</div>';//img-push
+		$txt.='</div>';
+				
+		$txt.='</div>';
+	}
+	
+	return $txt;
+}
+
+//Εισαγωγή νέου ticket στη βάση
+function insert_usertickets($title,$text){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$tb_users= "core_users";
+	$tb_tickets= "user_tickets";
+	
+	date_default_timezone_set('Europe/Athens');
+	$datetime = date("Y-m-d H:i:s");
+	
+	$insert_array=array(
+		"user_id"=>$_SESSION['user_id'],
+		"title"=>$title,
+		"text"=>$text,
+		"datetime"=>$datetime,
+		"state"=>1
+	);
+	$insert = $database->insert($tb_tickets, $insert_array);
+	
+	$return = "<div class=\"alert alert-success alert-dismissable\">
+				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+				Επιτυχής προσθήκη ticket</div>";
+	
+	return $return;
+}
+
+//Σχολιασμός ticket στη βάση
+function comment_usertickets($id,$text){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$tb_users= "core_users";
+	$tb_responses= "user_tickets_response";
+	
+	date_default_timezone_set('Europe/Athens');
+	$datetime = date("Y-m-d H:i:s");
+	
+	$insert_array=array(
+		"ticket_id"=>$id,
+		"responder_id"=>$_SESSION['user_id'],
+		"text"=>$text,
+		"datetime"=>$datetime
+	);
+	$insert = $database->insert($tb_responses, $insert_array);
+	
+	$return = "<div class=\"alert alert-success alert-dismissable\">
+				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+				Προσθέσατε ένα σχόλιο στο ticket.</div>";
+	
+	return $return;
+}
+
+//Κλείσιμο ticket στη βάση
+function close_usertickets($id){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$tb_users= "core_users";
+	$tb_tickets= "user_tickets";
+	
+	$update_array=array(
+		"state"=>2
+	);
+	
+	$where_ticket=array("AND"=>array("id"=>$id,"user_id"=>$_SESSION['user_id']));
+	
+	$update = $database->update($tb_tickets, $update_array, $where_ticket);
+	
+	$return = "<div class=\"alert alert-success alert-dismissable\">
+				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+				Κλείσατε το ticket. Ελπίζουμε το θέμα να λύθηκε.</div>";
+	
+	return $return;
+}
+
+
+
+
 //ΗΜΕΡΟΛΟΓΙΟ ΧΡΗΣΤΗ
 function get_usercalendar($start, $end){
+	confirm_logged_in();
 	$database = new medoo(DB_NAME);
 	$columns = "*";
 	$table_meletes = "user_meletes";
@@ -216,7 +471,6 @@ function get_usercalendar($start, $end){
 	
 	return json_encode($events);
 }
-
 
 
 //ΒΙΒΛΙΟΘΗΚΕΣ ΧΡΗΣΤΗ

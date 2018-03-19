@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 Copyright (C) 2013 - Labros kenak v.4.0 beta
 Author: Labros Karoyntzos 
@@ -23,19 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 στην έκδοση 3 αυτής της άδειας.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
-/*
-***********************************************************************
-Tsak mods - Κώστας Τσακίρης - πολιτικός μηχανικός - ktsaki@tee.gr     *
-                                                                      *
-Σχεδίαση δομικών στοιχείων                                            *
-bitmaps για τη σχεδίαση των υλικών                                    *
-                                                                      *
-***********************************************************************
-*/
-
-
 $ha =array();
-
 $ha[0]='../images/hatch/blank.png';
 $ha[1]='../images/hatch/bricks.png';
 $ha[2]='../images/hatch/sand.png';
@@ -54,6 +42,4 @@ $ha[14]='../images/hatch/granitis.png';
 $ha[15]='../images/hatch/granitis1.png';
 $ha[16]='../images/hatch/wood1.png';
 $ha[17]='../images/hatch/dirt.png';
-
-
 ?>

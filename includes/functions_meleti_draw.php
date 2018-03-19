@@ -34,6 +34,15 @@ if (isset($_GET['create_draworder'])){
 	echo $tb;
 	exit;
 }
+if (isset($_GET['create_draworder_mthx'])){
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = create_draworder_mthx();
+	echo $tb;
+	exit;
+}
 if (isset($_GET['create_solarpath'])){
 	$lat = $_GET['lat'];
 	$lon = $_GET['lon'];
@@ -42,7 +51,7 @@ if (isset($_GET['create_solarpath'])){
 	require("session.php");
 	require("suncalc/suncalc.php");
 	require("XY_Plot/XY_Plot.php");
-	confirm_logged_in();
+	//confirm_logged_in();
 	$tb = create_solarpath($lat,$lon);
 	echo $tb;
 	exit;
@@ -79,7 +88,7 @@ function create_draworder(){
 		$count = count($data_floorwalls);
 		
 		$txt .= "<div class=\"panel panel-warning\">";
-		$txt .= "<div class=\"panel-heading\">Όροφος: ".$floor." </div>";
+		$txt .= "<div class=\"panel-heading\">ΖΩΝΗ - Όροφος: ".$floor." </div>";
 		$txt .= "<table class=\"table table-bordered table-condenced\">
 				<tr>
 				<td>Τοιχοποιία</td>
@@ -141,6 +150,69 @@ function create_draworder(){
 	return $txt;	
 }
 
+
+//Εκτύπωση πίνακα ΜΘΧ
+function create_draworder_mthx(){
+	
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$tb = "meletes_mthx_adiafani";
+	$col = "*";
+	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+	$data_allwalls = $database->select($tb,$col,$where);
+	
+	
+	//Βρίσκω τους ορόφους και τους βάζω σε σειρά από μικρότερο σε μεγαλύτερο
+	$array_floors=array();
+	foreach($data_allwalls as $wall){
+		array_push($array_floors, $wall["roof"]);
+	}
+	$array_floors = array_unique($array_floors);
+	
+	$txt = "";
+	foreach($array_floors as $floor){
+		$where_floor = array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"roof"=>$floor),
+		"ORDER"=>array(
+			"draw_order"=>"ASC"
+			));
+		$data_floorwalls = $database->select($tb,$col,$where_floor);
+		$count = count($data_floorwalls);
+		
+		$txt .= "<div class=\"panel panel-warning\">";
+		$txt .= "<div class=\"panel-heading\">ΜΘΧ - Όροφος: ".$floor." </div>";
+		$txt .= "<table class=\"table table-bordered table-condenced\">
+				<tr>
+				<td>Τοιχοποιία</td>
+				<td>Όροφος</td>
+				<td>Αρίθμηση - σειρά εμφάνισης</td>
+				<td>Μήκος</td>
+				<td>Προσανατολισμός(<sup>o</sup>)</td>
+				</tr>";
+		
+		$array_ids= array();
+
+		foreach($data_floorwalls as $wall){
+			$array_ids[$wall["draw_order"]]=$wall["id"];//array με key το draw_order και τιμή το id	
+			$txt .= "<tr>";
+			$txt .= "<td>".$wall["name"]."</td>";
+			$txt .= "<td>".$wall["roof"]."</td>";
+			$txt .= "<td>".$wall["draw_order"]."</td>";
+			$txt .= "<td>".$wall["l"]."</td>";
+			$txt .= "<td>".$wall["g"]."</td>";
+			$txt .= "</tr>";
+		}
+		$txt .= "</table>";
+		$txt .= "<div class=\"panel-footer\">Σύνολο: ".$count."</div>";
+		$txt .= "</div>";
+		
+		ksort($array_ids);//βάζω τους τοίχους με τη σειρά που εμφανίζονται
+		
+	$txt .= "<img  height=\"600px\" src=\"includes/draw_floor_mthx.php?floor=".$floor."\">";
+	}
+	
+	
+	return $txt;	
+}
 
 //RESIZE IMAGE GD
 function resize_image($file, $w, $h, $crop=FALSE) {
@@ -377,7 +449,11 @@ foreach($dates as $date){
 	 $colorMap[ "Purple" ] );
 
 	// Output image
-	$path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/solar_path.png";	
+	if(isset($_SESSION["user_id"])){
+		$path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/solar_path.png";
+	}else{
+		$path = "file_upload/server/php/files/guests/solar_path.png";
+	}	
 	$create=imagepng ($image,$path);
 	ImageDestroy($image);
 	//Header("Content-type: image/png");
@@ -451,8 +527,7 @@ function imagelinedotted ($im, $x1, $y1, $x2, $y2, $dist, $col) {
     return (integer) imageline ($im, $x1, $y1, $x2, $y2, IMG_COLOR_STYLED);
     imagesetstyle ($im, array($col));        // Reset style - just in case...
 }
-function imageBoldLine($resource, $x1, $y1, $x2, $y2, $Color, $BoldNess=2, $func='imageLine')
-{
+function imageBoldLine($resource, $x1, $y1, $x2, $y2, $Color, $BoldNess=2, $func='imageLine'){
 $center = round($BoldNess/2);
 for($i=0;$i<$BoldNess;$i++)
 { 

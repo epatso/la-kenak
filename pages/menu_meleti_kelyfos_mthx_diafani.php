@@ -53,8 +53,10 @@ page = typeof page !== 'undefined' ? page : 1;
 }
 
 //Εύρεση διαθέσιμων θερμικών ζωνών
-function mthx_diafani_getmthxs(mthx_id){
+function mthx_diafani_getmthxs(mthx_id,wall_id,roof_id){
 	mthx_id = typeof mthx_id !== 'undefined' ? mthx_id : 0;
+	wall_id = typeof wall_id !== 'undefined' ? wall_id : 0;
+	roof_id = typeof roof_id !== 'undefined' ? roof_id : 0;
 	var prefix = "editmthx_diafani_";
 
 	//Εμφάνιση select ανάλογα με τον τύπο (ΖΩΝΕΣ η ΜΘΧ). Εδώ ενδιαφέρουν οι ΜΘΧ type=1
@@ -71,8 +73,16 @@ function mthx_diafani_getmthxs(mthx_id){
 		if(mthx_id==0){
 			document.getElementById(prefix+"mthx_id").selectedIndex = 0;
 		}
-		mthx_diafani_getwalls();
-		mthx_diafani_getroofs();
+		if(wall_id!=0){
+			mthx_diafani_getwalls(document.getElementById(prefix+"mthx_id").value,wall_id);
+		}else{
+			mthx_diafani_getwalls(document.getElementById(prefix+"mthx_id").value);
+		}
+		if(roof_id!=0){
+			mthx_diafani_getroofs(document.getElementById(prefix+"mthx_id").value,roof_id);
+		}else{
+			mthx_diafani_getroofs(document.getElementById(prefix+"mthx_id").value);
+		}
 	}}
 }
 
@@ -190,8 +200,8 @@ var prefix = "editmthx_diafani_";
 	document.getElementById(prefix+"passive").checked = false;
 	
 	document.getElementById(prefix+"g_w").value = "";
-	document.getElementById(prefix+"psil").selectedIndex = 8;
-	document.getElementById(prefix+"psia").selectedIndex = 8;
+	document.getElementById(prefix+"psil").selectedIndex = 12;
+	document.getElementById(prefix+"psia").selectedIndex = 12;
 	document.getElementById(prefix+"pistopoiisi").selectedIndex = 0;
 	document.getElementById(prefix+"wind").value = "";
 	
@@ -238,7 +248,7 @@ var prefix = "editmthx_diafani_";
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			var arr = JSON.parse(xmlhttp.responseText);	
 				
-				mthx_diafani_getmthxs(arr["mthx_id"]);
+				mthx_diafani_getmthxs(arr["mthx_id"],arr["wall_id"],arr["roof_id"]);
 				if(arr["wall_id"]==0){
 					mthx_diafani_belongs(2);
 					mthx_diafani_getwalls(arr["mthx_id"]);

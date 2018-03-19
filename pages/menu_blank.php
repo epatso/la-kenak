@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 */
 //error_reporting(E_ALL);
 require("include_check.php");
-confirm_logged_in();
+//confirm_logged_in();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -33,7 +33,7 @@ confirm_logged_in();
 <section class="content-header">
 	<h1>
 	La-kenak
-	<small>Παραγωγή XML</small>
+	<small>Empty</small>
 	</h1>
 	<ol class="breadcrumb">
 	<li><a href="#"><i class="fa fa-dashboard"></i> La-kenak</a></li>
@@ -50,10 +50,10 @@ confirm_logged_in();
 		<div class="col-md-12">
 			<div class="nav-tabs-custom">
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#tabs-1" data-toggle="tab"><i class="fa fa-file-code-o"></i> Blank page</a></li>
+				<li class="active"><a href="#tabs-1" data-toggle="tab"><i class="fa fa-users"></i> Blank page</a></li>
 			</ul>
 			
-		<!-- ########################## XML TEE KENAK ################################# -->
+		<!-- ########################################################### -->
 		<div class="tab-content">
 			<div class="tab-pane active" id="tabs-1">
 			<br/>
@@ -62,7 +62,7 @@ confirm_logged_in();
 			
 			</div><!--tabs-1-->
 			
-					</div><!--tab content-->
+		</div><!--tab content-->
 				</div><!--tabs-->
 		</div><!--col-md-10-->
 	</div>

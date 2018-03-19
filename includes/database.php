@@ -29,7 +29,7 @@ include ('include_check.php');
 define("DB_SERVER", "localhost"); //το όνομα του διακομιστή.Για xampp,mamp κλπ χρησιμοποιείστε localhost
 define("DB_USER", "root"); //το όνομα του χρήστη.
 define("DB_PASS", "12345"); //το συνθηματικό για τον παραπάνω χρήστη. Το έχετε δηλώσει στο http://localhost/security/index.php για xampp
-define("DB_NAME", "labros_kenakv5"); //το όνομα της βάσης δεδομένων
+define("DB_NAME", "db_kenakv5"); //το όνομα της βάσης δεδομένων
 
 define("VERSION_ΤΕΕ", "1.31.1.9"); //Η τρέχουσα έκδοση του ΤΕΕ-ΚΕΝΑΚ
 define("APPLICATION_VERSION", "5.0"); //Η τρέχουσα έκδοση της διανομής

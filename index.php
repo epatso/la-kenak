@@ -1,4 +1,5 @@
 ﻿<?php
+require("includes/session.php");//Συνεδρία χρήστη
 /*
 Copyright (C) 2013 - Labros kenak v.4.0 beta
 Author: Labros Karoyntzos 
@@ -27,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 //Να εμφανίζονται τα λάθη για να βλέπω τι συμβαίνει - ΟΣΟ ΔΙΑΡΚΕΙ ΤΟ DEVELOPMENT
 //ini_set('display_errors',1); 
 //error_reporting(E_ALL);
-
+error_reporting(0);
 //Αποθήκευση της χρονικής σήμανσης που ξεκινά να φορτώνει η σελίδα.
 $time = microtime();
 $time = explode(' ', $time);
@@ -43,8 +44,6 @@ define('INCLUDE_CHECK',true);
 require("includes/include_check.php");
 //Σύνδεση με βάση δεδομένων
 require("includes/medoo.php");
-//Συνεδρία χρήστη
-require("includes/session.php");
 
 //Function του προγράμματος
 require("includes/functions_salt.php");
@@ -113,11 +112,30 @@ if ( window.self !== window.top ) {
 </script>
 	<!-- map style-->
 	<?php
+
+	//############### ΕΛΕΓΧΟΣ OFFLINE ################
+	if(confirm_admin()){//Για διαχειριστή πάντα ανοικτό λογισμικό
+		$offline=0;
+	}else{//Για όλους τους άλλους check για online
+		if($prefs_offline==1){//Κλειστό λογισμικό από ρύθμιση προτιμήσεων
+			$offline=1;
+		}else{//Ανοικτό λογισμικό από ρύθμιση προτιμήσεων
+			$offline=0;
+		}
+	}
+	//############### ΕΛΕΓΧΟΣ OFFLINE ################
+	
+	
+	//############### ΜΕΝΟΥ ################
 	//top bar
 	include("pages/components/page_header.php");
 	//Sidebar left
 	include("pages/components/sidebar_left.php");
-
+	//############### ΜΕΝΟΥ ################
+	
+	
+	//############### ΦΟΡΤΩΣΗ ΣΕΛΙΔΩΝ ################
+	if($offline!=1){//Ανοικτό λογισμικό
 	//Όλη η εφαρμογή βρίσκεται στο αρχείο index.php
 	//Ανάλογα με τιμή της μεταβλητής _GET["nav"] δηλαδή τη σελίδα που βλέπει ο χρήστης
 	//γίνεται έλεγχος αν ο χρήστης είναι συνδεδεμένος ή/και έχει επιλέξει και μελέτη εργασίας. 
@@ -132,6 +150,11 @@ if ( window.self !== window.top ) {
 	}else{
 	include("pages/menu_index.php");
 	}
+	
+	}else{//κλειστό λογισμικό
+		include("pages/menu_user_login.php");
+	}
+	//############### ΦΟΡΤΩΣΗ ΣΕΛΙΔΩΝ ################
 
 	//Υποσέλιδο
 	include("pages/components/page_footer.php");

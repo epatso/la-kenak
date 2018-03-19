@@ -50,7 +50,7 @@ confirm_meleti_isset();
 <!-- Main content -->
 <section class="content">
 <?php
-	if($admin_menu_teyxos!=0){//Έχει οριστεί να φαίνεται το τεύχος στις γενικές ρυθμίσεις
+	if($admin_menu_teyxos!=0){//Έχει οριστεί να φαίνεται το τεύχος στις γενικές ρυθμίσεις	
 ?>
 <!-- Main row -->
 <div class="row">

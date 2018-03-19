@@ -149,6 +149,10 @@ function save_ziparchive(){
 	$array_floors=array();
 	foreach($data_allwalls as $wall){
 		array_push($array_floors, $wall["roof"]);
+		
+		if(file_exists($folder."wallid_".$wall["id"].".png")){
+			$zip->addFile($folder."wallid_".$wall["id"].".png", "wallid_".$wall["id"].".png");
+		}
 	}
 	$array_floors = array_unique($array_floors);
 	
@@ -158,33 +162,12 @@ function save_ziparchive(){
 		$url = "draw_floor.php?floor=".$floor;
 		$img = $folder."floor_".$floor.".png";
 		
-		/*
-		//Με allow_url_fopen=on
-		copy("draw_floor.php?floor=".$floor, $folder."floor".$floor.".png");
-		
-		//Με curl
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); //Return the transfer so it can be saved to a variable
-		$result = curl_exec($ch);  //Save the transfer to a variable
-		if($result === FALSE){//curl_exec will return false on failure even with returntransfer on
-			//return? die? redirect? your choice.
-		}
-		$fp = fopen($img, 'w'); //Create the empty image. Extension does matter.
-		fwrite($fp, $result); //Write said contents to the above created file
-		fclose($fp);  //Properly close the file
-		
-		
-		//Με GD
-		$imgjpg = imagecreatefrompng($url);
-		imagepng($imgjpg, $folder);
-		
-		
-		//Με function
-		save_image($url,$img);
-		*/
-		
 		//Προσθήκη στο zip
 		$zip->addFile($img, "floor_".$floor.".png");
+	}
+	
+	if(file_exists($folder."location_osm.jpg")){
+		$zip->addFile($folder."location_osm.jpg", "location_osm.jpg");
 	}
 	
 	//$zip->addFromString("testfilephp.txt" . time(), "#1 This is a test string added as testfilephp.txt.\n");
@@ -637,6 +620,14 @@ function xml_save_tee(){
 	}
 	
 	
+	$array_window_type = array(
+		0=>"Αδιαφανής πόρτα",
+		1=>"Παράθυρο",
+		2=>"Πόρτα",
+		3=>"Μη ανοιγόμενο κούφωμα",
+		4=>"Υαλότουβλα",
+		5=>"Ανοιγόμενη γυάλινη πρόσοψη"
+	);
 	
 	
 	//Στοιχεία - Γενικά στοιχεία (χώροι, εμβαδά)
@@ -800,10 +791,6 @@ function xml_save_tee(){
 		3=>$senaria_names[1],
 		4=>$senaria_names[2]
 	);
-	$senaria_u_walls_cost="";
-	$senaria_u_roofs_cost="";
-	$senaria_u_floors_cost="";
-	$senaria_u_wins_cost="";
 	$walls_cost=50;
 	$roofs_cost=40;
 	$floors_cost=50;
@@ -812,6 +799,12 @@ function xml_save_tee(){
 	//##################### ΑΡΧΗ ΚΤΙΡΙΟΥ ###########################
 	$rid=1;//μετράει από το 1 έως το 4. Μπορεί να σταματάει στο 2 ή 3 εάν δεν είναι όλα τα σενάρια ενεργά
 	for($zzz=1;$zzz<=4;$zzz++){//Για κάθε σενάριο ($zzz είναι η μέτρηση του loop για να γίνει 4 φορές, διαφορετικό από το $rid)
+		
+	$senaria_u_walls_cost="";
+	$senaria_u_roofs_cost="";
+	$senaria_u_floors_cost="";
+	$senaria_u_wins_cost="";
+	
 		
 		//Να εκτελείται μόνο όταν:
 		//Το κτίριο είναι το υπάρχον ή είναι ενεργό σενάριο δηλαδή:
@@ -1218,13 +1211,25 @@ function xml_save_tee(){
 			
 			//Σκίαση προβόλου
 			if( $data_fov!=0 ){
-				$fov_deg = atan($data_fov / $wall["h"])*180/pi();
+				$fov_deg = atan($data_fov / ($wall["h"]/2))*180/pi();
 				$fov = calc_skiasi_ov($fov_deg, $pros);
 				$fov_h = $fov[0];
 				$fov_c = $fov[1];
 			}else{
 				$fov_h = 1;
 				$fov_c = 1;
+			}
+			
+			//Σκίαση τέντας
+			if( $data_fovt[0]!=0 ){
+				if( ($data_fovt[1]-($wall["h"]/2))>0 ){
+					$fovt_deg = atan($data_fovt_w[0] / ($data_fovt[1]-($wall["h"]/2)) )*180/pi();
+				}else{
+					$fovt_deg=90;
+				}
+				
+				$fovt = calc_skiasi_ov($fovt_deg, $pros);
+				$fov_c = $fovt[1];
 			}
 			
 			//Πλευρικές σκιάσεις
@@ -1337,6 +1342,18 @@ function xml_save_tee(){
 					$fov_c_w = 1;
 				}
 				
+				//Σκίαση τέντας
+				if( $data_fovt_w[0]!=0 ){
+					if( ($data_fovt_w[1]-$window_p-$window_h/2)>0 ){
+						$fovt_deg_w = atan($data_fovt_w[0] / ($data_fovt_w[1]-$window_p-$window_h/2) )*180/pi();
+					}else{
+						$fovt_deg_w=90;
+					}
+					
+					$fovt_w = calc_skiasi_ov($fovt_deg_w, $pros_w);
+					$fov_c_w = $fovt_w[1];
+				}
+				
 				//Πλευρικές σκιάσεις
 				if( $data_ffin_l_w[1]!=0 ){
 					$ffin_l_deg_w = atan( $data_ffin_l_w[1] / ($data_ffin_l_w[0]+$window_w/2) )*180/pi();
@@ -1419,6 +1436,18 @@ function xml_save_tee(){
 						$fov_c_w = 1;
 					}
 					
+					//Σκίαση τέντας
+					if( $data_fovt_w[0]!=0 ){
+						if( ($data_fovt_w[1]-$window_p-$window_h/2)>0 ){
+							$fovt_deg_w = atan($data_fovt_w[0] / ($data_fovt_w[1]-$window_p-$window_h/2) )*180/pi();
+						}else{
+							$fovt_deg_w=90;
+						}
+						
+						$fovt_w = calc_skiasi_ov($fovt_deg_w, $pros_w);
+						$fov_c_w = $fovt_w[1];
+					}
+					
 					//Πλευρικές σκιάσεις
 					if( $data_ffin_l_w[1]!=0 ){
 						$ffin_l_deg_w = atan( $data_ffin_l_w[1] / ($data_ffin_l_w[0]+$window_apoar+$window_w/2) )*180/pi();
@@ -1492,7 +1521,7 @@ function xml_save_tee(){
 					$direct_benefit_column3 .= $wall_g.",";
 					$direct_benefit_column4 .= $wall["b"].",";
 					$direct_benefit_column5 .= $window_e.",";
-					$direct_benefit_column6 .= ",";
+					$direct_benefit_column6 .= $array_window_type[$window["type"]].",";
 					$direct_benefit_column7 .= $window_u.",";
 					$direct_benefit_column8 .= $window_gw.",";
 					$direct_benefit_column9 .= $fhor_h_w.",";
@@ -1510,7 +1539,7 @@ function xml_save_tee(){
 					$transparent_column3 .= $wall_g.",";
 					$transparent_column4 .= $wall["b"].",";
 					$transparent_column5 .= $window_e.",";
-					$transparent_column6 .= ",";
+					$transparent_column6 .= $array_window_type[$window["type"]].",";
 					$transparent_column7 .= $window_u.",";
 					$transparent_column8 .= $window_gw.",";
 					$transparent_column9 .= $fhor_h_w.",";
@@ -1552,7 +1581,7 @@ function xml_save_tee(){
 				${"internal".$diax_e."_transparent_column3"} .= $wall_g.",";
 				${"internal".$diax_e."_transparent_column4"} .= $wall["b"].",";
 				${"internal".$diax_e."_transparent_column5"} .= $window_e.",";
-				${"internal".$diax_e."_transparent_column6"} .= ",";
+				${"internal".$diax_e."_transparent_column6"} .= $array_window_type[$window["type"]].",";
 				${"internal".$diax_e."_transparent_column7"} .= $window_u.",";
 				${"internal".$diax_e."_transparent_column8"} .= $window_gw.",";
 				${"internal".$diax_e."_transparent_column9"} .= $fhor_h_w.",";
@@ -1890,7 +1919,7 @@ function xml_save_tee(){
 	
 	
 	
-	//ΟΡΟΦΕΣ - 0 σε αέρα, 1 σε ΜΘΧ
+	//ΟΡΟΦΕΣ - 0 σε αέρα, 1 σε ΜΘΧ, 2 σε έδαφος
 	foreach($zone_orofes as $orofi){
 		if($orofi["u"]!=0){
 			$orofi_u=$orofi["u"];
@@ -1987,7 +2016,7 @@ function xml_save_tee(){
 					$transparent_column3 .= $orofi["g"].",";
 					$transparent_column4 .= $orofi["b"].",";
 					$transparent_column5 .= $window_e.",";
-					$transparent_column6 .= ",";
+					$transparent_column6 .= $array_window_type[$window["type"]].",";
 					$transparent_column7 .= $window_u.",";
 					$transparent_column8 .= $window_gw.",";
 					$transparent_column9 .= $orofi["fhor_h"].",";
@@ -2029,7 +2058,7 @@ function xml_save_tee(){
 				${"internal".$diax_e."_transparent_column3"} .= $orofi["g"].",";
 				${"internal".$diax_e."_transparent_column4"} .= $orofi["b"].",";
 				${"internal".$diax_e."_transparent_column5"} .= $window_e.",";
-				${"internal".$diax_e."_transparent_column6"} .= ",";
+				${"internal".$diax_e."_transparent_column6"} .= $array_window_type[$window["type"]].",";
 				${"internal".$diax_e."_transparent_column7"} .= $window_u.",";
 				${"internal".$diax_e."_transparent_column8"} .= $window_gw.",";
 				${"internal".$diax_e."_transparent_column9"} .= $orofi["fhor_h"].",";
@@ -2085,6 +2114,19 @@ function xml_save_tee(){
 			${"internal".$diax_e."_opaque_column15"} .= $orofi["ffin_c"].",";
 			${"internal".$diax_e."_opaque_column16"} .= $senaria_u_roofs_cost.",";
 		${"internal".$diax_e."_count_opaque"}++;
+		}
+		if($orofi["type"]==2){//οροφή σε έδαφος
+			//Εκτύπωση γραμμής οροφής σε έδαφος
+			$ground_column1 .= "Δάπεδο - Οροφή,";
+			$ground_column2 .= $orofi["name"].",";
+			$ground_column3 .= $roof_e.",";
+			$ground_column4 .= $orofi_u.",";
+			$ground_column5 .= $orofi["z"].",";
+			$ground_column6 .= ",";
+			$ground_column7 .= $orofi["p"].",";
+			$ground_column8 .= $senaria_u_roofs_cost.",";
+			
+			$count_ground++;
 		}
 	}
 	
@@ -2446,7 +2488,7 @@ function xml_save_tee(){
 		$therm_production_column5 .= $thermp["cop"].",";
 			$i=6;
 			foreach($months_en as $month){
-				${"therm_production_column".$i} = $thermp[$month].",";
+				${"therm_production_column".$i} .= $thermp[$month].",";
 			$i++;
 			}
 		$therm_production_column18 .= ",";//κόστος
@@ -2507,7 +2549,7 @@ function xml_save_tee(){
 		$cold_production_column5 .= $coldp["eer"].",";
 			$i=6;
 			foreach($months_en as $month){
-				${"cold_production_column".$i} = $coldp[$month].",";
+				${"cold_production_column".$i} .= $coldp[$month].",";
 			$i++;
 			}
 		$cold_production_column18 .= ",";//κόστος
@@ -2564,7 +2606,7 @@ function xml_save_tee(){
 		$znx_production_column4 .= $znxp["n"].",";
 			$i=5;
 			foreach($months_en as $month){
-				${"znx_production_column".$i} = $znxp[$month].",";
+				${"znx_production_column".$i} .= $znxp[$month].",";
 			$i++;
 			}
 		$znx_production_column17 .= ",";//κόστος
@@ -2594,6 +2636,12 @@ function xml_save_tee(){
 		$znx_auxiliary_column3 .= round($znxv["w"],4).",";
 	$count_znx_auxiliary++;
 	}//ZNX - βοηθητικές
+	
+	if($count_znx_production>0){
+		$znx_exists=1;
+	}else{
+		$znx_exists=0;
+	}
 	//ZNX
 	
 	
@@ -2617,7 +2665,7 @@ function xml_save_tee(){
 		$ygr_production_column4 .= $ygrp["n"].",";
 			$i=5;
 			foreach($months_en as $month){
-				${"ygr_production_column".$i} = $ygrp[$month].",";
+				${"ygr_production_column".$i} .= $ygrp[$month].",";
 			$i++;
 			}
 		$ygr_production_column17 .= ",";//κόστος
@@ -2685,7 +2733,7 @@ function xml_save_tee(){
 	$count_solar=0;
 	//ΗΛΙΑΚΟΣ - Συλλέκτης
 	foreach($sys_solar as $solar){			
-		$solar_collector_column1 .= $array_solar[$solar["type"]].",";
+		$solar_collector_column1 .= $array_solar_type[$solar["type"]].",";
 		$solar_collector_column2 .= $array_true[$solar["active_h"]].",";
 		$solar_collector_column3 .= $array_true[$solar["active_z"]].",";
 		$solar_collector_column4 .= $solar["syna"].",";
@@ -2830,7 +2878,7 @@ function xml_save_tee(){
     $dhw = $system->appendChild($dhw);
 	$dhw->setAttribute('rid', $rid);
 	
-	$dhw->appendChild($domtree->createElement('dhw_exists',1));
+	$dhw->appendChild($domtree->createElement('dhw_exists',$znx_exists));
 	
 	
 	$dhw->appendChild($domtree->createElement('production_rows',$count_znx_production));
@@ -3442,7 +3490,7 @@ function xml_save_tee(){
 		}//εάν ο τοίχος ανήκει στα αδιαφανή
 		
 		
-		if($wall["type"]==2){ //ο τοίχος ανήκει σε έδαφος
+		if($wall["type"]==1){ //ο τοίχος ανήκει σε έδαφος
 			if($symptiksi==1){//1 γραμμή για τον τοίχο
 				//Εκτύπωση γραμμής τοίχου
 				$ground_column1 .= "Τοίχος,";
@@ -3523,12 +3571,75 @@ function xml_save_tee(){
 	
 	//ΟΡΟΦΕΣ - 0 σε αέρα
 	foreach($mthx_orofes as $orofi){
+		
+		$window_sume=0;
+		//Παράθυρα
+		$data_window = $database->select("meletes_mthx_diafani","*",array("roof_id"=>$orofi['id']) );
+		foreach($data_window as $window){
+			$window_name=$window["name"];
+			$window_w=$window["w"];
+			$window_h=$window["h"];
+			$window_p=$window["p"];
+			$window_apoar=$window["apoar"];
+			$window_e=$window["w"]*$window["h"];
+			$window_u=$window["u"];
+			$window_gw=$window["g_w"];
+			$window_ftype=$window["f_type"];
+			
+			$window_sume += $window_e;
+			
+			if($orofi["type"]==0){ //Οροφή σε αέρα
+			
+			if($window["u_id"]=="u_bytype" AND $window["type"]==0){//αδιαφανής πόρτα
+				$opaque_column1 .= "Πόρτα,";
+				$opaque_column2 .= $window_name.",";
+				$opaque_column3 .= $orofi["g"].",";
+				$opaque_column4 .= $orofi["b"].",";
+				$opaque_column5 .= $window_e.",";
+				$opaque_column6 .= $window_u.",";
+				$opaque_column7 .= ",";
+				$opaque_column8 .= $orofi_ap.",";
+				$opaque_column9 .= $orofi_ek.",";
+				$opaque_column10 .= $orofi["fhor_h"].",";
+				$opaque_column11 .= $orofi["fhor_c"].",";
+				$opaque_column12 .= $orofi["fov_h"].",";
+				$opaque_column13 .= $orofi["fov_c"].",";
+				$opaque_column14 .= $orofi["ffin_h"].",";
+				$opaque_column15 .= $orofi["ffin_c"].",";
+				$opaque_column16 .= $senaria_u_wins_cost.",";
+				$count_opaque++;
+			}else{//Καρτέλα - Διαφανή
+				$transparent_column1 .= "Ανοιγόμενο κούφωμα,";
+				$transparent_column2 .= $window_name.",";
+				$transparent_column3 .= $orofi["g"].",";
+				$transparent_column4 .= $orofi["b"].",";
+				$transparent_column5 .= $window_e.",";
+				$transparent_column6 .= $array_window_type[$window["type"]].",";
+				$transparent_column7 .= $window_u.",";
+				$transparent_column8 .= $window_gw.",";
+				$transparent_column9 .= $orofi["fhor_h"].",";
+				$transparent_column10 .= $orofi["fhor_c"].",";
+				$transparent_column11 .= $orofi["fov_h"].",";
+				$transparent_column12 .= $orofi["fov_c"].",";
+				$transparent_column13 .= $orofi["ffin_h"].",";
+				$transparent_column14 .= $orofi["ffin_c"].",";
+				$transparent_column15 .= $senaria_u_wins_cost.",";
+				$count_transparent++;
+			}//Είναι διαφανές
+			}//Οροφή σε αέρα
+			
+		}//Για κάθε παράθυρο οροφής
+		
+		$roof_e=0;
+		$roof_e=$orofi["e"]-$window_sume;
+		
+		
 		if($orofi["type"]==0){ //Οροφή σε αέρα
 			$opaque_column1 .= "Οροφή,";
 			$opaque_column2 .= $orofi["name"].",";
 			$opaque_column3 .= $orofi["g"].",";
 			$opaque_column4 .= $orofi["b"].",";
-			$opaque_column5 .= $orofi["e"].",";
+			$opaque_column5 .= $roof_e.",";
 			if($orofi["u"]!=0){
 				$orofi_u=$orofi["u"];
 			}else{
@@ -3554,6 +3665,20 @@ function xml_save_tee(){
 			
 			$count_opaque++;
 		}//Οροφή σε αέρα
+		
+		if($orofi["type"]==1){//οροφή σε έδαφος
+			//Εκτύπωση γραμμής οροφής σε έδαφος
+			$ground_column1 .= "Δάπεδο - Οροφή,";
+			$ground_column2 .= $orofi["name"].",";
+			$ground_column3 .= $roof_e.",";
+			$ground_column4 .= $orofi_u.",";
+			$ground_column5 .= $orofi["z"].",";
+			$ground_column6 .= ",";
+			$ground_column7 .= $orofi["p"].",";
+			$ground_column8 .= $senaria_u_roofs_cost.",";
+			
+			$count_ground++;
+		}
 	}
 	
 	

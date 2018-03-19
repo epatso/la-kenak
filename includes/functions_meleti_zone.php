@@ -403,6 +403,9 @@ function create_meletes_xwroi($type,$page=1){
 	</tr>";
 	
 	$i=1;
+	$total_e=0;
+	$total_v=0;
+	
 	foreach($data_xwroi as $data){
 		if($i<=$page*10 AND $i>$page*10-10){
 		$xwroi .= "<tr>";
@@ -424,6 +427,9 @@ function create_meletes_xwroi($type,$page=1){
 				$xwros_v=(1/6)*$data["w"]*$data["h"]*(2*$data["w"]+3*($data["l"]-$data["w"]));
 				$xwros_type="4κλινής στέγη,V=".$xwros_v;
 			}
+			
+			$total_e+=$xwros_e;
+			$total_v+=$xwros_v;
 		$xwroi .= "<td>".$xwros_type."</td>";
 		$xwroi .= "<td><button class=\"btn btn-sm btn-warning\" type=\"button\" onclick=\"form_xwroi(".$type.",".$data["id"].",".$page.");\"><i class=\"fa fa-pencil-square-o\"></i></button></td>";
 		$xwroi .= "<td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"formdel_xwroi(".$type.",".$data["id"].",".$page.");\"><i class=\"fa fa-times\"></i></button></td>";
@@ -439,6 +445,8 @@ function create_meletes_xwroi($type,$page=1){
 	}else{
 		$xwroi .= "Δεν βρέθηκαν αποτελέσματα.";
 	}
+	$xwroi .= "<br/>E=".$total_e."m<sup>2</sup> - ";
+	$xwroi .= "V=".$total_v."m<sup>3</sup>";
 	
 	$xwroi .= "<ul class=\"pagination pagination-sm pull-right\">";
 		if($page==1){$disabled_prev=" class=\"disabled\"";$onclick="";}else{$disabled_prev="";$onclick="\"get_xwroi(".$type.",".$previous_page.")\"";}

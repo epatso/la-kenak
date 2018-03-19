@@ -43,6 +43,30 @@ require("include_check.php");
 <!-- Main content -->
 <section class="content">
 
+	<?php
+	if($offline==1){//OFFLINE ΛΟΓΙΣΜΙΚΟ
+	?>
+	<div class="row">
+	<div class="col-md-12">
+	
+	<div class="info-box bg-red">
+	<span class="info-box-icon"><i class="fa fa-power-off"></i></span>
+
+		<div class="info-box-content">
+		<span class="info-box-text">Λογισμικο Εκτος συνδεσης</span>
+		<span class="info-box-number"></span>
+
+		<?php echo $prefs_offline_text;?>
+		</div><!-- /.info-box-content -->
+	</div><!-- /.info-box -->
+	
+	</div>
+	</div>
+		
+	<?php
+	}//OFFLINE ΛΟΓΙΣΜΙΚΟ
+	?>
+
 	<!-- Main row -->
 <div class="row">
 	
@@ -54,7 +78,9 @@ require("include_check.php");
 		$Client_ID = $select_prefs[0]["Client_ID"];
 		$Client_Secret = $select_prefs[0]["Client_Secret"];
 		$Client_Redirect = $select_prefs[0]["Client_Redirect"];
+		?>
 		
+		<?php
 		if(!isset($_SESSION['user_id'])){//Ο χρήστης δεν είναι συνδεδεμένος
 			
 			//Δεν επιστρέφεται τίποτα στο session από φόρμα εγγραφής ή φόρμα εισόδου
@@ -63,15 +89,19 @@ require("include_check.php");
 				echo "<div class=\"alert alert-info\" role=\"alert\">
 				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
 				<strong>Βοήθεια!</strong><br/>
-				Συνδεθείτε εισάγοντας το όνομα χρήστη και τον κωδικό σας. <br/><br/>
-				Πρότυπα συνθηματικά: admin/admin <br/><br/>";
+				Συνδεθείτε εισάγοντας το όνομα χρήστη και τον κωδικό σας. <br/><br/>";
+				
 				if($prefs_registration==1){
-				echo "Εάν δεν έχετε ακόμα εγγραφεί εισάγετε το όνομα χρήστη 
-				και το e-mail σας για να σας στείλουμε ένα κωδικό.";
+				echo "Γραφτείτε στο λογισμικό χρησιμοποιώντας το σύνδεσμο εγγραφή νέου χρήστη.";
 				}else{
-					echo "<font color=\"red\">Οι εγγραφές προσωρινά είναι κλειστές για το κοινό</font>";
+					echo "Οι εγγραφές προσωρινά είναι κλειστές για το κοινό.";
 				}
-					echo "</div>";
+				echo "<br/><br/>";
+				if($offline==1){//OFFLINE ΛΟΓΙΣΜΙΚΟ
+					echo "Μόνο οι διαχειριστές έχουν πρόσβαση στην παρούσα φάση. ";
+				}
+				
+				echo "</div>";
 			}
 			
 			//Επιστροφή λάθους μέσω session από φόρμα εισόδου
@@ -204,16 +234,23 @@ require("include_check.php");
 						</div>
 					</form>
 
+					<?php
+					if($prefs_googleid_on==1){
+					?>
+					<!-- social-auth-links -->
 					<div class="social-auth-links text-center">
 						<p>- OR -</p>
 						<a href="<?php echo $google_link;?>" class="btn btn-block btn-social btn-google btn-flat">
 							<i class="fa fa-google-plus"></i> Σύνδεση με Google+
 						</a>
 					</div>
-					<!-- /.social-auth-links -->
+					<!-- social-auth-links -->
+					<?php
+					}
+					?>
 
 					<a href="#">Ξέχασα τον κωδικό μου</a><br>
-					<a href="http://localhost/kenakv5/?nav=library_help#tabs-4">Πολιτική Χρήσης στοιχείων</a><br>
+					<a href="http://www.chem-lab.gr/lakenak/?nav=library_help#tabs-4">Πολιτική Χρήσης στοιχείων</a><br>
 					<?php
 					if($prefs_registration==1){
 					?>
@@ -387,7 +424,57 @@ require("include_check.php");
 				}}
 			}
 			get_meletes();
+			
+			//Εμφάνιση modal αντιγραφής
+			function copy_meleti(source_meleti){
+				document.getElementById("source_meleti").value=source_meleti;
+				$("#modal_target_meleti").modal("show");
+			}
 			</script>
+			
+<!-- ###################### Κρυφό modal_target_meleti για εμφάνιση ###################### -->
+<div id="modal_target_meleti" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<form class="form-inline" role="form" action="" method="post">
+<div class="modal-content">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	<h6 id="myModalLabel">Διαγραφή τοίχου</h6>
+</div>
+
+	<div class="modal-body">
+		Μελέτη πηγή:
+		<select class="form-control input-sm" id="source_meleti" name="source_meleti">
+			<option value=0>Επιλέξτε μελέτη...</option>
+			<?php
+			echo create_select_optionsid("user_meletes","name",array("user_id"=>$_SESSION["user_id"]) );
+			?>
+		</select>
+		<br/>
+		Μελέτη στόχος:
+		<select class="form-control input-sm" id="target_meleti" name="target_meleti">
+			<option value=0>Επιλέξτε μελέτη...</option>
+			<?php
+			echo create_select_optionsid("user_meletes","name",array("user_id"=>$_SESSION["user_id"]) );
+			?>
+		</select>
+		
+		<br/>
+		
+		Αντιγράφονται όλα τα δομικά στοιχεία της 1η μελέτης (μελέτη πηγή) στη 2η μελέτη (μελέτη στόχος). <br/>
+		Εάν η 2η μελέτη έχει δομικά στοιχεία δεν μεταβάλλονται. 
+	</div>	
+
+<div class="modal-footer">	
+	<button type="submit" name="submit" value="copy_meleti" class="btn btn-success"><span class="fa fa-pencil"></span> Αντιγραφή</button>
+	<button class="btn" data-dismiss="modal" aria-hidden="true">Άκυρο</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+<!-- ######################### Κρυφό div για εμφάνιση ######################### -->
+			
 			
 			
 			<?php
@@ -396,18 +483,20 @@ require("include_check.php");
 				// array σε μορφή javascript
 				$i=1;
 				foreach($data_meletes as $data){
-					if($xmltxt!=""){
-						$xmltxt.=",";
-					}
-					$xmltxt .= "[".$data["id"].",'".$data["name"]."','".$data["perigrafi"]."','".$data["address"]."',".$data["address_x"].",".$data["address_y"].",'".$data["xrisi"]."']";
-					$php_points[$i][0]=$data["id"];
-					$php_points[$i][1]=$data["name"];
-					$php_points[$i][2]=$data["perigrafi"];
-					$php_points[$i][3]=$data["address"];
-					$php_points[$i][4]=$data["address_x"];
-					$php_points[$i][5]=$data["address_y"];
-					$php_points[$i][6]=$data["xrisi"];
-					$i++;
+					if($data["address_x"]!=0 AND $data["address_y"]!=0){//βρέθηκε συντενταγμένη
+						if($xmltxt!=""){
+							$xmltxt.=",";
+						}
+						$xmltxt .= "[".$data["id"].",'".$data["name"]."','".$data["perigrafi"]."','".$data["address"]."',".$data["address_x"].",".$data["address_y"].",'".$data["xrisi"]."']";
+						$php_points[$i][0]=$data["id"];
+						$php_points[$i][1]=$data["name"];
+						$php_points[$i][2]=$data["perigrafi"];
+						$php_points[$i][3]=$data["address"];
+						$php_points[$i][4]=$data["address_x"];
+						$php_points[$i][5]=$data["address_y"];
+						$php_points[$i][6]=$data["xrisi"];
+						$i++;
+					}//βρέθηκε συντενταγμένη
 				}			
 			?>
 			<style>

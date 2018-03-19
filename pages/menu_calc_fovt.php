@@ -263,14 +263,28 @@ var ovt_e=parseFloat(document.getElementById("ovt_e"+k).value);
 var ovt_f=parseFloat(document.getElementById("ovt_f"+k).value);
 var ovt_pros=parseFloat(document.getElementById("ovt_pros"+k).value);
 
-var tan_toixoy =  (ovt_e / ((ovt_a/2) - ovt_f));
-var deg_toixoy = Math.atan(tan_toixoy) *  180 / Math.PI;
+var tan_toixoy, deg_toixoy, tan_door, deg_door, tan_an, deg_an;
 
-var tan_door = ((ovt_e+ovt_g) / (ovt_a - (ovt_b/2) - ovt_f));
-var deg_door = Math.atan(tan_door) *  180 / Math.PI;
+if( ovt_f-(ovt_a/2) > 0){
+	tan_toixoy =  (ovt_e / (ovt_f-(ovt_a/2)));
+	deg_toixoy = Math.atan(tan_toixoy) *  180 / Math.PI;
+}else{
+	deg_toixoy = 90;
+}
 
-var tan_an = ((ovt_e+ovt_g) / (ovt_a - ovt_d - (ovt_c/2) - ovt_f));
-var deg_an = Math.atan(tan_an) *  180 / Math.PI;
+if( ovt_f - (ovt_b/2) > 0){
+	tan_door = ((ovt_e+ovt_g) / (ovt_f - (ovt_b/2)));
+	deg_door = Math.atan(tan_door) *  180 / Math.PI;
+}else{
+	deg_door = 90;
+}
+
+if( ovt_f - ovt_d - (ovt_c/2) >0 ){
+	tan_an = ((ovt_e+ovt_g) / (ovt_f - ovt_d - (ovt_c/2)));
+	deg_an = Math.atan(tan_an) *  180 / Math.PI;
+}else{
+	deg_an = 90;
+}
 
 document.getElementById("ovt_deg_t"+k).value=number_format(deg_toixoy,2);
 document.getElementById("ovt_deg_door"+k).value=number_format(deg_door,2);

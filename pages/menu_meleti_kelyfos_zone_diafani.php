@@ -31,6 +31,11 @@ confirm_logged_in();
 <br/>
 <div id="zone_diafani_table"></div>
 <div id="zone_diafani_info"></div>
+
+	<button type="submit" class="btn btn-znx" onclick=zone_diafani_xlsx();>
+		<i class="fa fa-file-code-o"></i> Παραγωγή XLSX
+	</button>
+<div id="zone_diafani_xlsx_info"></div>
 <script>
 get_zone_diafani();
 
@@ -152,6 +157,7 @@ if (xmlhttp2.readyState==4 && xmlhttp2.status==200) {
 	document.getElementById(prefix+"u_id_no").innerHTML = xmlhttp2.responseText;
 	if(u_id_no!=0){
 	document.getElementById(prefix+"u_id_no").value = u_id_no;
+	zone_diafani_findu();
 	}
 }}
 }
@@ -287,6 +293,7 @@ var prefix = "editzone_diafani_";
 				}
 				if(arr["u_id"]!="u_bytype" && arr["u_id"]!="u_manual"){
 					zone_diafani_u();
+					//zone_diafani_findu();
 				}
 				
 				document.getElementById(prefix+"u").value = arr["u"];
@@ -625,7 +632,7 @@ var u_id = document.getElementById(prefix+"u_id").value;
 		document.getElementById(prefix+"f").disabled=true;
 		
 		document.getElementById(prefix+"pistopoiisi").disabled=false;
-		zone_diafani_findu();
+		//zone_diafani_findu();
 	}	
 }
 
@@ -664,22 +671,23 @@ var parameters = "";
 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 		
 		if(type==2){
-		var arr = JSON.parse(xmlhttp.responseText);
-		document.getElementById(prefix+"w").value=arr[0];
-		document.getElementById(prefix+"h").value=arr[1];
-		document.getElementById(prefix+"f").value=arr[2];
-		document.getElementById(prefix+"u").value=arr[3];
-		document.getElementById(prefix+"g_w").value=arr[4];
+			var arr = JSON.parse(xmlhttp.responseText);
+			document.getElementById(prefix+"w").value=arr[0];
+			document.getElementById(prefix+"h").value=arr[1];
+			document.getElementById(prefix+"f").value=arr[2];
+			document.getElementById(prefix+"u").value=arr[3];
+			document.getElementById(prefix+"g_w").value=arr[4];
 		}
 		if(type==1){
-		var arr = JSON.parse(xmlhttp.responseText);
-		document.getElementById(prefix+"u").value=arr[0];
-		document.getElementById(prefix+"g_w").value=arr[1];
+			var arr = JSON.parse(xmlhttp.responseText);
+			document.getElementById(prefix+"u").value=arr[0];
+			document.getElementById(prefix+"g_w").value=arr[1];
+			zone_diafani_findwind();
 		}
 		document.getElementById('wait').style.display="none";
 	}}
 	if(type==1){
-	zone_diafani_findwind();
+	
 	}
 }
 
@@ -885,6 +893,23 @@ var prefix = "editzone_diafani_";
 	x+="name="+name+"&aw="+aw+"&ah="+ah+"&af="+af+"&mpp=5&p=1";
 	
 	document.getElementById(prefix+"preview1").innerHTML = "<img src=\""+x+"\" ></img><br/>Θεωρείται μέσο πλάτος πλαισίου 5cm.";
+}
+
+function zone_diafani_xlsx(){
+	
+	document.getElementById('wait').style.display="inline";
+	
+	//AJAX call
+	var link = "includes/functions_meleti_kelyfos.php?diafani_xlsx=1";
+	var xmlhttp=new XMLHttpRequest();
+	xmlhttp.open("GET",link ,true);
+	xmlhttp.send();
+	
+	xmlhttp.onreadystatechange=function()  {
+	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+		document.getElementById("zone_diafani_xlsx_info").innerHTML=xmlhttp.responseText;
+		document.getElementById('wait').style.display="none";
+	}}
 }
 </script>
 

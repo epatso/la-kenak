@@ -834,7 +834,7 @@ function rotatemap(how){
 				<tr class="info">
 					<td colspan="3">
 						<i class="fa fa-globe" aria-hidden="true"></i> Θέση ακινήτου - 	
-						<span id="markerStatus">Αλλάξτε τη θέση του δείκτη στο χάρτη</span>
+						<span id="markerStatus"><i>Αλλάξτε τη θέση του δείκτη στο χάρτη</i></span>
 					</td>
 				</tr>	
 				<tr>
@@ -3122,7 +3122,7 @@ function rotatemap(how){
 				<table class="table table-bordered table-condensed">
 				<tr class="info">
 					<td colspan="2">
-					<i class="fa fa-building" aria-hidden="true"></i> Αδιαφανή δομικά (Επιλογές ΠΕΑ)</i>
+					<i class="fa fa-building" aria-hidden="true"></i> Αδιαφανή δομικά <i>(Επιλογές ΠΕΑ)</i></i>
 					</td>
 				</tr>
 		
@@ -3166,7 +3166,7 @@ function rotatemap(how){
 				<table class="table table-bordered table-condensed">
 				<tr class="info">
 					<td colspan="2">
-					<i class="fa fa-building-o" aria-hidden="true"></i> Διαφανή δομικά (Επιλογές ΠΕΑ)</i>
+					<i class="fa fa-building-o" aria-hidden="true"></i> Διαφανή δομικά <i>(Επιλογές ΠΕΑ)</i></i>
 					</td>
 				</tr>
 				<tr>
@@ -3530,7 +3530,7 @@ function rotatemap(how){
 				<table class="table table-bordered table-condensed">
 				<tr class="info">
 					<td colspan="2">
-					<i class="fa fa-map-o" aria-hidden="true"></i> Τοπογραφία (Επιλογές μελέτης)
+					<i class="fa fa-map-o" aria-hidden="true"></i> Τοπογραφία <i>(Επιλογές μελέτης)</i>
 					</td>
 				</tr>
 				
@@ -3566,7 +3566,7 @@ function rotatemap(how){
 				<table class="table table-bordered table-condensed">
 				<tr class="info">
 					<td colspan="2">
-					<i class="fa fa-cube" aria-hidden="true"></i> Συντελεστές προσθήκης δομικών (Επιλογές μελέτης)
+					<i class="fa fa-cube" aria-hidden="true"></i> Συντελεστές προσθήκης δομικών <i>(Επιλογές μελέτης)</i></i>
 					</td>
 				</tr>
 				<tr class="info">
@@ -4116,14 +4116,16 @@ function show_help(n){
 }
 show_help(1);
 
+/*
 function load(){
 load_general();
 load_pea();
 load_meleti();
 load_diastaseis();
 }
+*/
 
-function load_general(){
+function load(){
 //ΓΕΝΙΚΕΣ ΚΑΡΤΕΛΕΣ
 var link = "includes/functions_meleti_general.php?load_generaldata=1";
 
@@ -4175,6 +4177,10 @@ var link = "includes/functions_meleti_general.php?load_generaldata=1";
 			document.getElementById("ypeythinos_name").value = arr["ypeythinos_name"];
 			document.getElementById("ypeythinos_tel").value = arr["ypeythinos_tel"];
 			document.getElementById("ypeythinos_mail").value = arr["ypeythinos_mail"];
+		
+			load_pea();
+			load_meleti();
+			load_diastaseis();
 		}
 	}
 }
@@ -4305,6 +4311,7 @@ function load_diastaseis(){
 
 load();
 
+/*
 function save(){
 save_general();
 save_pea();
@@ -4312,8 +4319,9 @@ save_meleti();
 save_diastaseis();
 load();
 }
+*/
 
-function save_general(){
+function save(){
 
 	var name = document.getElementById("name").value;
 	var perigrafi = document.getElementById("perigrafi").value;
@@ -4373,6 +4381,11 @@ function save_general(){
 				if(xmlhttp.responseText==1){
 				document.getElementById('AJAX_save').style.display="block";
 				}
+			
+				save_pea();
+				save_meleti();
+				save_diastaseis();
+				load();
 			}
 		}
 }

@@ -310,13 +310,16 @@ function get_meletes_stats(){
 	$m2_window_n=0;
 	$m2_window_d=0;
 	
+	$m2_window_doors=0;
+	$m2_window_wins=0;
+	
 	foreach($data_window as $window){
 		$m2_window += $window["w"]*$window["h"];
 	}
 	
 	foreach($data_wall as $wall){
 		$m2_wall += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;
-		if($wall["g_type"]==1){$m2_wall_b += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;}
+		if($wall["g_type"]==0 OR $wall["g_type"]==1){$m2_wall_b += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;}
 		if($wall["g_type"]==2){$m2_wall_a += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;}
 		if($wall["g_type"]==3){$m2_wall_n += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;}
 		if($wall["g_type"]==4){$m2_wall_d += $wall["l"]*$wall["h"] + ($wall["l"]*$wall["dy"])/2;}
@@ -324,10 +327,18 @@ function get_meletes_stats(){
 		$data_windows = $database->select("meletes_zone_diafani","*",array("wall_id"=>$wall["id"]) );
 			foreach($data_windows as $window){
 			$m2_wall -= $window["w"]*$window["h"];
-				if($wall["g_type"]==1){$m2_window_b += $window["w"]*$window["h"];$m2_wall_b -= $window["w"]*$window["h"];}
+				if($wall["g_type"]==0 OR $wall["g_type"]==1){$m2_window_b += $window["w"]*$window["h"];$m2_wall_b -= $window["w"]*$window["h"];}
 				if($wall["g_type"]==2){$m2_window_a += $window["w"]*$window["h"];$m2_wall_a -= $window["w"]*$window["h"];}
 				if($wall["g_type"]==3){$m2_window_n += $window["w"]*$window["h"];$m2_wall_n -= $window["w"]*$window["h"];}
 				if($wall["g_type"]==4){$m2_window_d += $window["w"]*$window["h"];$m2_wall_d -= $window["w"]*$window["h"];}
+				
+				if($window["type"]==0 OR $window["type"]==2){
+					$m2_window_doors += $window["w"]*$window["h"];
+				}
+				if($window["type"]==1){
+					$m2_window_wins += $window["w"]*$window["h"];
+				}
+							
 			}
 	}
 	
@@ -372,7 +383,9 @@ function get_meletes_stats(){
 		$m2_dap_air,
 		$m2_dap_edafos,
 		$m2_oro_mthx,
-		$m2_oro_air
+		$m2_oro_air,
+		$m2_window_doors,
+		$m2_window_wins
 	);
 	//επιστρέφει array για javascript
 	return json_encode($return);
@@ -1102,7 +1115,7 @@ function preview_tables_zone($id){
 }
 
 
-//preview - Καρτέλα: Πίνακες κελύφου ζώνης ή ΜΘΧ
+//preview - Καρτέλα: Πίνακες κελύφους ζώνης ή ΜΘΧ
 //Να προστεθούν οι διαχωριστικές
 function preview_tables_kelyfos($type,$id){
 	
@@ -1383,13 +1396,25 @@ function preview_tables_kelyfos($type,$id){
 			
 			//Σκίαση προβόλου
 			if( $data_fov!=0 ){
-				$fov_deg = atan($data_fov / $wall["h"])*180/pi();
+				$fov_deg = atan($data_fov / ($wall["h"]/2))*180/pi();
 				$fov = calc_skiasi_ov($fov_deg, $pros);
 				$fov_h = $fov[0];
 				$fov_c = $fov[1];
 			}else{
 				$fov_h = 1;
 				$fov_c = 1;
+			}
+			
+			//Σκίαση τέντας
+			if( $data_fovt[0]!=0 ){
+				if( ($data_fovt[1]-($wall["h"]/2))>0 ){
+					$fovt_deg = atan($data_fovt_w[0] / ($data_fovt[1]-($wall["h"]/2)) )*180/pi();
+				}else{
+					$fovt_deg=90;
+				}
+				
+				$fovt = calc_skiasi_ov($fovt_deg, $pros);
+				$fov_c = $fovt[1];
 			}
 			
 			//Πλευρικές σκιάσεις
@@ -1495,6 +1520,18 @@ function preview_tables_kelyfos($type,$id){
 					$fov_c_w = 1;
 				}
 				
+				//Σκίαση τέντας
+				if( $data_fovt_w[0]!=0 ){
+					if( ($data_fovt_w[1]-$window_p-$window_h/2)>0 ){
+						$fovt_deg_w = atan($data_fovt_w[0] / ($data_fovt_w[1]-$window_p-$window_h/2) )*180/pi();
+					}else{
+						$fovt_deg_w=90;
+					}
+					
+					$fovt_w = calc_skiasi_ov($fovt_deg_w, $pros_w);
+					$fov_c_w = $fovt_w[1];
+				}
+				
 				//Πλευρικές σκιάσεις
 				if( $data_ffin_l_w[1]!=0 ){
 					$ffin_l_deg_w = atan( $data_ffin_l_w[1] / ($data_ffin_l_w[0]+$window_w/2) )*180/pi();
@@ -1575,6 +1612,18 @@ function preview_tables_kelyfos($type,$id){
 					}else{
 						$fov_h_w = 1;
 						$fov_c_w = 1;
+					}
+					
+					//Σκίαση τέντας
+					if( $data_fovt_w[0]!=0 ){
+						if( ($data_fovt_w[1]-$window_p-$window_h/2)>0 ){
+							$fovt_deg_w = atan($data_fovt_w[0] / ($data_fovt_w[1]-$window_p-$window_h/2) )*180/pi();
+						}else{
+							$fovt_deg_w=90;
+						}
+						
+						$fovt_w = calc_skiasi_ov($fovt_deg_w, $pros_w);
+						$fov_c_w = $fovt_w[1];
 					}
 					
 					//Πλευρικές σκιάσεις
@@ -1678,9 +1727,11 @@ function preview_tables_kelyfos($type,$id){
 		
 		if($wall_e<=0){$class="class=\"danger\"";}else{$class="";}
 		
-		if($wall["type"]==0 OR $wall["type"]==3){//εάν ο τοίχος ανήκει στα αδιαφανή της ζώνης	
+		//Για ζώνη ($type==2) και τύπος τοίχου σε αέρα ($wall["type"]==0) ή διαχωριστική ($wall["type"]==3)
+		//Για ΜΘΧ ($type==5) και τύπος τοίχου σε αέρα ($wall["type"]==0) ή διαχωριστική ($wall["type"]==2)
+		if( ($type==2 AND ($wall["type"]==0 OR $wall["type"]==3)) OR ($type==5 AND ($wall["type"]==0 OR $wall["type"]==2)) ){//εάν ο τοίχος ανήκει στα αδιαφανή της ζώνης	
 			if($wall["type"]==0){$toixos_per="Τοίχος";}
-			if($wall["type"]==3){$toixos_per="Μεσοτοιχία";}
+			if( ($type==2 AND $wall["type"]==3) OR ($type==5 AND $wall["type"]==2) ){$toixos_per="Μεσοτοιχία";}
 			if($symptiksi==1){//1 γραμμή για τον τοίχο
 			//Εκτύπωση γραμμής τοίχου
 				$adiafani_row .= "<tr>";
@@ -1795,7 +1846,7 @@ function preview_tables_kelyfos($type,$id){
 		}//εάν ο τοίχος ανήκει στα αδιαφανή της ζώνης
 		
 		
-		if($wall["type"]==2){ //ο τοίχος ανήκει σε έδαφος
+		if( ($type==2 AND $wall["type"]==2) OR ($type==5 AND $wall["type"]==1) ){ //ο τοίχος ανήκει σε έδαφος
 			if($symptiksi==1){//1 γραμμή για τον τοίχο
 				//Εκτύπωση γραμμής τοίχου
 				$adiafani_row .= "<tr>";
@@ -1966,27 +2017,43 @@ function preview_tables_kelyfos($type,$id){
 		$orofi_e=$orofi["e"]-$window_sume;
 		$orofi_row="";
 		
-		//Γραμμή οροφής
-		$orofi_row .= "<tr>";
-		$orofi_row .= "<td>Οροφή</td>";
-		$orofi_row .= "<td>".$orofi["name"]."</td>";
-		$orofi_row .= "<td>".$orofi["g"]."</td>";
-		$orofi_row .= "<td>".$orofi["b"]."</td>";
-		$orofi_row .= "<td>".$orofi_e."</td>";
-		$orofi_row .= "<td>".$orofi_u."</td>";
-		$orofi_row .= "<td>".$orofi_ap."</td>";
-		$orofi_row .= "<td>".$orofi_ek."</td>";
-		$orofi_row .= "<td>".$orofi["fhor_h"]."</td>";
-		$orofi_row .= "<td>".$orofi["fhor_c"]."</td>";
-		$orofi_row .= "<td>".$orofi["fov_h"]."</td>";
-		$orofi_row .= "<td>".$orofi["fov_c"]."</td>";
-		$orofi_row .= "<td>".$orofi["ffin_h"]."</td>";
-		$orofi_row .= "<td>".$orofi["ffin_c"]."</td>";
-		$orofi_row .= "</tr>";
-			
 		if($orofi["type"]==0){ //Οροφή σε αέρα	
-			$txt_adiafani .= $orofi_row;
-			$aa++;
+			//Γραμμή οροφής
+			$orofi_row .= "<tr>";
+			$orofi_row .= "<td>Οροφή</td>";
+			$orofi_row .= "<td>".$orofi["name"]."</td>";
+			$orofi_row .= "<td>".$orofi["g"]."</td>";
+			$orofi_row .= "<td>".$orofi["b"]."</td>";
+			$orofi_row .= "<td>".$orofi_e."</td>";
+			$orofi_row .= "<td>".$orofi_u."</td>";
+			$orofi_row .= "<td>".$orofi_ap."</td>";
+			$orofi_row .= "<td>".$orofi_ek."</td>";
+			$orofi_row .= "<td>".$orofi["fhor_h"]."</td>";
+			$orofi_row .= "<td>".$orofi["fhor_c"]."</td>";
+			$orofi_row .= "<td>".$orofi["fov_h"]."</td>";
+			$orofi_row .= "<td>".$orofi["fov_c"]."</td>";
+			$orofi_row .= "<td>".$orofi["ffin_h"]."</td>";
+			$orofi_row .= "<td>".$orofi["ffin_c"]."</td>";
+			$orofi_row .= "</tr>";
+			
+		$txt_adiafani .= $orofi_row;
+		$aa++;
+		}
+		
+		
+		if($orofi["type"]==2){ //Οροφή σε έδαφος	
+			$orofi_row .= "<tr>";
+			$orofi_row .= "<td>Δάπεδο - Οροφή</td>";
+			$orofi_row .= "<td>".$orofi["name"]."</td>";
+			$orofi_row .= "<td>".$orofi_e."</td>";
+			$orofi_row .= "<td>".$orofi_u."</td>";
+			$orofi_row .= "<td>".$orofi["z"]."</td>";
+			$orofi_row .= "<td></td>";
+			$orofi_row .= "<td>".$orofi["p"]."</td>";
+			$orofi_row .= "</tr>";
+		
+		$txt_edafos .= $orofi_row;
+		$aa++;
 		}//Οροφή σε αέρα
 	}
 	
@@ -2004,7 +2071,7 @@ function preview_tables_kelyfos($type,$id){
 		if($dapedo["type"]==0){ //Δάπεδο σε έδαφος
 			//Εκτύπωση δαπέδου στις γραμμές επαφής με έδαφος
 			$dapedo_row .= "<tr>";
-			$dapedo_row .= "<td>Δάπεδο</td>";
+			$dapedo_row .= "<td>Δάπεδο-Οροφή</td>";
 			$dapedo_row .= "<td>".$dapedo["name"]."</td>";
 			$dapedo_row .= "<td>".$dapedo["e"]."</td>";
 			$dapedo_row .= "<td>".$dapedo_u."</td>";

@@ -72,7 +72,45 @@ confirm_admin();
 		
 	</div>
 	
+	<script>
+	function setUpToolTipHelpers() {
+		$(".tip-top").tooltip({
+			placement: 'top',
+			html: true,
+			animation: true
+		});
+		$(".tip-right").tooltip({
+			placement: 'right',
+			html: true,
+			animation: true
+		});
+		$(".tip-bottom").tooltip({
+			placement: 'bottom',
+			html: true,
+			animation: true
+		});
+		$(".tip-left").tooltip({
+			placement: 'left',
+			html: true,
+			animation: true
+		});
+		$('.box-widget').boxWidget();
+	}
+	</script>
+	
+	
 	<div class="col-md-10">
+		<div class="nav-tabs-custom">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tabs-1" data-toggle="tab"><i class="fa fa-users"></i> Χρήστες</a></li>
+				<li><a href="#tabs-2" data-toggle="tab"><i class="fa fa-life-ring"></i> Κέντρο υποστήριξης</a></li>
+			</ul>
+		
+		
+		<!-- ########################## XML TEE KENAK ################################# -->
+		<div class="tab-content">
+			<div class="tab-pane active" id="tabs-1">
+			<br/>
 		
 		<div id="allusers"></div>
 		<div id="allusers_info"></div>
@@ -379,6 +417,7 @@ confirm_admin();
 <!-- ######################### Κρυφό div για εμφάνιση ######################### -->
 
 <script>
+get_usertable();
 //Εμφάνιση του πίνακα χρηστών
 	function get_usertable(){
 		var link = "includes/functions_admin.php?get_allusers=1";
@@ -542,9 +581,144 @@ confirm_admin();
 			get_usertable();
 		}}
 	}
-	
-get_usertable();	
+		
 </script>
+	
+	</div><!--tabs-1-->
+	
+	
+	<div class="tab-pane" id="tabs-2">
+		<br/>
+		
+		<?php
+			$database = new medoo(DB_NAME);
+			$tb_tickets= "user_tickets";
+			$where_open=array("state"=>1);
+			$where_close=array("state"=>2);
+			$count_open = $database->count($tb_tickets,$where_open);
+			$count_close = $database->count($tb_tickets,$where_close);
+			$count_total = $count_open + $count_close;
+		?>
+		
+		<a class="btn btn-app" onclick="get_admin_tickets(0);">
+			<span class="badge bg-teal" id="admintickets_total"><?php echo $count_total;?></span>
+			<i class="fa fa-database"></i> Όλα
+		</a>
+		
+		<a class="btn btn-app" onclick="get_admin_tickets(1);">
+			<span class="badge bg-red" id="admintickets_open"><?php echo $count_open;?></span>
+			<i class="fa fa-envelope-open-o"></i> Ανοικτά
+		</a>
+		
+		<a class="btn btn-app" onclick="get_admin_tickets(2);">
+			<span class="badge bg-green" id="admintickets_close"><?php echo $count_close;?></span>
+			<i class="fa fa-envelope-o"></i> Κλειστά
+		</a>
+		
+		<div id="admin_tickets"></div>
+		<div id="admin_tickets_info"></div>
+		
+<script>
+	get_admin_tickets();
+	//Εμφάνιση του πίνακα χρηστών
+	function get_admin_tickets(state){
+		state = typeof state !== 'undefined' ? state : 0;
+		var link = "includes/functions_admin.php?get_admin_tickets=1&state="+state;
+		
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET",link ,true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			
+			document.getElementById('admin_tickets').innerHTML = xmlhttp.responseText;
+			document.getElementById('wait').style.display="none";
+			setUpToolTipHelpers();
+			admintickets_stats();
+		}}	
+	}
+	
+	//Στατιστικά
+	function admintickets_stats(){
+		var link = "includes/functions_admin.php?admintickets_stats=1";
+		
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET",link ,true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			var stats=JSON.parse(xmlhttp.responseText);
+			document.getElementById("admintickets_total").innerHTML= stats[0];
+			document.getElementById("admintickets_open").innerHTML= stats[1];
+			document.getElementById("admintickets_close").innerHTML= stats[2];
+			document.getElementById('wait').style.display="none";
+			setUpToolTipHelpers();
+		}}	
+	}
+
+	//Κλείσιμο ticket
+	function admintickets_toggle(id){
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET","includes/functions_admin.php?admintickets_toggle=1&id="+id ,true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById("admin_tickets_info").innerHTML=xmlhttp.responseText;
+			document.getElementById('wait').style.display="none";
+			get_admin_tickets(0);
+			setUpToolTipHelpers();
+		}}
+	}
+	
+	//Σχολιασμός ticket
+	function admintickets_comment(id){
+		var text = document.getElementById("admintickets_comment"+id).value;
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET","includes/functions_admin.php?admintickets_comment=1&id="+id+"&text="+text ,true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById("admin_tickets_info").innerHTML=xmlhttp.responseText;
+			document.getElementById('wait').style.display="none";
+			get_admin_tickets(0);
+			setUpToolTipHelpers();
+		}}
+	}
+	
+	//Διαγραφή σχολιασμού ticket
+	function admintickets_delcomment(id){
+		document.getElementById('wait').style.display="inline";
+		//AJAX call
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET","includes/functions_admin.php?admintickets_delcomment=1&id="+id ,true);
+		xmlhttp.send();
+		xmlhttp.onreadystatechange=function()  {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById("admin_tickets_info").innerHTML=xmlhttp.responseText;
+			document.getElementById('wait').style.display="none";
+			get_admin_tickets(0);
+			setUpToolTipHelpers();
+		}}
+	}
+		
+</script>		
+		
+		
+		
+	</div><!--tabs-2-->
+	
+	
+			
+	</div><!--tab content-->
+	</div><!--tabs-->
 	
 	</div><!-- col-md-10 -->
 </div>

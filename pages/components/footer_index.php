@@ -56,7 +56,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 <script type="text/javascript" src="javascripts/jquery.knob.js"></script>
 
 <script type="text/javascript" src="javascripts/main.js" /></script>
-<script type="text/javascript" src="javascripts/datetime.js" /></script>
 
 <!--full calendar-->
 <script type="text/javascript" src="bower_components/moment/moment.js" /></script>

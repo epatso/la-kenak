@@ -46,6 +46,84 @@ if (isset($_GET['teyxos_img_wall'])){
 
 require("include_check.php");
 
+//Δημιουργία πίνακα Umax για ΚΕΦ4
+function teyxos_kef4_umax(){
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+	$tb_meletes = "user_meletes";
+	$select_meleti = $database->select($tb_meletes, $col, $where_meleti);
+	$meleti_type=$select_meleti[0]["type"];
+	
+	if($meleti_type>3){
+		$tb_umax="vivliothiki_umax_new";
+	}else{
+		$tb_umax="vivliothiki_umax_old";
+	}
+		
+	$select_umax = $database->select($tb_umax, $col);
+	
+	$txt = "";
+	$txt .= "<table>
+	<tr><td style=\"width: 30%; background-color: #eaeaea; text-align: center;\">Δομικό στοιχείο</td>
+	<td style=\"width: 10%; background-color: #eaeaea; text-align: center;\">Σύμβολο</td>
+	<td style=\"width: 15%; background-color: #eaeaea; text-align: center;\">Ζώνη Α</td>
+	<td style=\"width: 15%; background-color: #eaeaea; text-align: center;\">Ζώνη Β</td>
+	<td style=\"width: 15%; background-color: #eaeaea; text-align: center;\">Ζώνη Γ</td>
+	<td style=\"width: 15%; background-color: #eaeaea; text-align: center;\">Ζώνη Δ</td>
+	</tr>";
+	foreach($select_umax as $umax){
+		$txt .= "<tr><td style=\"text-align: center;\">".$umax["stoixeio"]."</td>
+	<td style=\"text-align: center;\">".$umax["symbol"]."</td>
+	<td style=\"text-align: center;\">".$umax["a"]."</td>
+	<td style=\"text-align: center;\">".$umax["b"]."</td>
+	<td style=\"text-align: center;\">".$umax["g"]."</td>
+	<td style=\"text-align: center;\">".$umax["d"]."</td>
+	</tr>";
+	}
+	$txt .= "</table>";
+	
+	return $txt;
+}
+
+//Δημιουργία πίνακα A/V για ΚΕΦ4
+function teyxos_kef4_ummax(){
+	$database = new medoo(DB_NAME);
+	$col = "*";
+	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+	$tb_meletes = "user_meletes";
+	$select_meleti = $database->select($tb_meletes, $col, $where_meleti);
+	$meleti_type=$select_meleti[0]["type"];
+	
+	if($meleti_type>3){
+		$tb_ummax="vivliothiki_ummax_new";
+	}else{
+		$tb_ummax="vivliothiki_ummax_old";
+	}
+		
+	$select_ummax = $database->select($tb_ummax, $col);
+	
+	$txt = "";
+	$txt .= "<table>
+	<tr><td style=\"width: 20%; background-color: #eaeaea; text-align: center;\">A/V</td>
+	<td style=\"width: 20%; background-color: #eaeaea; text-align: center;\">Ζώνη Α</td>
+	<td style=\"width: 20%; background-color: #eaeaea; text-align: center;\">Ζώνη Β</td>
+	<td style=\"width: 20%; background-color: #eaeaea; text-align: center;\">Ζώνη Γ</td>
+	<td style=\"width: 20%; background-color: #eaeaea; text-align: center;\">Ζώνη Δ</td>
+	</tr>";
+	foreach($select_ummax as $ummax){
+		$txt .= "<tr><td style=\"text-align: center;\">".$ummax["a_pros_v"]."</td>
+	<td style=\"text-align: center;\">".$ummax["a"]."</td>
+	<td style=\"text-align: center;\">".$ummax["b"]."</td>
+	<td style=\"text-align: center;\">".$ummax["g"]."</td>
+	<td style=\"text-align: center;\">".$ummax["d"]."</td>
+	</tr>";
+	}
+	$txt .= "</table>";
+	
+	return $txt;
+}
+
 
 //Δημιουργία κειμένου για ΚΕΦ5 (Συστήματα που χρησιμοποιούνται στο κτίριο: Θέρμανση)
 function teyxos_kef5_therm(){
@@ -332,7 +410,7 @@ function teyxos_kef5_znx(){
 		
 		$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
 		$climatezone = $database->select("user_meletes","zone",$where_meleti);
-		$climatezone=$select_place[0];
+		$climatezone=$climatezone[0];
 		if($climatezone==0){$dt=$t_znx-12.8;}
 		if($climatezone==1){$dt=$t_znx-10.1;}
 		if($climatezone==2){$dt=$t_znx-6.5;}
@@ -373,30 +451,11 @@ function teyxos_kef5_znx(){
 	return array($znx_type,$znx_pigi,$znx_znxm3m2,$znx_vd,$znx_vstore,$znx_qd,$znx_boiler,$znx_pnkw,$znx_pnkw13,$znx_pnkcal);
 }
 
+//ΣΚΑΡΙΦΗΜΑ - ΤΟΜΗ ΣΤΡΩΣΕΩΝ
 //Δημιουργία εικόνας από υπολογισμό u
 function teyxos_img_u($id){
 	
 $url="../images/hatch/";
-$ha =array(
-	0=>$url."blank.png",
-	1=>$url."bricks.png",
-	2=>$url."sand.png",
-	3=>$url."insul.png",
-	4=>$url."concr.png",
-	5=>$url."metal.png",
-	6=>$url."wood.png",
-	7=>$url."stone.png",
-	8=>$url."tile.png",
-	9=>$url."keramidia.png",
-	10=>$url."concrete.png",
-	11=>$url."extruded_polystyrene.png",
-	12=>$url."petrovamvakas.png",
-	13=>$url."polyourethani.png",
-	14=>$url."granitis.png",
-	15=>$url."granitis1.png",
-	16=>$url."wood1.png",
-	17=>$url."dirt.png"
-	);
 
 	$database = new medoo(DB_NAME);
 	$table = "user_adiafani";
@@ -404,19 +463,25 @@ $ha =array(
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$id));
 	$data = $database->select($table, $col, $where );
 	$data=$data[0];
+	$ria=$data["rira"];
 	
 //EIKONA
 //Array τιμών
 $values = array();
 // Θέσε το πλάτος και μήκος της εικόνας σε pixels
 $width = 800;
-$height = 300; 
+if($ria<=3){//τοιχοποιία
+	$height = 300;
+}else{
+	$height = 400;
+}
 $im = ImageCreateTrueColor($width, $height); 
 if (function_exists('imageantialias')){ImageAntiAlias($im, true);}
 
 //Χρώματα
 $white = ImageColorAllocate($im, 255, 255, 255); 
 $black = ImageColorAllocate($im, 0, 0, 0);
+$red = ImageColorAllocate($im, 255, 0, 0);
 $blue = ImageColorAllocate($im, 0, 0, 255);
 $grey = imagecolorallocate($im, 62, 62, 62);
 $magenda = imagecolorallocate($im, 174, 49, 194);
@@ -424,17 +489,19 @@ $roz = imagecolorallocate($im, 103, 16, 81);
 $font = './verdana.ttf';
 ImageFillToBorder($im, 0, 0, $black, $black);
 imagefilledrectangle ($im,1,1,$width-2,$height-2,$white);
-
-$l=50;
-$c=30;
-$tl=60;
-$linev = @imagecreatefromjpeg('../images/domika/lineV.jpg');
 	
 	$category=explode("|",$data["category"]);
 	$subcategory=explode("|",$data["subcategory"]);
 	$strwsi=explode("|",$data["strwsi"]);
 	$paxos=explode("|",$data["paxos"]);
-	$rira=$data["rira"];
+	//$rira=$data["rira"];
+	
+if($ria<=3){//τοιχοποιία
+
+$l=50;
+$c=30;
+$tl=60;
+$linev = @imagecreatefromjpeg('../images/domika/lineV.jpg');
 	
 	for($i=1;$i<=10;$i++){
 		$tl += $yliko_paxos*500;
@@ -442,10 +509,10 @@ $linev = @imagecreatefromjpeg('../images/domika/lineV.jpg');
 		
 		$yliko_paxos=$paxos[$i-1];
 		
-		$l += $yliko_paxos*500;
+		$l +=$yliko_paxos*500;
 		
-		$hatch = $ha[$category[$i-1]];
-		$imagebg = imageCreateFromPNG ($hatch);
+		//$hatch = $ha[$category[$i-1]];
+		$imagebg = imageCreateFromPNG ($url."bycat/cat".$category[$i-1]."sub".$subcategory[$i-1].".png");
 		imageSetTile ($im, $imagebg);
 		$values[0]=$l-$yliko_paxos*500;
 		$values[1]=250;
@@ -462,31 +529,43 @@ $linev = @imagecreatefromjpeg('../images/domika/lineV.jpg');
 		}
 	}
 	
+	$total_l=0;
+	for($i=1;$i<=10;$i++){
+		if($paxos[$i-1]!=""){
+			$total_l += $paxos[$i-1]*500;
+		}
+	}
+	
 	$l=50;
+	$tl=50;
+	$c = 0;
 	imagecopyresized($im, $linev, $l, 50, 0, 0, 1, 200,1,200);
 	
 	for($i=1;$i<=10;$i++){
 		if($paxos[$i-1]!=""){
+			$yliko_paxos=$paxos[$i-1];
 			$id_yliko=$strwsi[$i-1];
 			if($category[$i-1]>0 AND $category[$i-1]<9 ){
 				$tb_ylika = "vivliothiki_domika";
 				$where_yliko = array(
 					"AND"=>array(
 						"category"=>$category[$i-1],
-						"subcategory"=>$subcategory[$i-1]
+						"subcategory"=>$subcategory[$i-1],
+						"id"=>$id_yliko
 					)	
 				);
 			}else{
 				$tb_ylika = "user_domika";
 				$where_yliko = array(
 						"user_id"=>$_SESSION['user_id'],
+						"id"=>$id_yliko
 				);
 			}
 		$yliko = $database->select($tb_ylika,$col,$where_yliko);
 		
-		$yliko_name=$yliko[$id_yliko-1]["material"];
-		$yliko_l=$yliko[$id_yliko-1]["l"];
-		$yliko_paxos=$paxos[$i-1];
+		$yliko_name=$yliko[0]["material"];
+		$yliko_l=$yliko[0]["l"];
+		//$yliko_paxos=$paxos[$i-1];
 		
 		$l += $yliko_paxos*500;
 		$tl += $yliko_paxos*250;
@@ -496,14 +575,105 @@ $linev = @imagecreatefromjpeg('../images/domika/lineV.jpg');
 		imagecopyresized($im, $linev, $l, 50, 0, 0, 1, 200,1,200);
 		ImageDestroy($src);
 		$text=$i.". ".$yliko_name.", d=".number_format($yliko_paxos*100,1,".",",")."cm". ", λ=".number_format($yliko_l,3,".",",");
-		imagefttext($im, 10, 0, $tl, $c, $black, $font, $text);
+		imagefttext($im, 10, 0, $l, $c, $red, $font, $text);
 		}
 	}
 	imagefttext($im, 12, 90, 30, 250, $black, $font, "ΜΕΣΑ");
-	if ($rira==1) $x="ΕΞΩ";
-	if ($rira==2) $x="ΜΘΧ";
-	if ($rira==3) $x="ΕΔΑΦΟΣ";
+	if ($ria==1) {$x="ΕΞΩ";}
+	if ($ria==2) {$x="ΜΘΧ";}
+	if ($ria==3) {$x="ΕΔΑΦΟΣ";}
 	imagefttext($im, 12, 90, $l+30, 250, $black, $font, $x);
+	
+}//τοιχοποιία
+
+
+
+if($ria>3){//Δάπεδα - Οροφές
+
+$l=$height-20;
+$tl=60;
+$linev = @imagecreatefromjpeg('../images/domika/lineH.jpg');
+for ($i = 1; $i <= 10; $i++) {
+	$tl += $paxos[$i-1]*500;
+}
+
+for ($i = 10; $i >= 1; $i--) {
+	if ($paxos[$i-1]>0){
+		
+		$yliko_paxos=$paxos[$i-1];
+		
+		$l -= $yliko_paxos*500;
+		
+		$id_yliko=$strwsi[$i-1];
+			if($category[$i-1]>0 AND $category[$i-1]<9 ){
+				$tb_ylika = "vivliothiki_domika";
+				$where_yliko = array(
+					"AND"=>array(
+						"category"=>$category[$i-1],
+						"subcategory"=>$subcategory[$i-1],
+						"id"=>$id_yliko
+					)	
+				);
+			}else{
+				$tb_ylika = "user_domika";
+				$where_yliko = array(
+						"user_id"=>$_SESSION['user_id'],
+						"id"=>$id_yliko
+				);
+			}
+		$yliko = $database->select($tb_ylika,$col,$where_yliko);
+		
+		$yliko_name=$yliko[0]["material"];
+		$yliko_l=$yliko[0]["l"];
+		//$yliko_paxos=$paxos[$i-1];
+		
+		$imagebg = imageCreateFromPNG ($url."bycat/cat".$category[$i-1]."sub".$subcategory[$i-1].".png");
+		imageSetTile ($im, $imagebg);
+		$values[0]=30;
+		$values[1]=$l;
+		$values[2]=230;
+		$values[3]=$l;
+		$values[4]=230;
+		$values[5]=$l+$yliko_paxos*500;
+		$values[6]=30;
+		$values[7]=$l+$yliko_paxos*500;
+		imagefilledpolygon($im, $values, 4, IMG_COLOR_TILED);
+		imagepolygon($im, $values, 4, $black);
+		imagedestroy ($imagebg);
+	}
+}
+
+$l=$height-20;
+$c=250;
+imagecopyresized($im, $linev, 30,$l, 0, 0, 200,1,200,1);
+for ($i = 10; $i >= 1; $i--) {
+	if ($paxos[$i-1]>0){
+		$yliko_paxos=$paxos[$i-1];
+		$l -= $yliko_paxos*500;
+		$tl -= $yliko_paxos*250;
+		$c -= 30;
+		$src = @imagecreatefrompng('../images/domika/pointerV.png');
+		imagecopyresized($im, $src, $c, $l+$yliko_paxos*250-147, 0, 0, 200, 150,200,150);
+		imagecopyresized($im, $linev, 30, $l, 0, 0,  200,1,200,1);
+		ImageDestroy($src);
+		$text=$i.". ".$yliko_name.", d=".number_format($yliko_paxos*100,1,".",",")."cm". ", λ=".number_format($yliko_l,3,".",",");
+		imagefttext($im, 10, 0, $c+100, $l+$yliko_paxos*250-150, $red, $font, $text);
+	}
+}
+
+$l1=$l-10;
+$l2=$l1;
+if ($ria==4 || $ria==5)$l1=$height-5;
+if ($ria>5)$l2=$height-5;
+imagefttext($im, 12, 0, 30, $l1, $black, $font, "ΜΕΣΑ");
+if ($ria==4) $x="ΕΞΩ";
+//if ($ria==4 && $roof>0) $x="ΚΕΡΑΜΟΣΚΕΠΗ";
+if ($ria==5 || $ria==7) $x="ΜΘΧ";
+if ($ria==8) $x="ΕΔΑΦΟΣ";
+if ($ria==6) $x="ΠΥΛΩΤΗ";
+imagefttext($im, 12, 0, 30, $l2, $black, $font, $x);
+
+}	
 	
 $path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$_SESSION["meleti_id"]."/adiafaniu_user".$_SESSION['user_id']."_uid".$id.".png";	
 	$create=imagepng ($im,$path);
@@ -516,6 +686,7 @@ $path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$_S
 }
 
 
+//ΣΚΑΡΙΦΗΜΑ - ΟΨΗ
 //Δημιουργία εικόνας για τοίχο
 function teyxos_img_wall($id){
 	//confirm_logged_in();
@@ -1047,7 +1218,8 @@ function teyxos_daporo(){
 	$tb_zone_orofes = "meletes_zone_orofes";
 	$orofes_type = array(
 			0=>"Σε αέρα",
-			1=>"Σε ΜΘΧ/Ηλιακό χώρο (διαχ. επιφάνεια)"
+			1=>"Σε ΜΘΧ/Ηλιακό χώρο (διαχ. επιφάνεια)",
+			2=>"Σε έδαφος"
 		);
 	$tb_zone_windows = "meletes_zone_diafani";
 	$f2 = "";	
@@ -1108,9 +1280,14 @@ function teyxos_daporo(){
 				<td>".$dapeda_u."</td>
 				<td>".round($dapeda_ub,3)."</td>
 				<td>".round($dapeda_ua,3)."</td>
-				<td>".$dapeda_ap."-".$dapeda_ek."</td>
-				<td>".$dapeda["z"]."-".$dapeda["p"]."</td>
-				<td>".$dapeda["fhor_h"]."-".$dapeda["fhor_c"]."</td>
+				<td>".$dapeda_ap."-".$dapeda_ek."</td>";
+				
+				if($dapeda["type"]==0){
+					$f2 .= "<td>".$dapeda["z"]."-".$dapeda["p"]."</td>";
+				}else{
+					$f2 .= "<td></td>";
+				}
+				$f2 .= "<td>".$dapeda["fhor_h"]."-".$dapeda["fhor_c"]."</td>
 				<td>".$dapeda["fov_h"]."-".$dapeda["fov_c"]."</td>
 				<td>".$dapeda["ffin_h"]."-".$dapeda["ffin_c"]."</td>
 				</tr>";
@@ -1134,12 +1311,6 @@ function teyxos_daporo(){
 				$orofes_ap=$orofes_ap[0];
 				$orofes_ek = $database->select("vivliothiki_adiafani_e","e",array("id"=>$orofes['ek']) );
 				$orofes_ek=$orofes_ek[0];
-				
-				if($orofes["type"]==1){
-					$b=0.5;
-				}else{
-					$b=1;
-				}
 				
 			$window_sume=0;
 			//Παράθυρα οροφών
@@ -1168,7 +1339,7 @@ function teyxos_daporo(){
 				<td>".round($window_ub,3)."</td>
 				<td>".round($window_ua,3)."</td>
 				<td>".$orofes_ap."-".$orofes_ek."-".$window_gw."</td>
-				<td></td>
+				<td>".$orofes["z"]."-".$orofes["p"]."</td>
 				<td>".$orofes["fhor_h"]."-".$orofes["fhor_c"]."</td>
 				<td>".$orofes["fov_h"]."-".$orofes["fov_c"]."</td>
 				<td>".$orofes["ffin_h"]."-".$orofes["ffin_c"]."</td>
@@ -1179,7 +1350,19 @@ function teyxos_daporo(){
 				$roof_e=0;
 				$roof_e=$orofes["e"]-$window_sume;
 				
+				if($orofes["type"]==1){
+					$b=0.5;
+				}else{
+					$b=1;
+				}
 				$orofes_ub=$orofes_u*$b;
+				
+				if($orofes["type"]==2){
+					$z=$orofes["z"];
+					$har=2*$orofes["e"]/$orofes["p"];
+					$orofes_ub=isodynamos_dapedoy($orofes_u, $z, $har);
+				}
+				
 				$orofes_ua=$orofes_ub*$roof_e;
 				$zone_orizontia_ua+=$orofes_ua;
 				
@@ -1189,9 +1372,15 @@ function teyxos_daporo(){
 				<td>".$orofes_u."</td>
 				<td>".round($orofes_ub,3)."</td>
 				<td>".round($orofes_ua,3)."</td>
-				<td>".$orofes_ap."-".$orofes_ek."</td>
-				<td></td>
-				<td>".$orofes["fhor_h"]."-".$orofes["fhor_c"]."</td>
+				<td>".$orofes_ap."-".$orofes_ek."</td>";
+				
+				if($orofes["type"]==2){
+					$f2 .= "<td>".$orofes["z"]."-".$orofes["p"]."</td>";
+				}else{
+					$f2 .= "<td></td>";
+				}
+				
+				$f2 .= "<td>".$orofes["fhor_h"]."-".$orofes["fhor_c"]."</td>
 				<td>".$orofes["fov_h"]."-".$orofes["fov_c"]."</td>
 				<td>".$orofes["ffin_h"]."-".$orofes["ffin_c"]."</td>
 				</tr>";
@@ -1224,42 +1413,76 @@ function teyxos_zones(){
 	
 	//Δημιουργία πίνακα θερμικών ζωνών
 	$array_thermo = array(
-			80=>"Πολύ Ελαφριά κατασκευή (80 KJ/m2.K)",
-			110=>"Ελαφριά κατασκευή (110 KJ/m2.K)",
-			165=>"Μέτρια κατασκευή (165 KJ/m2.K)",
-			260=>"Βαριά κατασκευή (260 KJ/m2.K)",
-			370=>"Πολύ βαριά κατασκευή (370 KJ/m2.K)"
-		);
+		80=>"Κατηγορία 1 (80 KJ/m2.K)",
+		110=>"Κατηγορία 2 (110 KJ/m2.K)",
+		165=>"Κατηγορία 3 (165 KJ/m2.K)",
+		230=>"Κατηγορία 4 (230 KJ/m2.K)",
+		280=>"Κατηγορία 5 (280 KJ/m2.K)",
+		300=>"Κατηγορία 6 (300 KJ/m2.K)"
+	);
 	$array_auto = array(
 		0=>"Τύπος Α",
 		1=>"Τύπος Β",
 		2=>"Τύπος Γ",
 		3=>"Τύπος Δ"
 	);
+	$array_hotel = array(
+		0=>"ΟΧΙ",
+		1=>"LUX",
+		2=>"Α ή Β",
+		3=>"Γ"
+	);
+	$array_hospital = array(
+		0=>"ΟΧΙ",
+		1=>"Νοσοκομείο <500 κλίνες",
+		2=>"Νοσοκομείο >500 κλίνες",
+		3=>"Κλινική"
+	);
 		
 	$f1 = "<table>
-	<tr><td style=\"text-align:center; background-color: #CCCCCC;\" colspan=\"8\">Θερμικές ζώνες κτιρίου</td></tr>
-	<tr><td style=\"width: 20%; background-color: #eaeaea;\">Όνομα</td>
-	<td style=\"width: 20%; background-color: #eaeaea;\">Χρήση</td>
-	<td style=\"width: 10%; background-color: #eaeaea;\">Κλίνες*</td>
+	<tr><td style=\"text-align:center; background-color: #CCCCCC;\" colspan=\"9\">Θερμικές ζώνες κτιρίου</td></tr>
+	<tr><td style=\"width: 15%; background-color: #eaeaea;\">Όνομα</td>
+	<td style=\"width: 15%; background-color: #eaeaea;\">Χρήση</td>
+	<td style=\"width: 10%; background-color: #eaeaea;\">ΖΝΧ*</td>
 	<td style=\"width: 10%; background-color: #eaeaea;\">Αν. θέρμο.</td>
 	<td style=\"width: 10%; background-color: #eaeaea;\">Αυτοματισμοί</td>
 	<td style=\"width: 10%; background-color: #eaeaea;\">Καμινάδες</td>
 	<td style=\"width: 10%; background-color: #eaeaea;\">Θυρίδες</td>
+	<td style=\"width: 10%; background-color: #eaeaea;\">Εξώθυρες</td>
 	<td style=\"width: 10%; background-color: #eaeaea;\">Ανεμιστήρες</td></tr>";
 	foreach($select_zones as $zone){
 		$f1 .= "<tr><td>".$zone["name"]."</td>";
-		$zone_xrisi = $database->select("vivliothiki_conditions", "xrisi", array("id"=>$zone["xrisi"]) );
-		$f1 .= "<td>".$zone_xrisi[0]."</td>";
-		$f1 .= "<td>".$zone["klines"]."</td>".
-		"<td>".$array_thermo[$zone["thermo"]]."</td>".
-		"<td>".$array_auto[$zone["auto"]]."</td>".
+		$zone_xrisi = $database->select("vivliothiki_conditions_zone", "*", array("id"=>$zone["xrisi"]) );
+		$f1 .= "<td>".$zone_xrisi[0]["name"]."</td>";
+		
+			if($zone_xrisi[0]["has_znx"]!=0){
+				if($zone_xrisi[0]["znx_calc_type"]==0){//Με βάση δομημένη επιφάνεια
+					$znx_txt="Από Ε(m<sup>2</sup>)";
+				}
+				if($zone_xrisi[0]["znx_calc_type"]==1){//Με βάση κλίνες
+					$znx_txt="Κλίνες: ".$zone["klines"];
+				}
+				if($zone_xrisi[0]["znx_calc_type"]==2){//Με βάση κλίνες και τύπο ξενοδοχείου
+					$znx_txt="Κλίνες: ".$zone["klines"]." , Ξενοδοχείο κατηγορίας: ".$array_hotel[$zone["hotel"]];
+				}
+				if($zone_xrisi[0]["znx_calc_type"]==3){//Με βάση κλίνες και τύπο κλινικής
+					$znx_txt="Κλίνες: ".$zone["klines"]." , Τύπος νοσοκομείου: ".$array_hospital[$zone["hospital"]];
+				}
+			}else{
+				$znx_txt="Όχι";
+			}
+		$f1 .= "<td>".$znx_txt."</td>";
+		
+		$f1 .= "<td>".$array_thermo[$zone["thermo"]]."</td>".
+		"<td>Θέρμανσης:".$array_auto[$zone["auto_heat"]]."<br/>Ψύξης:".$array_auto[$zone["auto_cold"]]."</td>".
 		"<td>".$zone["kaminades"]."</td>".
 		"<td>".$zone["thyrides"]."</td>".
+		"<td>".$zone["ekswthyres"]."</td>".
 		"<td>".$zone["anemistires"]."</td></tr>";
 	}
 	$f1 .= "</table>";
-	$f1 .= "<br/>*Εάν απαιτούνται βάση της χρήσης.<br/>";
+	$f1 .= "<br/>*Εάν απαιτούνται βάση της χρήσης. Δίνονται οι κλίνες για χρήσεις που απαιτούν υπολογισμό με κλίνες, τα τ.μ. εάν ο υπολογισμός γίνεται με το εμβαδό ή 
+	η κατηγορία ξενοδοχείου ή νοσοκομείου. <br/>";
 	
 	return $f1;
 }
@@ -1482,7 +1705,7 @@ function teyxos_thermo(){
 				$data_yl = $data_u[0]["y"]*$thermo["n"]*$thermo["h"];
 				$f3 .= "<tr>";
 				$f3 .= "<td><img src=\"".APPLICATION_FOLDER."images/thermo/".$thermo_dbs[$thermo["type"]]."/".$thermo_dbs[$thermo["type"]].$thermo["u"].".jpg\"></td>";
-				$f3 .= "<td>".$thermo_names[$thermo["type"]]."</td>";
+				$f3 .= "<td>".$array_type[$thermo["type"]]."</td>";
 				$f3 .= "<td>".$data_u[0]["name"]."</td>";
 				$f3 .= "<td>".$thermo["n"]."</td>";
 				$f3 .= "<td>".$thermo["h"]."</td>";
@@ -1501,7 +1724,7 @@ function teyxos_thermo(){
 	$f3 .= "Τύποι θερμογεφυρών:";
 	$f3 .= "<ul>";
 	for($i=0; $i<=11; $i++){
-		$f3 .= "<li>".$thermo_names[$i]." : ".$thermo_fullnames[$i]."</li>";
+		$f3 .= "<li>".$array_type[$i]." : ".$thermo_fullnames[$i]."</li>";
 	}
 	$f3 .= "</ul>";
 	
@@ -1527,11 +1750,23 @@ function teyxos_imgzone(){
 	
 //Εικόνες κλιματικής ζώνης και τοπογραφικό
 $image_location = 'http://staticmap.openstreetmap.de/staticmap.php?center='.$meleti_address_x.','.$meleti_address_y.'&zoom=14&size=512x512&maptype=mapnik';
+$image_location .= '&markers='.$meleti_address_x.','.$meleti_address_y.',lightblue1';
 $image_dest = 'file_upload/server/php/files/user_'.$_SESSION['user_id'].'/meleti_'.$_SESSION['meleti_id'].'/location_osm.jpg';
+
+$folder_dest='file_upload/server/php/files/user_'.$_SESSION['user_id'].'/meleti_'.$_SESSION['meleti_id'].'/';
+/*
+if (!is_dir($folder_dest)) {//Κλήση από ajax
+	$image_dest=$image_dest;
+}else{//Κλήση απευθείας από root
+	$image_dest="includes/".$image_dest;
+}
+*/
 if(file_exists($image_dest)){
 	
 }else{
-	copy($image_location , $image_dest );
+	if(!is_dir($folder_dest)){
+		copy($image_location , $image_dest );
+	}
 }
 
 	$imgzone = "Θέση κτιρίου:<br/>";
@@ -1552,10 +1787,11 @@ if(file_exists($image_dest)){
 	$climate_tables = array(31,32,33,34,35,36,37,38,39,310,311,41,42,43,61);
 		foreach($climate_tables as $table){
 			$data_id = $database->select("vivliothiki_climate".$table,"id",array("place"=>$place));
-			$climate_id = $data_id[0];
-				if(isset($climate_id)){
-				$img = create_image_climate($table,$climate_id);
-				$imgzone .= "<img src=\"".APPLICATION_FOLDER."images/climate/".$table."/climate_table".$table."_id".$climate_id.".png\"><br/>";
+			
+				if(isset($data_id[0])){
+					$climate_id = $data_id[0];
+					$img = create_image_climate($table,$climate_id);
+					$imgzone .= "<img src=\"".APPLICATION_FOLDER."images/climate/".$table."/climate_table".$table."_id".$climate_id.".png\"><br/>";
 				}
 		}
 	$imgzone .= "<img src=\"".APPLICATION_FOLDER."images/climate/solar/id".$place_id."_1.png\"><br/>";
@@ -1633,6 +1869,7 @@ function teyxos_getdiafaniuids(){
 
 
 //Εκτύπωση υπολογισμού αδιαφανών με βάση το $id του πίνακα user_adiafani
+//Χρειάζεται διόρθωση στο Ru ώστε να πηγαίνει με το id και όχι με την τιμή (η ίδια αλλαγή και στο menu_calc_adiafani και στη βάση)
 function teyxos_adiafaniu($id){
 	$database = new medoo(DB_NAME);
 	$col="*";
@@ -1643,106 +1880,7 @@ function teyxos_adiafaniu($id){
 	$adiafani_data=$adiafani_data[0];
 	
 	$analysiu = "";
-	
-$array_umax=array(
-	0=>"0.60|1.50|1.50|0.50|0.50|0.50|1.20|1.20",
-	1=>"0.50|1.00|1.00|0.45|0.45|0.45|0.90|0.90",
-	2=>"0.45|0.80|0.80|0.40|0.40|0.40|0.75|0.75",
-	3=>"0.40|0.70|0.70|0.35|0.35|0.35|0.70|0.70"
-);
-$array_rira = array(
-	1=>array(
-		"ri"=>0.13,
-		"ra"=>0.04,
-		"desc"=>"Εξωτερικοί τοίχοι και παράθυρα (προς εξωτ. αέρα)"
-	),
-	2=>array(
-		"ri"=>0.13,
-		"ra"=>0.13,
-		"desc"=>"Τοίχος που συνορεύει με μη θερμαινόμενο χώρο"
-	),
-	3=>array(
-		"ri"=>0.13,
-		"ra"=>0.00,
-		"desc"=>"Τοίχος σε επαφή με το έδαφος"
-	),
-	4=>array(
-		"ri"=>0.10,
-		"ra"=>0.04,
-		"desc"=>"Στέγες, δώματα (ανερχόμενη ροή θερμότητας)"
-	),
-	5=>array(
-		"ri"=>0.10,
-		"ra"=>0.10,
-		"desc"=>"Οροφή που συνορεύει με μη θερμαινόμενο χώρο"
-	),
-	6=>array(
-		"ri"=>0.17,
-		"ra"=>0.04,
-		"desc"=>"Δάπεδο επάνω από ανοικτή διάβαση (pilotis)"
-	),
-	7=>array(
-		"ri"=>0.17,
-		"ra"=>0.17,
-		"desc"=>"Δάπεδο επάνω από μη θερμαινόμενο χώρο (κατερχόμενη ροή)"
-	),
-	8=>array(
-		"ri"=>0.17,
-		"ra"=>0.00,
-		"desc"=>"Δάπεδο σε επαφή με το έδαφος"
-	)
-);
-$array_ru = array(
-	0=>0,
-	1=>0.06,
-	2=>0.20,
-	3=>0.30,
-	4=>0.30
-);
-$array_rd = array(
-	1=>".11|.11|.11|.19|.19|.19|.18|.18|.18|.17|.17|.17",
-	2=>".13|.13|.13|.26|.26|.26|.25|.25|.25|.22|.22|.22",
-	3=>".15|.15|.15|.36|.36|.36|.33|.33|.33|.29|.29|.29",
-	4=>".17|.16|.17|.52|.45|.52|.46|.41|.46|.38|.34|.38",
-	5=>".18|.16|.19|.67|.45|.80|.57|.41|.66|.44|.34|.50",
-	6=>".18|.16|.21|.67|.45|.80|.57|.41|.66|.44|.34|.67",
-	7=>".18|.16|.22|.67|.45|.80|.57|.41|.66|.44|.34|.75",
-	8=>".18|.16|.23|.67|.45|.80|.57|.41|.66|.44|.34|.75"
-);
-$array_text_ru=array(
-	0=>"",
-	1=>"Κεραμοσκεπή επί τεγίδων χωρίς σανίδωμα",
-	2=>"Κεραμοσκεπή με σανίδωμα ή μεμβράνη",
-	3=>"Κεραμοσκεπή με σανίδωμα ή μεμβράνη και φύλλο αλουμινίου",
-	4=>"Κεραμοσκεπή με σανίδωμα και μεμβράνη",
-);
-$array_text_rd1=array(
-	0=>"",
-	1=>"Στρώμα πάχους:5mm",
-	2=>"Στρώμα πάχους:7mm",
-	3=>"Στρώμα πάχους:10mm",
-	4=>"Στρώμα πάχους:15mm",
-	5=>"Στρώμα πάχους:25mm",
-	6=>"Στρώμα πάχους:50mm",
-	7=>"Στρώμα πάχους:100mm",
-	8=>"Στρώμα πάχους:300mm"
-);
-$array_text_rd2=array(
-	0=>"",
-	1=>"οριζόντια",
-	2=>"από κάτω προς τα πάνω",
-	3=>"από πάνω προς τα κάτω ",
-	4=>"Στρώμα πάχους:15mm"
-);
-$array_text_rd3=array(
-	0=>"",
-	1=>"ανακλαστική επιφάνεια e=0.80",
-	2=>"ανακλαστική επιφάνεια e=0.05",
-	3=>"ανακλαστική επιφάνεια e=0.10",
-	4=>"ανακλαστική επιφάνεια e=0.20"
-);
-	
-	
+		
 	$analysiu .= "<table>
 	<tr><td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"5\">
 	Κωδ. Φύλλου αδιαφανών: ".$adiafani_data["id"]." - Δομικό στοιχείο: ".$adiafani_data["name"]."</td></tr>
@@ -1763,23 +1901,25 @@ $array_text_rd3=array(
 			
 			$id_yliko=$strwsi[$i-1];
 			
-			if($category[$i-1]>0 AND $category[$i-1]<9 ){
+			if($category[$i-1]>0 AND $category[$i-1]<=9 ){
 				$tb_ylika = "vivliothiki_domika";
 				$where_yliko = array(
 					"AND"=>array(
 						"category"=>$category[$i-1],
-						"subcategory"=>$subcategory[$i-1]
+						"subcategory"=>$subcategory[$i-1],
+						"id"=>$id_yliko
 					)	
 				);
 			}else{
 				$tb_ylika = "user_domika";
 				$where_yliko = array(
 						"user_id"=>$_SESSION['user_id'],
+						"id"=>$id_yliko
 				);
 			}
 		$yliko = $database->select($tb_ylika,$col,$where_yliko);
-		$yliko_name=$yliko[$id_yliko-1]["material"];
-		$yliko_l=$yliko[$id_yliko-1]["l"];
+		$yliko_name=$yliko[0]["material"];
+		$yliko_l=$yliko[0]["l"];
 		
 		$dl=$paxos[$i-1]/$yliko_l;
 		$sdl+=$paxos[$i-1]/$yliko_l;
@@ -1794,23 +1934,55 @@ $array_text_rd3=array(
 		}
 	}
 	$rl=round($sdl,3);
-	$ru=$array_ru[$adiafani_data["ru"]];
-	$ri=$array_rira[$adiafani_data["rira"]]["ri"];
-	$ra=$array_rira[$adiafani_data["rira"]]["ra"];
-	if($adiafani_data["rd1"]!=0){
-		$rd_values=explode("|",$array_rd[$adiafani_data["rd1"]]);
-		$rd_key=($adiafani_data["rd3"]-1)*3+$adiafani_data["rd2"]-1;
-		$rd=$rd_values[$rd_key];
-		$txt_rd = "Τύπος:".$array_text_rd1[$adiafani_data["rd1"]]." / Ροή:".
-				$array_text_rd2[$adiafani_data["rd2"]]." / ".$array_text_rd3[$adiafani_data["rd3"]];
+	
+	$adiafani_rira=$database->select("vivliothiki_u_rira",$col,array("id"=>$adiafani_data["rira"]));
+	$rira_name=$adiafani_rira[0]["name"];
+	$ri=$adiafani_rira[0]["ri"];
+	$ra=$adiafani_rira[0]["ra"];
+	
+	$rira_type=$adiafani_rira[0]["type"];
+	$rira_epafi=$adiafani_rira[0]["epafi"];
+	
+	if($adiafani_data["ru"]!=0){
+		$adiafani_ru=$database->select("vivliothiki_u_ru",$col,array("ru"=>$adiafani_data["ru"]));
+		$ru_name=$adiafani_ru[0]["name"];
+		$ru=$adiafani_data["ru"];
 	}else{
-		$rd=0;
-		$txt_rd = "Χωρίς αντιστάσεις ενδιάμεσου στρώματος αέρα";
+		$ru_name="Χωρίς θερμικές αντιστάσεις κεραμοσκεπής";
+		$ru=0;
 	}
 	
+	if($adiafani_data["rd1"]!=0){
+		if($adiafani_data["rd2"]==1){$rd_col="rd_horizontal";$rd_roi="Οριζόντια ροή";}
+		if($adiafani_data["rd2"]==2){$rd_col="rd_verticalup";$rd_roi="Από πάνω προς τα κάτω";}
+		if($adiafani_data["rd2"]==3){$rd_col="rd_verticaldown";$rd_roi="Από κάτω προς τα πάνω";}
+		if($adiafani_data["rd3"]==1){$rd_type="Χωρίς ανακλαστική επιφάνεια (ε = 0.80)";}
+		if($adiafani_data["rd3"]==2){$rd_type="Με ανακλαστική επιφάνεια (ε = 0.05)";}
+		if($adiafani_data["rd3"]==3){$rd_type="Με ανακλαστική επιφάνεια (ε = 0.10)";}
+		if($adiafani_data["rd3"]==4){$rd_type="Με ανακλαστική επιφάνεια (ε = 0.20)";}
+		$rd_d=$adiafani_data["rd1"];
+		$where_rd=array("AND"=>array("d"=>$rd_d,"type"=>$adiafani_data["rd3"]));
+		
+		$adiafani_rd=$database->select("vivliothiki_u_rd",$rd_col,$where_rd);
+		$rd_name="Αντιστάσεις ενδιάμεσου στρώματος αέρα πάχους ".$rd_d."mm, ροή: ".$rd_roi." και Ανακλαστική επιφάνεια:".$rd_type;
+		$rd=$adiafani_rd[0]["ru"];
+	}else{
+		$rd_name="Χωρίς αντιστάσεις ενδιάμεσου στρώματος αέρα";
+		$rd=0;
+	}
+	
+	if($adiafani_data["type"]==1){$umax_table="vivliothiki_umax_new";}
+	if($adiafani_data["type"]==2){$umax_table="vivliothiki_umax_old";}
+	if($adiafani_data["zwni"]==0){$umax_col="a";}
+	if($adiafani_data["zwni"]==1){$umax_col="b";}
+	if($adiafani_data["zwni"]==2){$umax_col="g";}
+	if($adiafani_data["zwni"]==3){$umax_col="d";}
+	$where_umax=array("AND"=>array("type"=>$rira_type,"epafi"=>$rira_epafi));
+	
+	$umax=$database->select($umax_table,$umax_col,$where_umax);
+	$umax=$umax[0];
+	
 	$sr=$sdl+$ri+$ra+$ru+$rd;
-	$umax=explode("|",$array_umax[$adiafani_data["zwni"]]);
-	$umax=round($umax[$adiafani_data["rira"]-1],2);
 		if($adiafani_data["u"]<=$umax){
 			$umax_t = "&#8924;";
 			$u_color="style=\"background-color:#cce5cc;\"";
@@ -1824,8 +1996,7 @@ $array_text_rd3=array(
 	<td>".round($sdl,3)."</td>
 	</tr>
 	<tr>
-	<td style=\"background-color:#eaeaea;\" colspan=\"2\" rowspan=\"2\">Θερμικές αντιστάσεις εσωτερικά-εξωτερικά: ".
-	$array_rira[$adiafani_data["rira"]]["desc"]."</td>
+	<td style=\"background-color:#eaeaea;\" colspan=\"2\" rowspan=\"2\">Θερμικές αντιστάσεις εσωτερικά-εξωτερικά: ".$rira_name."</td>
 	<td style=\"background-color:#eaeaea;\" colspan=\"2\">R<sub>i</sub> (m<sup>2</sup>.K/W)</td>
 	<td>".$ri."</td>
 	</tr>
@@ -1834,12 +2005,12 @@ $array_text_rd3=array(
 	<td>".$ra."</td>
 	</tr>
 	<tr>
-	<td style=\"background-color:#eaeaea;\" colspan=\"2\">Θερμικές αντιστάσεις κεραμοσκεπής:".$array_text_ru[$adiafani_data["ru"]]."</td>
+	<td style=\"background-color:#eaeaea;\" colspan=\"2\">".$ru_name."</td>
 	<td style=\"background-color:#eaeaea;\" colspan=\"2\">R<sub>u</sub> (m<sup>2</sup>.K/W)</td>
 	<td>".$ru."</td>
 	</tr>
 	<tr>
-	<td style=\"background-color:#eaeaea;\" colspan=\"2\">".$txt_rd."</td>
+	<td style=\"background-color:#eaeaea;\" colspan=\"2\">".$rd_name."</td>
 	<td style=\"background-color:#eaeaea;\" colspan=\"2\">R<sub>δ</sub> (m<sup>2</sup>.K/W)</td>
 	<td>".round($rd,2)."</td>
 	</tr>
@@ -1872,49 +2043,20 @@ function teyxos_diafaniu($id){
 	$col="*";
 	
 	$analysiu_win = "";
-	
+	if($id!=0){//μήπως δεν έχει δηλωθεί κανένας υπολογισμός (πχ ΠΕΑ)
+		
 $zonename_win = array(
 	0=>"Ζώνη Α",
 	1=>"Ζώνη Β",
 	2=>"Ζώνη Γ",
 	3=>"Ζώνη Δ"
 );
-$umax_win = array(
-	0=>3.2,
-	1=>3.0,
-	2=>2.8,
-	3=>2.6
-);
-$array_plaisio_yliko= array(
-	0=>0,
-	1=>"Μεταλλικό πλαίσιο",
-	2=>"Συνθετικό πλαίσιο",
-	3=>"Ξύλινο πλαίσιο"
-);
-$array_plaisio_type= array(
-	0=>0,
-	1=>array(
-		1=>" χωρίς θερμοδιακοπή",
-		2=>" με θερμοδιακοπή"
-	),
-	2=>array(
-		1=>" Πολυουρεθάνη",
-		2=>" PVC - 2 θάλαμοι",
-		3=>" PVC - 3 θάλαμοι",
-		4=>" PVC - πολυθαλαμικό"
-	),
-	3=>array(
-		1=>" σκληρή ξυλεία - μέσο πλάτος 5cm",
-		2=>" μαλακή ξυλεία - μέσο πλάτος 5cm",
-		3=>" σκληρή ξυλεία - μέσο πλάτος 10cm",
-		4=>" μαλακη ξυλεία - μέσο πλάτος 10cm"
-	)
-);
+
 $array_ug_ekp= array(
 	0=>0,
 	1=>"0.89",
-	2=>"<0.10",
-	3=>"<0.05"
+	2=>"< 0.10",
+	3=>"< 0.05"
 );
 $array_ug_dims= array(
 	0=>0,
@@ -1938,11 +2080,14 @@ $array_ug_diak= array(
 	$tb_uf="vivliothiki_uf";
 	$tb_ug="vivliothiki_ug";
 	$tb_ug_psi="vivliothiki_ug_psi";
+	$tb_roll="vivliothiki_urb";
+	$tb_eks="vivliothiki_uw_rrb";
 	
 	$where_userdiafani=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$id));
 	$diafani_data = $database->select($tb_userdiafani, $col, $where_userdiafani );
 	$diafani_data=$diafani_data[0];
 	
+	$id=$diafani_data["id"];
 	$name=$diafani_data["name"];
 	$zone=$diafani_data["zwni"];
 	$plaisio_uf=$diafani_data["plaisio_uf"];
@@ -1950,6 +2095,10 @@ $array_ug_diak= array(
 	$yalo_ekp=$diafani_data["yalo_ekp"];
 	$yalo_dias=$diafani_data["yalo_dias"];
 	$yalo_aer=$diafani_data["yalo_aer"];
+	$roll_type=$diafani_data["roll_type"];
+	$roll_h=$diafani_data["roll_h"];
+	$eks_type=$diafani_data["eks_type"];
+	$eks_ekp=$diafani_data["eks_ekp"];
 	$names=explode("|",$diafani_data["a"]);
 	$aw=explode("|",$diafani_data["aw"]);
 	$ah=explode("|",$diafani_data["ah"]);
@@ -1958,54 +2107,15 @@ $array_ug_diak= array(
 	$yh=explode("|",$diafani_data["yh"]);
 	$gw=explode("|",$diafani_data["gw"]);
 	$uw=explode("|",$diafani_data["uw"]);
+	$uwrb=explode("|",$diafani_data["uwrb"]);
+	$uwr=explode("|",$diafani_data["uwr"]);
 	
-	//Μεταλλικό πλαίσιο
-	if($plaisio_uf==1){$plaisio_yliko=1;$plaisio_type=1;}
-	if($plaisio_uf==2){$plaisio_yliko=1;$plaisio_type=2;}
-	//Συνθετικό πλαίσιο
-	if($plaisio_uf==3){$plaisio_yliko=2;$plaisio_type=1;}
-	if($plaisio_uf==4){$plaisio_yliko=2;$plaisio_type=2;}
-	if($plaisio_uf==5){$plaisio_yliko=2;$plaisio_type=3;}
-	if($plaisio_uf==6){$plaisio_yliko=2;$plaisio_type=4;}
-	//Ξύλινο πλαίσιο
-	if($plaisio_uf==7){$plaisio_yliko=3;$plaisio_type=1;}
-	if($plaisio_uf==8){$plaisio_yliko=3;$plaisio_type=2;}
-	if($plaisio_uf==9){$plaisio_yliko=3;$plaisio_type=3;}
-	if($plaisio_uf==10){$plaisio_yliko=3;$plaisio_type=4;}
-	
-	$analysiu_win .= "
-	<table>
-	<tr>
-	<td colspan=\"13\" style=\"text-align:center; background-color:#CCCCCC;\">
-	Κωδ. Φύλλου ανοιγμάτων: ".$diafani_data["id"]." - Υπολογισμός: ".$diafani_data["name"]."</td>
-	</tr>
-	<tr>
-	<td colspan=\"5\" style=\"width: 40%; background-color:#eaeaea;\">Τύπος</td>
-	<td colspan=\"6\" style=\"width: 40%; background-color:#eaeaea;\">Περιγραφή</td>
-	<td colspan=\"2\" style=\"width: 20%; background-color:#eaeaea;\">Τιμή</td>
-	</tr>";
-	
-	
-	//Κλιματική ζώνη - Umax
-	$umax_win=$umax_win[$zone];
-	$analysiu_win .= "
-	<tr>
-	<td colspan=\"5\">Κλιματική ζώνη (Umax)</td>
-	<td colspan=\"6\">".$zonename_win[$zone]."</td>
-	<td colspan=\"2\">".$umax_win."</td>
-	</tr>";
-	
-	//Πλαίσιο - τύπος πλαισίου
-	$where_uf=array("AND"=>array("plaisio_yliko"=>$plaisio_yliko,"plaisio_type"=>$plaisio_type));
-	$uf_data = $database->select($tb_uf, $col, $where_uf );
-	$uf=$uf_data[0]["uf"];
-	
-	$analysiu_win .= "
-	<tr>
-	<td colspan=\"5\">Τύπος πλαισίου (Uf) - Πιν. 11 ΤΟΤΕΕ-20701-2</td>
-	<td colspan=\"6\">".$array_plaisio_yliko[$plaisio_yliko].$array_plaisio_type[$plaisio_yliko][$plaisio_type]." - Μέσο πλάτος:".$mpp."</td>
-	<td colspan=\"2\">".$uf."</td>
-	</tr>";
+	//Πλαίσιο
+	$data_uf=$database->select($tb_uf,$col,array("id"=>$plaisio_uf));
+	$uf_yliko=$data_uf[0]["plaisio_yliko"];
+	$uf_type=$data_uf[0]["plaisio_type"];
+	$uf_name=$data_uf[0]["name"];
+	$uf=$data_uf[0]["uf"];
 	
 	//Υάλωση
 	if($yalo_aer==1){$column_ug="air";}
@@ -2019,12 +2129,55 @@ $array_ug_diak= array(
 	if($dias_name==1){$dias_name=" (διπλή)";}
 	if($dias_name==2){$dias_name=" (τριπλή)";}
 	
+	//Umax
+	if($diafani_data["type"]==1){$umax_table="vivliothiki_umax_new";}
+	if($diafani_data["type"]==2){$umax_table="vivliothiki_umax_old";}
+	if($diafani_data["zwni"]==0){$umax_col="a";}
+	if($diafani_data["zwni"]==1){$umax_col="b";}
+	if($diafani_data["zwni"]==2){$umax_col="g";}
+	if($diafani_data["zwni"]==3){$umax_col="d";}
+	if($diafani_data["epafi"]==1 OR $diafani_data["epafi"]==2){$umax_epafi=1;}
+	if($diafani_data["epafi"]==3 OR $diafani_data["epafi"]==4){$umax_epafi=2;}
+	if($diafani_data["epafi"]==1 OR $diafani_data["epafi"]==3){$umax_type=4;}
+	if($diafani_data["epafi"]==2 OR $diafani_data["epafi"]==4){$umax_type=5;}
+	$where_umax=array("AND"=>array("type"=>$umax_type,"epafi"=>$umax_epafi));
+	
+	$umax=$database->select($umax_table,$umax_col,$where_umax);
+	$umax=$umax[0];
+	
+	$analysiu_win .= "
+	<table>
+	<tr>
+	<td colspan=\"15\" style=\"text-align:center; background-color:#CCCCCC;\">
+	Κωδ. Φύλλου ανοιγμάτων: ".$id." - Υπολογισμός: ".$name."</td>
+	</tr>
+	<tr>
+	<td colspan=\"5\" style=\"width: 40%; background-color:#eaeaea;\">Τύπος</td>
+	<td colspan=\"6\" style=\"width: 40%; background-color:#eaeaea;\">Περιγραφή</td>
+	<td colspan=\"4\" style=\"width: 20%; background-color:#eaeaea;\">Τιμή</td>
+	</tr>";
+	
+	//Κλιματική ζώνη - Umax
+	$analysiu_win .= "
+	<tr>
+	<td colspan=\"5\">Κλιματική ζώνη (Umax)</td>
+	<td colspan=\"6\">".$zonename_win[$zone]."</td>
+	<td colspan=\"4\">".$umax."</td>
+	</tr>";
+	
+	$analysiu_win .= "
+	<tr>
+	<td colspan=\"5\">Τύπος πλαισίου (Uf) - Πιν. 11 ΤΟΤΕΕ-20701-2</td>
+	<td colspan=\"6\">".$uf_name." - Μέσο πλάτος:".$mpp."</td>
+	<td colspan=\"4\">".$uf."</td>
+	</tr>";
+	
 	//Υάλωση-Συντελεστής εκπομπής
 	$analysiu_win .= "
 	<tr>
 	<td colspan=\"5\">Συντελεστής εκπομπής (Ug) - Πιν. 12 ΤΟΤΕΕ-20701-2</td>
 	<td colspan=\"6\">".$array_ug_ekp[$yalo_ekp]." - ".$ekp_name."</td>
-	<td colspan=\"2\" rowspan=\"3\">".$ug."</td>
+	<td colspan=\"4\" rowspan=\"3\">".$ug."</td>
 	</tr>";
 	//Υάλωση-Διαστάσεις
 	$analysiu_win .= "
@@ -2054,8 +2207,38 @@ $array_ug_diak= array(
 	$analysiu_win .= "
 	<tr>
 	<td colspan=\"5\">Γραμμική θερμοπερατότητα (Ψg) - Πιν. 13 ΤΟΤΕΕ-20701-2</td>
-	<td colspan=\"6\">".$array_plaisio_yliko[$plaisio_yliko].$array_plaisio_type[$plaisio_yliko][$plaisio_type]."</td>
-	<td colspan=\"2\">".$ug_psi."</td>
+	<td colspan=\"6\">".$uf_name."</td>
+	<td colspan=\"4\">".$ug_psi."</td>
+	</tr>";
+	
+	//Ρολό - Εξώφυλλο
+	$where_roll=array("id"=>$roll_type);
+	$roll_data = $database->select($tb_roll, $col, $where_roll );
+	
+	if($eks_ekp==1){$eks_col="low";$eks_air="Χαμηλή";}
+	if($eks_ekp==2){$eks_col="middle";$eks_air="Μέση";}
+	if($eks_ekp==3){$eks_col="high";$eks_air="Υψηλή";}
+	$where_eks=array("type"=>$eks_type);
+	$eks_data = $database->select($tb_eks, $col, $where_eks );
+	
+	
+	$analysiu_win .= "<tr><td colspan=\"5\">Τύπος ρολού</td>";
+	if($roll_h!=0){
+		$analysiu_win .= "<td colspan=\"6\">".$roll_data[0]["name"]." - h: ".$roll_h."m</td>";
+	}else{
+		$analysiu_win .= "<td colspan=\"6\"></td>";
+	}
+	$analysiu_win .= "<td colspan=\"4\">".$roll_data[0]["urb"]."</td>
+	</tr>";
+	
+	
+	$analysiu_win .= "<tr><td colspan=\"5\">Τύπος περσίδας</td>";
+	if($eks_air!=""){
+		$analysiu_win .= "<td colspan=\"6\">".$eks_data[0]["name"]." - Αεροστεγανότητα ".$eks_air."</td>";
+	}else{
+		$analysiu_win .= "<td colspan=\"6\"></td>";
+	}
+	$analysiu_win .= "<td colspan=\"4\">".$eks_data[0][$eks_col]."</td>
 	</tr>";
 	
 	
@@ -2066,7 +2249,7 @@ $array_ug_diak= array(
 	<td colspan=\"3\" style=\"width: 20%; background-color:#eaeaea;\">Υαλοπίνακας</td>
 	<td colspan=\"2\" style=\"width: 20%; background-color:#eaeaea;\">Πλαίσιο</td>
 	<td rowspan=\"2\" style=\"width: 5%; background-color:#eaeaea;\">Ψ (Lg)</td>
-	<td colspan=\"2\" style=\"width: 15%; background-color:#eaeaea;\">Χαρακτηριστικά</td>
+	<td colspan=\"4\" style=\"width: 15%; background-color:#eaeaea;\">Χαρακτηριστικά</td>
 	</tr>";
 	$analysiu_win .= "
 	<tr>
@@ -2082,6 +2265,8 @@ $array_ug_diak= array(
 	<td style=\"background-color:#eaeaea;\">%</td>
 	<td style=\"background-color:#eaeaea;\">gw</td>
 	<td style=\"background-color:#eaeaea;\">Uw</td>
+	<td style=\"background-color:#eaeaea;\">Uwrb</td>
+	<td style=\"background-color:#eaeaea;\">Uwr</td>
 	</tr>";
 	
 	$i=0;
@@ -2094,7 +2279,7 @@ $array_ug_diak= array(
 		$epper=($ep/$esum)*100;
 		$epper=round($epper,2);
 		$lg=2*($yw[$i]+$yh[$i])*$af[$i];
-		if($uw[$i]<=$umax_win){
+		if($uwr[$i]<=$umax){
 			$u_color="style=\"background-color:#cce5cc;\"";
 		}else{
 			$u_color="style=\"background-color:#ffcccc;\"";
@@ -2114,15 +2299,20 @@ $array_ug_diak= array(
 		<td>".$epper."</td>
 		<td>".$lg."</td>
 		<td>".$gw[$i]."</td>
-		<td ".$u_color.">".$uw[$i]."</td>
+		<td>".$uw[$i]."</td>
+		<td>".$uwrb[$i]."</td>
+		<td ".$u_color.">".$uwr[$i]."</td>
 		</tr>";
 	
 		$i++;
 		}
 	}
 	
-	$analysiu_win .= "</table>";
+	$analysiu_win .= "</table><br/>";
+	$analysiu_win .= "<p style=\"page-break-before:always;\"></p>";
 	
+	}//μήπως δεν έχει δηλωθεί κανένας υπολογισμός (πχ ΠΕΑ)
+		
 	return $analysiu_win;
 	
 }
@@ -2139,6 +2329,7 @@ function teyxos_wallsbg(){
 	
 	$building_data = $database->select("user_meletes","*",array("id"=>$_SESSION['meleti_id']));
 	$building_g = $building_data[0]["pros"];
+	
 	$txt_gbae = "";
 	$array_wall_type=array(
 		0=>"Σε αέρα",
@@ -2263,8 +2454,12 @@ function teyxos_wallse(){
 			if($wall["u"]!=0){
 				$u=$wall["u"];
 			}else{
-				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
-				$u=$data_u[0];
+				if($wall["yp_u_id"]!=0){
+					$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
+					$u=$data_u[0];
+				}else{
+					$u=0;
+				}
 			}
 			// u υποστυλωμάτων
 			if($wall["yp_u"]!=0){
@@ -2273,6 +2468,8 @@ function teyxos_wallse(){
 				if($wall["yp_u_id"]!=0){
 					$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
 					$yp_u=$data_yp_u[0];
+				}else{
+					$yp_u=0;
 				}
 			}
 			// u δοκών	
@@ -2282,6 +2479,8 @@ function teyxos_wallse(){
 				if($wall["dok_u_id"]!=0){
 					$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
 					$dok_u=$data_dok_u[0];
+				}else{
+					$dok_u=0;
 				}
 			}
 			// u συρομένων	
@@ -2291,7 +2490,9 @@ function teyxos_wallse(){
 				if($wall["syr_u_id"]!=0){
 					$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
 					$syr_u=$data_syr_u[0];
-				}	
+				}else{
+					$syr_u=0;
+				}
 			}
 			
 			//Εμβαδόν σύνολο
@@ -2753,8 +2954,8 @@ function teyxos_windowspsi(){
 			$window_psi_l = $window["psi_l"];
 			$window_psi_a = $window["psi_a"];
 			
-			$data_thermo_l = $database->select("vivliothiki_thermo_l","*",array("id"=>$window_psi_l) );
-			$data_thermo_ak = $database->select("vivliothiki_thermo_ak","*",array("id"=>$window_psi_a) );
+			$data_thermo_l = $database->select("vivliothiki_thermo_lp","*",array("id"=>$window_psi_l) );
+			$data_thermo_ak = $database->select("vivliothiki_thermo_yp","*",array("id"=>$window_psi_a) );
 			
 			$psi_lam_name=$data_thermo_l[0]["name"];
 			$psi_lam=$data_thermo_l[0]["y"];
@@ -2809,6 +3010,9 @@ function teyxos_wallsf($type){
 	$col = "*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$select_zones = $database->select($tb_zones, $col, $where);
+	
+	$building_data = $database->select("user_meletes","*",array("id"=>$_SESSION['meleti_id']));
+	$building_g = $building_data[0]["pros"];
 	
 	//ΣΚΙΑΣΕΙΣ
 	$txt_fhor = "";
@@ -3249,10 +3453,10 @@ function teyxos_adiafani_u($type=1){
 	
 	$txt_walls = "";
 	
-	$tb_umax = "vivliothiki_umax";
-	$where_umax_wall = array("type"=>"wall".$type);
-	$where_umax_daporo = array("type"=>"daporo".$type);
-	$where_umax_win = array("type"=>"win");
+	$tb_umax = "vivliothiki_umax_new";
+	$where_umax_wall = array("AND"=>array("epafi"=>$type,"type"=>2));
+	$where_umax_daporo = array("AND"=>array("epafi"=>$type,"type"=>3));
+	$where_umax_win = array("AND"=>array("epafi"=>$type,"type"=>4));
 	if($zwni==0){$col_umax="a";}
 	if($zwni==1){$col_umax="b";}
 	if($zwni==2){$col_umax="c";}
@@ -3273,7 +3477,7 @@ function teyxos_adiafani_u($type=1){
 		$zone_ua_diafani=0;
 		$zone_orizontia_ua=0;
 		$zone_ua=0;
-		
+		$epafi="";
 		if($type==1){
 			$table_desc="U δομικών στοιχείων σε αέρα";
 			$epafi="Σε αέρα";
@@ -3338,8 +3542,12 @@ function teyxos_adiafani_u($type=1){
 			if($wall["u"]!=0){
 				$u=$wall["u"];
 			}else{
+				if($wall['u_id']!=0){
 				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
 				$u=$data_u[0];
+				}else{
+					$u=0;
+				}
 			}
 			if($u<=$umax_wall){
 				$color_dr=$u_color_green;
@@ -3354,6 +3562,8 @@ function teyxos_adiafani_u($type=1){
 				if($wall["yp_u_id"]!=0){
 					$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
 					$yp_u=$data_yp_u[0];
+				}else{
+					$yp_u=0;
 				}
 			}
 			if($yp_u<=$umax_wall){
@@ -3369,6 +3579,8 @@ function teyxos_adiafani_u($type=1){
 				if($wall["dok_u_id"]!=0){
 					$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
 					$dok_u=$data_dok_u[0];
+				}else{
+					$dok_u=0;
 				}
 			}
 			if($dok_u<=$umax_wall){
@@ -3384,7 +3596,9 @@ function teyxos_adiafani_u($type=1){
 				if($wall["syr_u_id"]!=0){
 					$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
 					$syr_u=$data_syr_u[0];
-				}	
+				}else{
+					$syr_u=0;
+				}
 			}
 			if($syr_u<=$umax_wall){
 				$color_syr=$u_color_green;
@@ -3795,7 +4009,14 @@ function teyxos_diafani_u(){
 	$database = new medoo(DB_NAME);
 	$col = "*";
 	
-	$epafi="Σε αέρα";
+	$epafi_array=array(
+		0=>"Σε αέρα",
+		1=>"Σε ΜΘΧ"
+	);
+	$b_array=array(
+		0=>1,
+		1=>0.5
+	);
 	
 	//Γενικά στοιχεία μελέτης
 	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
@@ -3805,20 +4026,33 @@ function teyxos_diafani_u(){
 	
 	//Στοιχεία ζώνης
 	$tb_zones = "meletes_zones";
+	$table_walls="meletes_zone_adiafani";
 	$table_windows="meletes_zone_diafani";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$select_zones = $database->select($tb_zones, $col, $where);
 	
 	$txt_win = "";
 	
-	$tb_umax = "vivliothiki_umax";
-	$where_umax_win = array("type"=>"win");
+	$tb_umax = "vivliothiki_umax_new";
 	if($zwni==0){$col_umax="a";}
 	if($zwni==1){$col_umax="b";}
 	if($zwni==2){$col_umax="c";}
 	if($zwni==3){$col_umax="d";}
-	$umax_win = $database->select($tb_umax, $col_umax, $where_umax_win);
-	$umax_win=$umax_win[0];
+	
+	//Επαφή σε αέρα
+	$where_umax_win_air = array("AND"=>array("epafi"=>1,"type"=>4));
+	$umax_win_air = $database->select($tb_umax, $col_umax, $where_umax_win_air);
+	$umax_win_air=$umax_win_air[0];
+	
+	//Επαφή σε ΜΘΧ
+	$where_umax_win_mthx = array("AND"=>array("epafi"=>2,"type"=>4));
+	$umax_win_mthx = $database->select($tb_umax, $col_umax, $where_umax_win_mthx);
+	$umax_win_mthx=$umax_win_mthx[0];
+	
+	$umax_array=array(
+		0=>$umax_win_air,
+		1=>$umax_win_mthx
+	);
 	
 	$u_color_green="style=\"background-color:#cce5cc;\"";
 	$u_color_red="style=\"background-color:#ffcccc;\"";
@@ -3848,7 +4082,18 @@ function teyxos_diafani_u(){
 			$window_h=$window["h"];
 			$window_e=$window["w"]*$window["h"];
 			$window_u=$window["u"];
-			$window_ua=$window_u*$window_e;
+			
+			//Τύπος από τοίχο
+			$data_wall = $database->select($table_walls,"type",array("id"=>$window['wall_id']) );
+			$data_wall=$data_wall[0];
+			
+			//Επαφή - Umax
+			$epafi=$epafi_array[$data_wall];
+			$umax_win=$umax_array[$data_wall];
+			$b_win=$b_array[$data_wall];
+			
+			//UxA
+			$window_ua=$window_u*$window_e*$b_win;
 			$window_sume += $window_e;
 			$zone_ua_diafani+=$window_ua;
 			
@@ -3895,7 +4140,7 @@ function teyxos_win_standar(){
 	$tb_meleti = "user_meletes";
 	$tb_meleti_mel = "meletes_stoixeiameleti";
 	$tb_zones = "meletes_zones";
-	$tb_umax = "vivliothiki_umax";
+	$tb_umax = "vivliothiki_umax_new";
 	
 	$where_umax_win = array("type"=>"win");
 	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
@@ -3909,6 +4154,7 @@ function teyxos_win_standar(){
 	$select_meleti_mel = $database->select($tb_meleti_mel, $col, $where);
 	$u_an = $select_meleti_mel[0]["u_an"];
 	
+	if($u_an!=0){//Δεν έχει δηλωθεί υπολογισμός (πχ ΠΕΑ)
 	//Στοιχεία ζώνης
 	$select_zones = $database->select($tb_zones, $col, $where);
 	
@@ -4043,13 +4289,15 @@ function teyxos_win_standar(){
 	
 	$array = array($umax_win,$plaisio,$uf,$mpp,$yalopinkas,$ug);
 	
+	}else{//Δεν έχει δηλωθεί υπολογισμός (πχ ΠΕΑ)
+		$array = array(" "," "," "," "," "," ");
+	}
 	return $array;
 	
 }
 
 
-//Εκτύπωση πίνακα U αδιαφανών
-//type: 1: Επαφή σε άερα, 2: Επαφή με ΜΘΧ, 3: Επαφή σε έδαφος
+//Έλεγχος θερμομονωτικής επάρκειας
 function teyxos_adiafani_checkum(){
 	$database = new medoo(DB_NAME);
 	$col = "*";
@@ -4059,6 +4307,7 @@ function teyxos_adiafani_checkum(){
 	$tb_meleti = "user_meletes";
 	$select_meleti = $database->select($tb_meleti, $col, $where_meleti);
 	$zwni = $select_meleti[0]["zone"];
+	$bld_type = $select_meleti[0]["type"];
 	
 	//Στοιχεία ζώνης
 	$tb_zones = "meletes_zones";
@@ -4072,26 +4321,25 @@ function teyxos_adiafani_checkum(){
 	
 	$txt_check = "";
 	
-	$tb_ummax = "vivliothiki_ummax";
+	$tb_ummax = "vivliothiki_ummax_new";
 	if($zwni==0){$col_umax="a";}
 	if($zwni==1){$col_umax="b";}
 	if($zwni==2){$col_umax="c";}
 	if($zwni==3){$col_umax="d";}
 	
 	$array_thermo_dbs = array(
-		0=>"ak",
-		1=>"d",
-		2=>"de",
-		3=>"dp",
-		4=>"ed",
-		5=>"edp",
-		6=>"eds",
-		7=>"eksg",
-		8=>"esg",
-		9=>"l",
-		10=>"oe",
-		11=>"pr",
-		12=>"yp"
+		0=>"ksg",
+		1=>"sg",
+		2=>"ss",
+		3=>"ds",
+		4=>"dp",
+		5=>"oe",
+		6=>"dy",
+		7=>"ed",
+		8=>"df",
+		9=>"pr",
+		10=>"lp",
+		11=>"yp"
 	);
 	
 	$u_color_green="style=\"background-color:#cce5cc;\"";
@@ -4101,10 +4349,10 @@ function teyxos_adiafani_checkum(){
 	<tr><td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"9\">
 	Έλεγχος θερμομονωτικής επάρκειας (Κτίριο)</td></tr>
 	<tr><td style=\"width: 20%; background-color:#eaeaea;\">Ζώνη</td>
-	<td style=\"width: 15%; background-color:#eaeaea;\">UxA Κατακόρυφων αδιαφανών</td>
-	<td style=\"width: 15%; background-color:#eaeaea;\">UxA Κατακόρυφων διαφανών</td>
-	<td style=\"width: 15%; background-color:#eaeaea;\">UxA Οριζόντιων</td>
-	<td style=\"width: 15%; background-color:#eaeaea;\">ΨxL</td>
+	<td style=\"width: 15%; background-color:#eaeaea;\">UxAxb Κατακόρυφων αδιαφανών<sup>1</sup></td>
+	<td style=\"width: 15%; background-color:#eaeaea;\">UxAxb Κατακόρυφων διαφανών<sup>2</sup></td>
+	<td style=\"width: 15%; background-color:#eaeaea;\">UxAxb Οριζόντιων<sup>3</sup></td>
+	<td style=\"width: 15%; background-color:#eaeaea;\">ΨxLxb<sup>4</sup></td>
 	<td style=\"width: 20%; background-color:#eaeaea;\">Σύνολο</td>
 	</tr>";
 	
@@ -4185,8 +4433,12 @@ function teyxos_adiafani_checkum(){
 			if($wall["u"]!=0){
 				$u=$wall["u"];
 			}else{
-				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
-				$u=$data_u[0];
+				if($wall["u_id"]!=0){
+					$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
+					$u=$data_u[0];
+				}else{
+					$dok_u=0;
+				}
 			}
 			
 			// u υποστυλωμάτων
@@ -4196,6 +4448,8 @@ function teyxos_adiafani_checkum(){
 				if($wall["yp_u_id"]!=0){
 					$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
 					$yp_u=$data_yp_u[0];
+				}else{
+					$yp_u=0;
 				}
 			}
 			
@@ -4206,6 +4460,8 @@ function teyxos_adiafani_checkum(){
 				if($wall["dok_u_id"]!=0){
 					$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
 					$dok_u=$data_dok_u[0];
+				}else{
+					$dok_u=0;
 				}
 			}
 			
@@ -4216,7 +4472,9 @@ function teyxos_adiafani_checkum(){
 				if($wall["syr_u_id"]!=0){
 					$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
 					$syr_u=$data_syr_u[0];
-				}	
+				}else{
+					$syr_u=0;
+				}
 			}
 			
 			if($wall["type"]==0){
@@ -4323,7 +4581,22 @@ function teyxos_adiafani_checkum(){
 				$window_w=$window["w"];
 				$window_h=$window["h"];
 				$window_e=$window["w"]*$window["h"];
-				$window_u=$window["u"];
+				
+				//Ο έλεγχος θερμομονωτικής απαιτεί το Uwrb στα διαφανή ενώ αν είναι παθητικό ηλιακό (έμμεσου) - δεν έχει ακόμα εφαρμοστεί 
+				//αντικαθίσταται από το Umax (εδώ χρησιμοποιείται το U του τοίχου που είναι σίγουρα κάτω απο Umax)
+				//if($window["passive"]!=1){
+					if($window["u"]!="u_manual" AND $window["u"]!="u_bytype"){
+						$tb_userdiafani="user_diafani";
+						$datawin_uw = $database->select("user_diafani","*",array("id"=>$window['u_id']) );
+						$datawin_uw_arr = explode("|",$datawin_uw[0]["uw"]);
+						$window_u=$datawin_uw_arr[$window['u_id_no']];
+					}else{
+						$window_u=$window["u"];
+					}
+				//}else{
+					//$window_u=$u;
+				//}
+				
 				$window_psi_l = $window["psi_l"];
 				$window_psi_a = $window["psi_a"];
 				
@@ -4341,8 +4614,8 @@ function teyxos_adiafani_checkum(){
 					$window_ua=$window_uis*$window_e;
 					$window_sume += $window_e;			
 			
-					$data_thermo_l = $database->select("vivliothiki_thermo_l","*",array("id"=>$window_psi_l) );
-					$data_thermo_ak = $database->select("vivliothiki_thermo_ak","*",array("id"=>$window_psi_a) );
+					$data_thermo_l = $database->select("vivliothiki_thermo_lp","*",array("id"=>$window_psi_l) );
+					$data_thermo_ak = $database->select("vivliothiki_thermo_yp","*",array("id"=>$window_psi_a) );
 					
 					$psi_lam_name=$data_thermo_l[0]["name"];
 					$psi_lam=$data_thermo_l[0]["y"];
@@ -4448,10 +4721,16 @@ function teyxos_adiafani_checkum(){
 				}
 				
 				if($orofes["type"]==0){
-					$b=1;
+					$orofes_uis=$orofes_u;
 				}
 				if($orofes["type"]==1){
 					$b=0.5;
+					$orofes_uis=$orofes_u*$b;
+				}
+				if($orofes["type"]==2){
+					$z=$orofes['z'];
+					$xar=2*$orofes["e"]/$orofes['p'];
+					$orofes_uis=isodynamos_dapedoy($orofes_u, $z, $xar);
 				}
 				
 				$window_sume=0;
@@ -4475,7 +4754,6 @@ function teyxos_adiafani_checkum(){
 				$roof_e=0;
 				$roof_e=$orofes["e"]-$window_sume;
 				
-				$orofes_uis=$orofes_u*$b;
 				$orofes_ua=$orofes_uis*$roof_e;
 				$zone_ua_orizontia+=$orofes_ua;
 				
@@ -4530,7 +4808,7 @@ function teyxos_adiafani_checkum(){
 	
 	$bld_um = $bld_ua/$bld_a;
 	$bld_av = $bld_a/$bld_v;
-	$ummax=get_ummax($col_umax, $bld_av);
+	$ummax=get_ummax($col_umax, $bld_av, $bld_type);
 	
 	if($bld_um<=$ummax){
 		$color=$u_color_green;
@@ -4567,8 +4845,12 @@ function teyxos_adiafani_checkum(){
 	<td colspan=\"5\">Um,max - Μέγιστος συντελεστής θερμοπερατότητας</td>
 	<td style=\"background-color:#FFF8DD;\">".round($ummax,3)."</td>
 	</tr>";
-	$txt_check .= "</table>";
-	$txt_check .= "<br/>Υπολογίζεται για U=U' για στοιχεία σε έδαφος και για U=Uxb=0.5xU για στοιχεία σε ΜΘΧ/Ηλιακούς χώρους.";
+	$txt_check .= "</table><br/><br/>";
+	$txt_check .= "1: Υπολογίζεται ως U=U' (ισοδύναμος συντελεστής κατακορύφου) για στοιχεία σε έδαφος και ως U=Uxb=0.5xU για στοιχεία σε ΜΘΧ/Ηλιακούς χώρους.<br/>";
+	$txt_check .= "2: Υπολογίζεται ως U=Uxb=0.5xU για στοιχεία σε ΜΘΧ/Ηλιακούς χώρους, ως U=U<sub>max,αδιαφανών</sub> για παθητικά ηλιακά και 
+	ως U=Uw (με ανοικτά ρολά ή εξώφυλλα) για στοιχεία με εξωτερικά φύλλα προστασίας.<br/>";
+	$txt_check .= "3: Υπολογίζεται ως U=U' (ισοδύναμος συντελεστής δαπέδου) για στοιχεία σε έδαφος και ως U=Uxb=0.5xU για στοιχεία σε ΜΘΧ/Ηλιακούς χώρους.<br/>";
+	$txt_check .= "4: Υπολογίζεται ως U=Uxb=0.5xU για στοιχεία σε ΜΘΧ/Ηλιακούς χώρους.<br/>";
 	
 	return $txt_check;
 }
@@ -4597,7 +4879,7 @@ function teyxos_kef6ktirio(){
 	$tb_meleti = "user_meletes";
 	$tb_zones = "meletes_zones";
 	$tb_bld_xrisi = "vivliothiki_conditions_building";
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$col = "*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$where_meleti=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
@@ -4627,7 +4909,7 @@ function teyxos_kef6ktirio(){
 		$zone_e=$zone_ev[0];
 		$zone_v=$zone_ev[1];
 		
-		if($zone["xrisi"]==1 OR $zone["xrisi"]==2){
+		if($zone["xrisi"]==1){
 			$zone_e_cold=$zone_e/2;
 			$zone_v_cold=$zone_v/2;
 		}else{
@@ -4640,7 +4922,7 @@ function teyxos_kef6ktirio(){
 		$bld_e_cold+=$zone_e_cold;
 		$bld_v_cold+=$zone_v_cold;
 		
-		$zone_xrisi = $database->select($tb_zone_xrisi, "xrisi", array("id"=>$zone["xrisi"]) );
+		$zone_xrisi = $database->select($tb_zone_xrisi, "name", array("id"=>$zone["xrisi"]) );
 		$zone_xrisi = $zone_xrisi[0];
 	
 		$txt .= "
@@ -4682,7 +4964,7 @@ function teyxos_kef6ktirio(){
 function teyxos_kef6air(){
 	$database = new medoo(DB_NAME);
 	$tb_zones = "meletes_zones";
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$col = "*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$select_zones = $database->select($tb_zones, $col, $where);
@@ -4696,7 +4978,7 @@ function teyxos_kef6air(){
 		Αερισμός θερμικής ζώνης ".$zone["name"]."</td>
 		</tr>";
 		
-		$synt_air=$database->select($tb_zone_xrisi, "nwpos_aeras_m2", array("id"=>$zone["xrisi"]) );
+		$synt_air=$database->select($tb_zone_xrisi, "air_perm2", array("id"=>$zone["xrisi"]) );
 		$synt_air=$synt_air[0];
 		$txt .= "<tr>
 		<td style=\"width: 50%; background-color:#eaeaea;\">Συντελεστής φυσικού αερισμού (m<sup>3</sup>/h/m<sup>2</sup>)</td>
@@ -4717,7 +4999,7 @@ function teyxos_kef6air(){
 		<td style=\"width: 25%;\">Τεύχος αναλυτικών υπολογισμών</td>
 		</tr>";
 		
-		if($zone["xrisi"]==1 OR $zone["xrisi"]==1){$aerismos_per=1;}else{$aerismos_per=0;}
+		if($zone["xrisi"]==1){$aerismos_per=1;}else{$aerismos_per=0;}
 		$txt .= "<tr>
 		<td style=\"width: 50%; background-color:#eaeaea;\">Συντελεστής χρήσης φυσικού αερισμού (%)</td>
 		<td style=\"width: 25%;\">".$aerismos_per."</td>
@@ -4772,7 +5054,7 @@ function teyxos_kef6air(){
 function teyxos_kef6conditions(){
 	$database = new medoo(DB_NAME);
 	$tb_zones = "meletes_zones";
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$col = "*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$select_zones = $database->select($tb_zones, $col, $where);
@@ -4783,16 +5065,51 @@ function teyxos_kef6conditions(){
 	foreach($select_zones as $zone){
 		array_push($array_xrisi, $zone["xrisi"]);
 	}
-	$array_xriseis=array_unique($array_xriseis);
+	$array_xrisi=array_unique($array_xrisi);
 	
 	foreach($array_xrisi as $xrisi){
 		$conditions=$database->select($tb_zone_xrisi, $col, array("id"=>$xrisi) );
 		$conditions=$conditions[0];
+		
+	//Όνομα γενικής χρήσης αντί για id
+	$data_genxrisi = $database->select("vivliothiki_conditions_general","name",array("id"=>$conditions["gen_id"]));
+	$conditions["gen_id"]=$data_genxrisi[0];
+	
+	//Εάν ο τύπος ΖΝΧ είναι υπολογισμός με βάση τον τύπο του ξενοδοχείου
+	if($conditions["znx_calc_type"]==2){
+		if($conditions["id"]==2 OR $conditions["id"]==3){
+			$hotel_type=1;
+		}
+		if($conditions["id"]==5 OR $conditions["id"]==6){
+			$hotel_type=2;
+		}
+		if($conditions["id"]==8 OR $conditions["id"]==9){
+			$hotel_type=3;
+		}
+		$where_hotel=array("AND"=>array("hotel_type"=>$hotel_type,"category"=>$hotel));
+		$data_hotels = $database->select("vivliothiki_conditions_znx_hotels",$columns,$where_hotel);
+		$conditions["znx_lt_perperson"]=$data_hotels[0]["znx_lt_perperson"];
+		$conditions["znx_lt_perm2"]=$data_hotels[0]["znx_lt_perm2"];
+		$conditions["znx_m3_perroom"]=$data_hotels[0]["znx_m3_perroom"];
+		$conditions["znx_m3_perm2"]=$data_hotels[0]["znx_m3_perm2"];
+	}
+	
+	//Εάν ο τύπος ΖΝΧ είναι υπολογισμός με βάση τον τύπο κλινικής - νοσοκομείου
+	if($conditions["znx_calc_type"]==3){
+		$where_hospital=array("id"=>$hospital);
+		$data_hospitals = $database->select("vivliothiki_conditions_znx_hospitals",$columns,$where_hospital);
+		$conditions["znx_lt_perperson"]=$data_hospitals[0]["znx_lt_perperson"];
+		$conditions["znx_lt_perm2"]=$data_hospitals[0]["znx_lt_perm2"];
+		$conditions["znx_m3_perroom"]=$data_hospitals[0]["znx_m3_perroom"];
+		$conditions["znx_m3_perm2"]=$data_hospitals[0]["znx_m3_perm2"];
+	}
+		
+		
 		$txt .= "<table>";
 		$txt .= "
 		<tr>
 		<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">
-		Εσωτερικές συνθήκες λειτουργίας: ".$conditions["gen_xrisi"].",".$conditions["xrisi"]."</td>
+		Εσωτερικές συνθήκες λειτουργίας: ".$conditions["gen_id"].",".$conditions["name"]."</td>
 		</tr>
 		<tr>
 		<td style=\"width: 50%; background-color:#eaeaea;\">Παράμετρρος</td>
@@ -4801,95 +5118,118 @@ function teyxos_kef6conditions(){
 		
 		$txt .= "<tr>
 		<td style=\"background-color:#eaeaea;\">Ώρες λειτουργίας (h)</td>
-		<td>".$conditions["hours"]."</td>
+		<td>".$conditions["t_h"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Ημέρες λειτουργίας (d)</td>
-		<td>".$conditions["days"]."</td>
+		<td>".$conditions["t_d"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Μήνες λειτουργίας (m)</td>
-		<td>".$conditions["months"]."</td>
+		<td>".$conditions["t_m"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">θ,i,h (C)</td>
-		<td>".$conditions["tih"]."</td>
+		<td>".$conditions["ti_h"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">θ,i,c (C)</td>
-		<td>".$conditions["tic"]."</td>
+		<td>".$conditions["ti_c"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Χ,i,h (%)</td>
-		<td>".$conditions["xih"]."</td>
+		<td>".$conditions["xi_h"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Χ,i,c (%)</td>
-		<td>".$conditions["xic"]."</td>
+		<td>".$conditions["xi_c"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Άτομα/100m<sup>2</sup></td>
-		<td>".$conditions["atoma"]."</td>
+		<td>".$conditions["air_persons"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Νωπός αέρας (m<sup>3</sup>/h/άτομο)</td>
-		<td>".$conditions["nwpos_aeras_per"]."</td>
+		<td>".$conditions["air_perperson"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Νωπός αέρας (m<sup>3</sup>/h/m<sup>2</sup>)</td>
-		<td>".$conditions["nwpos_aeras_m2"]."</td>
+		<td>".$conditions["air_perm2"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Στάθμη φωτισμού κτιρίου αναφοράς (lux)</td>
-		<td>".$conditions["fwtismos"]."</td>
+		<td>".$conditions["light_kw"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Ισχύς φωτισμού κτιρίου αναφοράς (W/m²)</td>
-		<td>".$conditions["isxys_anaf"]."</td>
+		<td>".$conditions["light_lux"]."</td>
+		</tr>
+		<tr>
+		<tr>
+		<td style=\"background-color:#eaeaea;\">Επίπεδο αναφοράς (m)</td>
+		<td>".$conditions["light_height"]."</td>
+		</tr>
+		<tr>
+		<tr>
+		<td style=\"background-color:#eaeaea;\">UGR</td>
+		<td>".$conditions["light_ugr"]."</td>
+		</tr>
+		<tr>
+		<tr>
+		<td style=\"background-color:#eaeaea;\">U<sub>o</sub></td>
+		<td>".$conditions["light_uo"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Ώρες λειτουργίας ημέρας (h)</td>
-		<td>".$conditions["hours_day"]."</td>
+		<td></td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Ώρες λειτουργίας νύχτας (h)</td>
-		<td>".$conditions["hours_night"]."</td>
+		<td></td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Κατανάλωση ΖΝΧ (lt/άτομο/ημέρα)</td>
-		<td>".$conditions["znx_l_p_d"]."</td>
+		<td>".$conditions["znx_lt_perperson"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Κατανάλωση ΖΝΧ (lt/m<sup>2</sup>/ημέρα)</td>
-		<td>".$conditions["znx_l_sq_d"]."</td>
+		<td>".$conditions["znx_lt_perm2"]."</td>
+		</tr>
+		<tr>
+		<td style=\"background-color:#eaeaea;\">Κατανάλωση ΖΝΧ (m<sup>3</sup>/κλίνη/year)</td>
+		<td>".$conditions["znx_m3_perroom"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Κατανάλωση ΖΝΧ (m<sup>3</sup>/m<sup>2</sup>/year)</td>
-		<td>".$conditions["znx_m3_sq_y"]."</td>
+		<td>".$conditions["znx_m3_perm2"]."</td>
 		</tr>
 		<tr>
-		<td style=\"background-color:#eaeaea;\">Ισχύς (W/άτομο)</td>
-		<td>".$conditions["w_persons"]."</td>
+		<td style=\"background-color:#eaeaea;\">Ισχύς χρήστες (W/άτομο)</td>
+		<td>".$conditions["w_perperson"]."</td>
 		</tr>
 		<tr>
-		<td style=\"background-color:#eaeaea;\">Ισχύς (W/m<sup>2</sup>)</td>
-		<td>".$conditions["w_m2"]."</td>
+		<td style=\"background-color:#eaeaea;\">Ισχύς χρήστες (W/m<sup>2</sup>)</td>
+		<td>".$conditions["w_perm2"]."</td>
 		</tr>
 		<tr>
-		<td style=\"background-color:#eaeaea;\">Συντελεστής παρουσίας f</td>
-		<td>".$conditions["synt_parousias"]."</td>
+		<td style=\"background-color:#eaeaea;\">Συντελεστής παρουσίας f (χρήστες)</td>
+		<td>".$conditions["w_f"]."</td>
 		</tr>
 		<tr>
 		<td style=\"background-color:#eaeaea;\">Ισχύς εξοπλισμού (W/m<sup>2</sup>)</td>
-		<td>".$conditions["eks_w"]."</td>
+		<td>".$conditions["eq_w_perm2"]."</td>
 		</tr>
 		<tr>
-		<td style=\"background-color:#eaeaea;\">Μέσος συντελεστής ετεροχρονισμού</td>
-		<td>".$conditions["eks_synt"]."</td>
+		<td style=\"background-color:#eaeaea;\">Μέσος συντελεστής ετεροχρονισμου (εξοπλισμός)</td>
+		<td>".$conditions["eq_ft"]."</td>
 		</tr>
 		<tr>
-		<td style=\"background-color:#eaeaea;\">Ισχύς εξοπλισμού (ετεροχρονισμός)</td>
-		<td>".$conditions["eks_w_eter"]."</td>
+		<td style=\"background-color:#eaeaea;\">Ισχύς εξοπλισμού (W/m<sup>2</sup>) (ετεροχρονισμός)</td>
+		<td>".$conditions["eq_wt_perm2"]."</td>
+		</tr>
+		<tr>
+		<td style=\"background-color:#eaeaea;\">Συντελεστής λειτουργίας (εξοπλισμός)</td>
+		<td>".$conditions["eq_f"]."</td>
 		</tr>";
 	$txt .= "</table>";	
 	}
@@ -4902,7 +5242,7 @@ function teyxos_kef6conditions(){
 function teyxos_kef6zonechapter(){
 	$database = new medoo(DB_NAME);
 	$tb_zones = "meletes_zones";
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$col = "*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
 	$select_zones = $database->select($tb_zones, $col, $where);
@@ -5030,7 +5370,7 @@ function teyxos_kef6zonechapter(){
 			<li>Οι βοηθητικές μονάδες</li>
 		</ul>
 
-		<p style=\"text-align: left;\"><strong>Μονάδα αερισμού</strong><br />";
+		<p style=\"text-align: left;\"><strong>Μονάδα ZNX</strong><br />";
 		$txt .= teyxos_znx($zone["id"]);
 		$txt .= "</p>";
 		
@@ -5094,6 +5434,7 @@ function teyxos_kelyfostables($type,$contact,$id){
 	//στοιχεία κτιρίου γενικά
 	$building_data = $database->select("user_meletes","*",array("id"=>$_SESSION['meleti_id']));
 	$building_g = $building_data[0]["pros"];
+	
 	$where=array(
 		"AND"=>array(
 			"user_id"=>$_SESSION['user_id'],
@@ -5253,11 +5594,9 @@ function teyxos_kelyfostables($type,$contact,$id){
 	</tr>
 	";
 	
-	
 	$data_prefs = $database->select("user_meletes","symptiksi",array("id"=>$_SESSION["meleti_id"]) );
 	$symptiksi = $data_prefs[0];
-	
-	
+		
 	$aa=1;
 	foreach($zone_wall as $wall){
 	$adiafani_row = "";
@@ -6487,7 +6826,7 @@ function teyxos_aerp($id){
 	
 	$database = new medoo(DB_NAME);
 
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$tb_sys_aerp="meletes_zone_sys_aerp";
 	$col="*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"zone_id"=>$id));
@@ -6506,7 +6845,7 @@ function teyxos_aerp($id){
 	);
 	
 	$txt = "";
-	
+	if(count($sys_aerp>0)){
 	$txt .= "<br/><table>
 	<tr>
 	<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">Σύστημα αερισμού</td>
@@ -6584,7 +6923,7 @@ function teyxos_aerp($id){
 	
 	
 	$txt .= "</table><br/>";
-	
+	}
 	return $txt;
 	
 }
@@ -6674,12 +7013,16 @@ function teyxos_znx($id){
 		2=>"Ηλεκτροβάνες",
 		3=>"Άλλου τύπου"
 	);
+	$array_true=array(
+		0=>"NAI",
+		1=>"OXI"
+	);
 	
 	$txt = "";
 	
 	$txt .= "<table>
 	<tr>
-	<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">Σύστημα θέρμανσης</td>
+	<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">Σύστημα ZNX</td>
 	</tr>
 	<tr>
 	<td style=\"text-align:center; background-color:#eaeaea;\" colspan=\"2\">Μονάδες παραγωγής</td>
@@ -6771,12 +7114,12 @@ function teyxos_solar($id){
 	
 	$database = new medoo(DB_NAME);
 
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$tb_sys_solar="meletes_zone_sys_solar";
 	$col="*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"zone_id"=>$id));
-	$sys_solar = $database->select($tb_sys_solar,"*",$where);
-	$sys_solar = $sys_solar[0];
+	$solar = $database->select($tb_sys_solar,"*",$where);
+	$solar = $solar[0];
 	
 	$tb_zones="meletes_zones";
 	$select_zone=$database->select($tb_zones,"*",array("id"=>$id));
@@ -6806,7 +7149,7 @@ function teyxos_solar($id){
 	$txt .= "
 	<tr>
 		<td style=\"background-color:#eaeaea;\">Είδος ηλιακού συλλέκτη</td>
-		<td>".$array_solar[$solar["type"]]."</td>
+		<td>".$array_solar_type[$solar["type"]]."</td>
 	</tr>
 	<tr>
 		<td style=\"background-color:#eaeaea;\">Χρήση ηλιακού συλλέκτη για ΖΝΧ</td>
@@ -6858,11 +7201,40 @@ function teyxos_solar($id){
 	$data_place = $database->select("vivliothiki_climate_places","place",array("id"=>$place_id));
 	$place = $data_place[0];
 	
-	$zone_ev=teyxos_zone_ev();
+	$zone_ev=teyxos_zone_ev($id);
 	$zone_e=$zone_ev[0];
 	
-	$txt .= teyxos_fcharts($place, $zone["xrisi"], $zone["klines"], $zone_e, $solar["g"], $solar["b"], 45, 1, 160, 1);
-	
+	//F-CHARTS
+	$g=180;
+	$b=45;
+	$t_znx=45;
+	$tb_zone_sys_solar = "meletes_zone_sys_solar";
+	$tb_zone_sys_znxt = "meletes_zone_sys_znxt";
+	$where_solar=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"zone_id"=>$zone["id"]));
+	if($database->count($tb_zone_sys_solar, $where_solar)>0){
+		$select_solar = $database->select($tb_zone_sys_solar, $col, $where_solar);
+		$solar_g=round($select_solar[0]["g"],0);
+		$solar_b=round($select_solar[0]["b"],0);
+		$solar_e=$select_solar[0]["e"];
+		if($select_solar[0]["type"]==0){$fcharts_type="4";}
+		if($select_solar[0]["type"]==1){$fcharts_type="1";}
+		if($select_solar[0]["type"]==2 OR $select_solar[0]["type"]==4){$fcharts_type="2";}
+		if($select_solar[0]["type"]==3){$fcharts_type="3";}
+		
+		if($database->count($tb_zone_sys_znxt, $where_solar)>0){
+			$select_boiler = $database->select($tb_zone_sys_znxt, $col, $where_solar);
+			$boiler_capacity=$select_boiler[0]["type"];
+			if($boiler_capacity>0){
+				$boiler_capacity=$boiler_capacity;
+			}else{
+				$boiler_capacity="160";
+			}
+		}
+		
+	$txt .= teyxos_fcharts($place, $zone["xrisi"], $zone["klines"], $zone_e, "$solar_g", "$solar_b", $t_znx, "$solar_e", "$boiler_capacity", $fcharts_type);
+	}else{
+		$txt .= "Δεν υπάρχει ηλιακός στη ζώνη είτε γιατί υπολογίστηκαν σε άλλη ζώνη οι καταναλώσεις είτε γιατί δεν υπάρχει απαίτηση κάλυψης αναγκών ΖΝΧ";
+	}
 	return $txt;
 	
 }
@@ -6872,7 +7244,7 @@ function teyxos_light($id){
 	
 	$database = new medoo(DB_NAME);
 
-	$tb_zone_xrisi = "vivliothiki_conditions";
+	$tb_zone_xrisi = "vivliothiki_conditions_zone";
 	$tb_sys_light="meletes_zone_sys_light";
 	$col="*";
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"zone_id"=>$id));
@@ -6904,7 +7276,7 @@ function teyxos_light($id){
 	);
 	
 	$txt = "";
-	
+	if(count($light)>0){
 	$txt .= "<table>
 	<tr>
 	<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">Σύστημα φωτισμού</td>
@@ -6941,8 +7313,8 @@ function teyxos_light($id){
 	
 	
 	$txt .= "</table><br/>";
-	
-	$zone_ev=teyxos_zone_ev();
+	}
+	$zone_ev=teyxos_zone_ev($id);
 	$zone_e=$zone_ev[0];
 	
 	
@@ -7026,7 +7398,7 @@ function teyxos_ygr($id){
 	);
 	
 	$txt = "";
-	
+	if(count($sys_ygrp)>0){
 	$txt .= "<table>
 	<tr>
 	<td style=\"text-align:center; background-color:#CCCCCC;\" colspan=\"2\">Σύστημα Ύγρανσης</td>
@@ -7087,7 +7459,7 @@ function teyxos_ygr($id){
 	</tr>";
 	
 	$txt .= "</table><br/>";
-	
+	}
 	return $txt;
 	
 }

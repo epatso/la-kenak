@@ -65,6 +65,16 @@ if (isset($_GET['getzonediafani'])){
 	echo $tb;
 	exit;
 }
+if (isset($_GET['diafani_xlsx'])){
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	$tb = create_meletes_zone_diafani_xlsx();
+	echo $tb;
+	exit;
+}
+
 
 //ΜΘΧ
 if (isset($_GET['getmthxdapeda'])){
@@ -239,7 +249,8 @@ function create_meletes_zone_orofes($page=1){
 	$col = "*";
 	$array_type = array(
 		0=>"Σε αέρα",
-		1=>"Σε ΜΘΧ/Ηλιακό χώρο (διαχ. επιφάνεια)"
+		1=>"Σε ΜΘΧ/Ηλιακό χώρο (διαχ. επιφάνεια)",
+		2=>"Σε Έδαφος"
 	);
 	
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
@@ -309,9 +320,13 @@ function create_meletes_zone_orofes($page=1){
 			$data_ek = $database->select("vivliothiki_adiafani_e","e",array("id"=>$data['ek']) );
 			$ek=$data_ek[0];
 		$kelyfos .= "<td>".$ap." / ".$ek."</td>";
-		$prostheta = "Fhor_h:".$data["fhor_h"]."<br/>"."Fhor_c:".$data["fhor_c"]."<br/>".
-					"Fov_h:".$data["fov_h"]."<br/>"."Fov_c:".$data["fov_c"]."<br/>".
-					"Ffin_h:".$data["ffin_h"]."<br/>"."Ffin_c:".$data["ffin_c"];
+			if($data["type"]==2){
+				$prostheta = "z:".$data["z"]."<br/>"."Π:".$data["p"];
+			}else{
+				$prostheta = "Fhor_h:".$data["fhor_h"]."<br/>"."Fhor_c:".$data["fhor_c"]."<br/>".
+						 "Fov_h:".$data["fov_h"]."<br/>"."Fov_c:".$data["fov_c"]."<br/>".
+						 "Ffin_h:".$data["ffin_h"]."<br/>"."Ffin_c:".$data["ffin_c"];
+			}
 		$kelyfos .= "<td><a href=\"#\" class=\"tip-top\" title=\"".$prostheta."\" data-content=\"".$prostheta."\"><i class=\"fa fa-list-alt fa-2x\" aria-hidden=\"true\"></i></a></td>";
 		$kelyfos .= "<td><button class=\"btn btn-sm btn-warning\" type=\"button\" onclick=\"form_zone_orofes(".$data["id"].",".$page.");\"><i class=\"fa fa-pencil-square-o\"></i></button></td>";
 		$kelyfos .= "<td><button class=\"btn btn-sm btn-danger\" type=\"button\" onclick=\"formdel_zone_orofes(".$data["id"].",".$page.");\"><i class=\"fa fa-times\"></i></button></td>";
@@ -405,7 +420,7 @@ function create_meletes_zone_adiafani($page=1){
 	$kelyfos .= "<div class=\"box-body table-responsive no-padding\">";
 	$kelyfos .= "<table class=\"table table-bordered table-condensed table-hover\">
 	<tr class=\"solar\" style=\"vertical-align: middle;text-align:center;\">
-	<td width=5%><a class=\"tip-top\" href=\"#\" title=\"Αρίθμηση\">α/α</a></td>
+	<td width=5%><a class=\"tip-top\" href=\"#\" title=\"Όροφος-αρίθμηση\">Ο-α/α</a></td>
 	<td width=10%><a class=\"tip-top\" href=\"#\" title=\"Όνομα ζώνης που ανήκει ο τοίχος\">Ζώνη</a></td>
 	<td width=10%><a class=\"tip-top\" href=\"#\" title=\"Όνομα τοιχοποιίας (περιγραφή)\">Όνομα</a></td>
 	<td width=9%><a class=\"tip-top\" href=\"#\" title=\"Προσανατολισμός ως προς το Βορρά/Κλίση ως προς την κατακόρυφο\">γ/β</a></td>
@@ -426,7 +441,7 @@ function create_meletes_zone_adiafani($page=1){
 	foreach($data_kelyfos as $data){
 		if($i<=$page*10 AND $i>$page*10-10){
 		$kelyfos .= "<tr style=\"vertical-align: middle;text-align:center;\">";
-		$kelyfos .= "<td><span class=\"label label-solar\">".$i."</span></td>";
+		$kelyfos .= "<td><span class=\"label label-solar\">".$data["roof"]."-".$data["draw_order"]."</span></td>";
 			
 			$data_zone = $database->select("meletes_zones","name",array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"id"=>$data['zone_id'])) );
 		
@@ -491,18 +506,45 @@ function create_meletes_zone_adiafani($page=1){
 			if($data["yp"]!=0){
 				$yp = explode("^", $data["yp"]);
 				$count_yp = count($yp)-1;
+				
+					$count_yp .= " (";
+					foreach($yp as $yp_a){
+						$yp_l = explode("|", $yp_a);
+							if( $yp_l[0]!=0){
+								$count_yp .= $yp_l[0].",";
+							}
+					}
+					$count_yp .= ") ";
 			}else{
 				$count_yp = "-";
 			}
 			if($data["dok"]!=0){
 				$dok = explode("^", $data["dok"]);
 				$count_dok = count($dok)-1;
+				
+					$count_dok .= " (";
+					foreach($dok as $dok_a){
+						$dok_l = explode("|", $dok_a);
+						if( $dok_l[0]!=0){
+							$count_dok .= $dok_l[0].",";
+						}
+					}
+					$count_dok .= ") ";
 			}else{
 				$count_dok = "-";
 			}
 			if($data["syr"]!=0){
 				$syr = explode("^", $data["syr"]);
 				$count_syr = count($syr)-1;
+					
+					$count_syr .= " (";
+					foreach($syr as $syr_a){
+						$syr_l = explode("|", $syr_a);
+						if( $syr_l[0]!=0){
+							$count_syr .= $syr_l[0]."x".$syr_l[1].",";
+						}
+					}
+					$count_syr .= ") ";
 			}else{
 				$count_syr = "-";
 			}
@@ -599,6 +641,7 @@ function create_meletes_zone_diafani($page=1){
 	
 	confirm_logged_in();
 	$database = new medoo(DB_NAME);
+	$tb_zones = "meletes_zones";
 	$tb = "meletes_zone_diafani";
 	$col = "*";
 	$array_g = array(
@@ -609,16 +652,16 @@ function create_meletes_zone_diafani($page=1){
 	);
 	$array_type = array(
 		0=>"Αδιαφανής πόρτα",
-		1=>"Ανοιγόμενο παράθυρο",
-		2=>"Ανοιγόμενη πόρτα μονή",
-		3=>"Ανοιγόμενη πόρτα διπλή",
-		4=>"Συρόμενο παράθυρο μονό",
-		5=>"Συρόμενο παράθυρο διπλό",
-		6=>"Συρόμενη πόρτα μονή",
-		7=>"Συρόμενη πόρτα διπλή",
-		8=>"Επάλληλη πόρτα",
-		9=>"Μη ανοιγόμενο κούφωμα",
-		10=>"Υαλότουβλα"
+		1=>"Παράθυρο",
+		2=>"Πόρτα",
+		3=>"Μη ανοιγόμενο κούφωμα",
+		4=>"Υαλότουβλα",
+		5=>"Ανοιγόμενη γυάλινη πρόσοψη"
+	);
+	$array_protection = array(
+		0=>"Χωρίς προστασία",
+		1=>"Με ρολά",
+		2=>"Με εξώφυλλα"
 	);
 	$array_plaisio = array(
 		1=>"Μεταλλικό πλαίσιο χωρίς θερμο",
@@ -717,6 +760,7 @@ function create_meletes_zone_diafani($page=1){
 		}
 		if($data['u_id']=="u_bytype"){
 			$type .= $array_type[$data["type"]]."<br/>";
+			$type .= $array_protection[$data["prostasia"]]."<br/>";
 			$type .= $array_plaisio[$data["plaisio"]]."<br/>";
 			$type .= "%:".$data["plaisioper"]."<br/>";
 			$type .= $array_yalo[$data["yalopinakas"]]."<br/>";
@@ -812,6 +856,17 @@ function create_meletes_zone_diafani($page=1){
 	}
 	$kelyfos .= "</table></div><div class=\"panel-footer\">";
 	
+	//Σύνολα ΕΜΒΑΔΟΝ-ΑΕΡΙΣΜΟΣ
+	$win_totals=calc_meletes_zone_diafani_air();
+	$data_zones = $database->select($tb_zones,$col,$where);
+	foreach($data_zones as $zone){
+		$kelyfos .= "<span class=\"label label-success\">Ζώνη</span> ".$zone["name"]." - E=".$win_totals[$zone["id"]]["e"]."m<sup>2</sup> - V=".$win_totals[$zone["id"]]["air"]."m<sup>3</sup>/h ";
+		$kelyfos .= "(Δυνητική EN 12207: Κλάση <span class=\"label label-success\">1</span>=".round($win_totals[$zone["id"]]["e"]*7.7,2)."m<sup>3</sup>/h ";
+		$kelyfos .= ", <span class=\"label label-success\">2</span>=".round($win_totals[$zone["id"]]["e"]*4.1,2)."m<sup>3</sup>/h ";
+		$kelyfos .= ", <span class=\"label label-success\">3</span>=".round($win_totals[$zone["id"]]["e"]*1.4,2)."m<sup>3</sup>/h ";
+		$kelyfos .= ", <span class=\"label label-success\">4</span>=".round($win_totals[$zone["id"]]["e"]*0.5,2)."m<sup>3</sup>/h) <br/>";
+	}
+	
 	if($count_kelyfos!=0){
 		$kelyfos .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count_kelyfos." διαφανών ΘΖ.";
 	}else{
@@ -834,7 +889,204 @@ function create_meletes_zone_diafani($page=1){
 	return $kelyfos;	
 }
 
+//Εκτύπωση πίνακα σε XLSX ΔΙΑΦΑΝΗ ΘΖ
+function create_meletes_zone_diafani_xlsx(){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$tb_zones = "meletes_zones";
+	$tb_diafani = "meletes_zone_diafani";
+	$col = "*";
+	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+	
+	$data_zones = $database->select($tb_zones,$col,$where);
+	//$data_diafani = $database->select($tb_diafani,$col,$where);
+	
+	$array_type = array(
+		0=>"Αδιαφανής πόρτα",
+		1=>"Παράθυρο",
+		2=>"Πόρτα",
+		3=>"Μη ανοιγόμενο κούφωμα",
+		4=>"Υαλότουβλα",
+		5=>"Ανοιγόμενη γυάλινη πρόσοψη"
+	);
+	$array_protection = array(
+		0=>"Χωρίς προστασία",
+		1=>"Με ρολά",
+		2=>"Με εξώφυλλα"
+	);
+	$array_plaisio = array(
+		1=>"Μεταλλικό πλαίσιο χωρίς θερμο",
+		2=>"Μεταλλικό πλαίσιο με θερμο 12mm",
+		3=>"Μεταλλικό πλαίσιο με θερμο 24mm",
+		4=>"Συνθετικό πλαίσιο",
+		5=>"Ξύλινο πλαίσιο",
+		6=>"Διπλό παράθυρο (ξύλινο)",
+		7=>"Μεταλλική πόρτα",
+		8=>"Συνθετική πόρτα",
+		9=>"Ξύλινη πόρτα"
+	);
+	
+	$array_yalo = array(
+		1=>"Χωρίς υαλοπίνακα σε αέρα",
+		2=>"Χωρίς υαλοπίνακα σε ΜΘΧ",
+		3=>"Μονός",
+		3=>"Δίδυμος υαλοπίνακας με διάκενο αέρα 6mm",
+		3=>"Δίδυμος υαλοπίνακας με διάκενο αέρα 12mm",
+		3=>"Δίδυμος υαλοπίνακας low-e με διάκενο αέρα 6mm",
+		3=>"Δίδυμος υαλοπίνακας low-e με διάκενο αέρα 12mm",
+		3=>"Μονός",
+	);
+	
+	//PHPExcel
+	date_default_timezone_set('Europe/London');
+	require_once 'PHPExcel.php';
+	
+	// Create new PHPExcel object
+	echo date('H:i:s') . " Νέο PHPExcel object\n";
+	$objPHPExcel = new PHPExcel();
 
+	foreach($data_zones as $zone){
+		//Αντίγραφο του πρώτου στυλ φύλλου σε ένα 2ο
+		$objWorkSheetBase = $objPHPExcel->getSheet();
+		${"objWorkSheet".$zone["id"]} = clone $objWorkSheetBase;
+		${"objWorkSheet".$zone["id"]}->setTitle($zone["name"]);
+		$objPHPExcel->addSheet(${"objWorkSheet".$zone["id"]});
+	}
+	
+	// Ενεργό το φύλλο 1
+	//$objPHPExcel->setActiveSheetIndex(0);
+	
+	// Set properties
+	$objPHPExcel->getProperties()->setCreator("la-kenak")
+					 ->setLastModifiedBy("la-kenak")
+					 ->setTitle("Office 2007 XLSX la-kenak Document")
+					 ->setSubject("Office 2007 XLSX la-kenak Document")
+					 ->setDescription("la-kenak, generated using PHP classes.")
+					 ->setKeywords("office 2007 openxml php")
+					 ->setCategory("Adiafani result file");
+
+	$zz=1;//ζώνες
+	foreach($data_zones as $zone){
+		$data_windows = $database->select($tb_diafani,$col,array("zone_id"=>$zone["id"]));
+		
+			$objPHPExcel->setActiveSheetIndex($zz)
+				->setCellValue("A1", "α/α")
+				->setCellValue("B1", "Όνομα")
+				->setCellValue("C1", "Τοίχος")
+				->setCellValue("D1", "Μήκος (m)")
+				->setCellValue("E1", "Ύψος (m)")
+				->setCellValue("F1", "Εμβαδόν")
+				->setCellValue("G1", "Ποδιά")
+				->setCellValue("H1", "Φύλλα")
+				->setCellValue("I1", "U")
+				->setCellValue("J1", "gw")
+				->setCellValue("K1", "Τύπος")
+				->setCellValue("L1", "Εξ. προστασία")
+				->setCellValue("M1", "Πλαίσιο")
+				->setCellValue("N1", "% πλαισίου")
+				->setCellValue("O1", "Υαλοπίνακας")
+				->setCellValue("P1", "Αερισμός");
+		
+		
+		$i=2;//γραμμή
+		$z=1;//αρίθμηση
+		foreach($data_windows as $window){
+			
+			if($data['wall_id']!=0){
+			$belonging_table="meletes_zone_adiafani";
+			$belonging_id=$data['wall_id'];
+			}
+			if($data['roof_id']!=0){
+			$belonging_table="meletes_zone_orofes";
+			$belonging_id=$data['roof_id'];
+			}
+			
+			$data_belonging = $database->select($belonging_table,"*",array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id'],"id"=>$belonging_id)) );
+			$belonging = $data_belonging[0]["name"];
+			
+			$objPHPExcel->setActiveSheetIndex($zz)
+				->setCellValue("A".$i, $z)
+				->setCellValue("B".$i, $window["name"])
+				->setCellValue("C".$i, $belonging)
+				->setCellValue("D".$i, $window["w"])
+				->setCellValue("E".$i, $window["h"])
+				->setCellValue("F".$i, $window["w"]*$window["h"])
+				->setCellValue("G".$i, $window["p"])
+				->setCellValue("H".$i, $window["f"])
+				->setCellValue("I".$i, $window["u"])
+				->setCellValue("J".$i, $window["g_w"])
+				->setCellValue("K".$i, $array_type[$window["type"]])
+				->setCellValue("L".$i, $array_protection[$window["prostasia"]])
+				->setCellValue("M".$i, $array_plaisio[$window["plaisio"]])
+				->setCellValue("N".$i, $window["plaisioper"])
+				->setCellValue("O".$i, $array_yalo[$window["yalopinakas"]])
+				->setCellValue("P".$i, $window["wind"]);
+		$i++;
+		$z++;
+		}
+		$zz++;
+	}
+	
+
+	//ΦΥΛΛΟ ΑΝΟΙΓΜΑΤΩΝ
+
+
+	// Ενεργό το φύλλο 1
+	$objPHPExcel->setActiveSheetIndex(0);
+
+	// Save Excel 2007 file
+	$return = "";
+	$return .= "<br/>" . date('H:i:s') . " Εγγραφή σε Excel2007 format\n";
+	$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+	$location = "file_upload/server/php/files/user_".$_SESSION['user_id']."/meleti_".$_SESSION['meleti_id']."/diafani.xlsx";
+	$objWriter->save($location, __FILE__);
+
+
+	// Echo memory peak usage
+	$return .= "<br/>" . date('H:i:s') . " Χρήση μέγιστης μνήμης: " . (memory_get_peak_usage(true) / 1024 / 1024) . " MB\r\n";
+
+	// Echo done
+	$return .= "<br/>" . date('H:i:s') . " Εγγράφηκε το αρχείο.\r\n";
+	$return .= "<br/>" . "<a href=\"includes/".$location."\" >Κατεβάστε το αρχείο XLSX διαφανών</a>";
+	
+	return $return;
+}
+
+
+function calc_meletes_zone_diafani_air(){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$tb_zones = "meletes_zones";
+	$tb_diafani = "meletes_zone_diafani";
+	$col = "*";
+	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+	
+	$data_zones = $database->select($tb_zones,$col,$where);
+	
+	$return = array();
+	$zz=1;//ζώνες
+	foreach($data_zones as $zone){
+		$data_windows = $database->select($tb_diafani,$col,array("zone_id"=>$zone["id"]));
+		
+		$zone_win_e = 0;
+		$zone_win_air = 0;
+		
+		foreach($data_windows as $window){
+			$win_e = $window["w"]*$window["h"];
+			$win_air = $win_e * $window["wind"];
+			
+			$zone_win_e += $win_e;
+			$zone_win_air += $win_air;
+		}
+		
+		$return[$zone["id"]]["e"]=$zone_win_e;
+		$return[$zone["id"]]["air"]=$zone_win_air;
+	
+	}
+	
+	return $return;
+	
+}
 // ######################################### ΚΕΛΥΦΟΣ ΜΘΧ #####################################################
 // ##################################################### ΔΑΠΕΔΑ ###############################################
 //Εκτύπωση πίνακα ΔΑΠΕΔΑ ΜΘΧ
@@ -955,7 +1207,8 @@ function create_meletes_mthx_orofes($page=1){
 	$tb = "meletes_mthx_orofes";
 	$col = "*";
 	$array_type = array(
-		0=>"Σε αέρα"
+		0=>"Σε αέρα",
+		1=>"Σε Έδαφος"
 	);
 	
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
@@ -1018,6 +1271,13 @@ function create_meletes_mthx_orofes($page=1){
 			$data_ek = $database->select("vivliothiki_adiafani_e","e",array("id"=>$data['ek']) );
 			$ek=$data_ek[0];
 		$kelyfos .= "<td>".$ap." / ".$ek."</td>";
+			if($data["type"]==1){
+				$prostheta = "z:".$data["z"]."<br/>"."Π:".$data["p"];
+			}else{
+				$prostheta = "Fhor_h:".$data["fhor_h"]."<br/>"."Fhor_c:".$data["fhor_c"]."<br/>".
+						 "Fov_h:".$data["fov_h"]."<br/>"."Fov_c:".$data["fov_c"]."<br/>".
+						 "Ffin_h:".$data["ffin_h"]."<br/>"."Ffin_c:".$data["ffin_c"];
+			}
 		$prostheta = "Fhor_h:".$data["fhor_h"]."<br/>"."Fhor_c:".$data["fhor_c"]."<br/>".
 					"Fov_h:".$data["fov_h"]."<br/>"."Fov_c:".$data["fov_c"]."<br/>".
 					"Ffin_h:".$data["ffin_h"]."<br/>"."Ffin_c:".$data["ffin_c"];

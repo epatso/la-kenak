@@ -2,6 +2,7 @@
 Energy calculations in Greece (K.EN.A.K. legislation)
 
 14/1/2018 - Right now the code is being uploaded in pieces. Keep up for the few more days. 
+20/1/2018 - Crusial update of chapter study (pdf). Fewer errors and warnings. 
 
 Introduction
 ============
@@ -51,7 +52,7 @@ to help in many ways:
 
 
 ## Installation Guide
-Visit [chem-lab.gr/la-kenak](http://www.chem-lab.gr/lakenak) for the most updated guide regarding installing the software.
+Visit [WIKI](https://github.com/ks1f14s/la-kenak/wiki) for the most updated guide regarding installing the software.
 
 
 ### Contribution

@@ -47,8 +47,8 @@ if (isset($_GET['floor'])){$floor=$_GET["floor"];}
 	$building_data = $database->select("user_meletes","*",array("id"=>$_SESSION['meleti_id']));
 	$building_g = $building_data[0]["pros"];
 	
-	$table="meletes_zone_adiafani";
-	$table_win="meletes_zone_diafani";
+	$table="meletes_mthx_adiafani";
+	$table_win="meletes_mthx_diafani";
 	$columns="*";
 	$where=array(
 		"AND"=>array(
@@ -125,9 +125,7 @@ if (isset($_GET['floor'])){$floor=$_GET["floor"];}
 	//Αρχή σχεδίασης
 	$array_type=array(
 		0=>"Αέρας",
-		1=>"ΜΘΧ",
-		2=>"Έδαφος",
-		3=>"Μεσοτοιχία",
+		1=>"Έδαφος"
 	);
 	
 	$image = imageCreateTrueColor ($image_x, $image_y);
@@ -358,9 +356,10 @@ if (isset($_GET['floor'])){$floor=$_GET["floor"];}
 	
 	//ΠΙΝΑΚΙΔΑ
 	//imagefilledrectangle($image, $image_x-5, $image_y-5, $image_x-$scale, $image_y-$scale, $light_cyan);
-	$path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$_SESSION["meleti_id"]."/floor_".$floor.".png";
+	$path = "file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$_SESSION["meleti_id"]."/mthx_".$floor.".png";
 	$create=imagepng ($image,$path);
 	Header("Content-type: image/png");
 	imagePNG ($image);
 	imagedestroy($image);
 ?>
+

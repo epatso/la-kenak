@@ -107,7 +107,7 @@ var yp,dok,syr;
 	document.getElementById(prefix+"draw_order").value = 1;
 	
 	document.getElementById(prefix+"u").value = "";
-	document.getElementById(prefix+"u_id").selectedIndex = <?php echo $wall_u_id;?>;
+	document.getElementById(prefix+"u_id").value = <?php echo $wall_u_id;?>;
 	zone_adiafani_u();
 	document.getElementById(prefix+"ap").value = <?php echo $wall_a;?>;
 	document.getElementById(prefix+"ek").value = <?php echo $wall_e;?>;
@@ -120,7 +120,7 @@ var yp,dok,syr;
 	
 	//Υποστυλώματα
 	document.getElementById(prefix+"yp_u").value = "";
-	document.getElementById(prefix+"yp_u_id").selectedIndex = <?php echo $yp_u_id;?>;
+	document.getElementById(prefix+"yp_u_id").value = <?php echo $yp_u_id;?>;
 	zone_adiafani_yp_u();
 	var yp_counter = document.getElementById(prefix+"yp_counter").value;
 	for(var i=2;i<=yp_counter;i++){
@@ -133,7 +133,7 @@ var yp,dok,syr;
 	
 	//Δοκοί
 	document.getElementById(prefix+"dok_u").value = "";
-	document.getElementById(prefix+"dok_u_id").selectedIndex = <?php echo $dok_u_id;?>;
+	document.getElementById(prefix+"dok_u_id").value = <?php echo $dok_u_id;?>;
 	zone_adiafani_dok_u();
 	var dok_counter = document.getElementById(prefix+"dok_counter").value;
 	for(var i=2;i<=dok_counter;i++){
@@ -146,7 +146,7 @@ var yp,dok,syr;
 	
 	//Συρόμενα
 	document.getElementById(prefix+"syr_u").value = "";
-	document.getElementById(prefix+"syr_u_id").selectedIndex = <?php echo $syr_u_id;?>;
+	document.getElementById(prefix+"syr_u_id").value = <?php echo $syr_u_id;?>;
 	zone_adiafani_syr_u();
 	var syr_counter = document.getElementById(prefix+"syr_counter").value;
 	for(var i=2;i<=syr_counter;i++){

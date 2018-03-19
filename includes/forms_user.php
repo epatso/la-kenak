@@ -46,6 +46,7 @@ if(isset($_GET['logoff'])){
 	redirect_to("index.php?nav=user_logout");
 }
 
+//ΧΡΗΣΤΗΣ
 //Φόρμα για σύνδεση
 if(isset($_POST['submit']) AND $_POST['submit']=='Login'){
 	
@@ -294,6 +295,95 @@ if(isset($_POST['submit']) AND $_POST['submit']=='update-password'){
 }
 
 
+//Φόρμα για διαγραφή ΟΛΩΝ ΤΩΝ ΜΕΛΕΤΩΝ
+if(isset($_POST['submit']) AND $_POST['submit']=='delete_meletesall'){
+	//Κρατάει τα λάθη.
+	$err = array();
+
+	$database = new medoo(DB_NAME);
+	$meleti_tables = array(
+		"user_meletes",
+		"meletes_anelkystires",
+		"meletes_anemogenitries",
+		"meletes_katanalwseis",
+		"meletes_mthx",
+		"meletes_mthx_adiafani",
+		"meletes_mthx_dapeda",
+		"meletes_mthx_diafani",
+		"meletes_mthx_orofes",
+		"meletes_oikad",
+		"meletes_owners",
+		"meletes_pv",
+		"meletes_sith",
+		"meletes_stoixeiadiastaseis",
+		"meletes_stoixeiameleti",
+		"meletes_stoixeiapea",
+		"meletes_teyxos",
+		"meletes_teyxos_p",
+		"meletes_xwroi",
+		"meletes_ydreysi",
+		"meletes_zones",
+		"meletes_zone_adiafani",
+		"meletes_zone_dapeda",
+		"meletes_zone_diafani",
+		"meletes_zone_orofes",
+		"meletes_zone_pathitika",
+		"meletes_zone_sys_aerp",
+		"meletes_zone_sys_coldd",
+		"meletes_zone_sys_coldp",
+		"meletes_zone_sys_coldt",
+		"meletes_zone_sys_coldv",
+		"meletes_zone_sys_light",
+		"meletes_zone_sys_solar",
+		"meletes_zone_sys_thermd",
+		"meletes_zone_sys_thermp",
+		"meletes_zone_sys_thermt",
+		"meletes_zone_sys_thermv",
+		"meletes_zone_sys_ygrd",
+		"meletes_zone_sys_ygrp",
+		"meletes_zone_sys_ygrt",
+		"meletes_zone_sys_znxd",
+		"meletes_zone_sys_znxp",
+		"meletes_zone_sys_znxt",
+		"meletes_zone_sys_znxv",
+		"meletes_zone_thermo",
+		"meletes_senaria",
+		"meletes_entypa"
+	);
+	
+	//κριτήριο διαγραφής ο χρήστης με το session
+	$where_user_id = array("user_id" => $_SESSION['user_id']);
+	
+	//Επιλογή μελετών και διαγραφή φακέλων
+	$select_meletes = $database->select("user_meletes","*",$where_user_id);
+	foreach($select_meletes as $meleti){
+		//διαγραφή από /PDF
+		$filename = "pdf/user".$_SESSION['user_id']."-meleti".$meleti["id"]."-teyxos.pdf";
+		if(file_exists($filename)){
+		unlink($filename);
+		}
+		
+		//Διαγραφή από φακέλους μελέτης
+		$dirname = "includes/file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$meleti["id"];
+		if (!is_dir($dirname)) {
+			closedir(opendir($dirname));
+			rmdir($dirname);
+		}
+	}//για κάθε μελέτη
+	
+	foreach($meleti_tables as $table){
+		$delete_meleti = $database->delete($table,$where_user_id);
+	}//για κάθε πίνακα
+
+	//διαγραφή session μελέτης
+	if ( isset($_SESSION['meleti_id']) ){
+		unset($_SESSION['meleti_id']);
+	}
+
+}
+
+	
+//ΜΕΛΕΤΕΣ
 //Φόρμα για νέα μελέτη
 if(isset($_POST['submit']) AND $_POST['submit']=='neameleti'){
 	$database = new medoo(DB_NAME);
@@ -510,6 +600,144 @@ if(isset($_GET['action']) AND $_GET['action']=='delete_meleti'){
 //exit;
 }
 
+
+//Φόρμα για αντιγραφή μελέτης
+if(isset($_POST['submit']) AND $_POST['submit']=='copy_meleti'){
+	//Κρατάει τα λάθη.
+	$err = array();
+
+	$database = new medoo(DB_NAME);
+	$tb_meletes = "user_meletes";
+	$tb_meletistoix = "meletes_stoixeiameleti";
+	$tb_pea = "meletes_stoixeiapea";
+	$tb_diastaseis = "meletes_stoixeiadiastaseis";
+	$tb_zone_adiafani = "user_meletes";
+	$col = "*";
+	$where_user = array("id" => $_SESSION['user_id']);
+	
+	//Πηγή POST
+	$source_meleti=$_POST['source_meleti'];
+	//ΒΑΣΗ id=POST source_id
+	$where_source = array ("AND" => array("id" => $source_meleti,"user_id" => $_SESSION['user_id']));
+	
+	//Στόχος POST
+	$target_meleti=$_POST['target_meleti'];
+	//ΒΑΣΗ id=POST target_id
+	$where_target = array ("AND" => array("id" => $target_meleti,"user_id" => $_SESSION['user_id']));
+	
+	//Ονόματα μελετών
+	$select_source = $database->select($tb_meletes,$col,$where_source);
+	$source_meleti_name = $select_source[0]["name"];
+	
+	$select_target = $database->select($tb_meletes,$col,$where_target);
+	$target_meleti_name = $select_target[0]["name"];
+	
+	//Αντιγραφή στοιχείων από πίνακα μελέτης USER_MELETES
+	$update_meleti_params=array(
+		"perigrafi"=>$select_source[0]["perigrafi"],
+		"type"=>$select_source[0]["type"],
+		"symptiksi"=>$select_source[0]["symptiksi"],
+		"address"=>$select_source[0]["address"],
+		"address_x"=>$select_source[0]["address_x"],
+		"address_y"=>$select_source[0]["address_y"],
+		"address_z"=>$select_source[0]["address_z"],
+		"ktirio"=>$select_source[0]["ktirio"],
+		"kaek"=>$select_source[0]["kaek"],
+		"tmima"=>$select_source[0]["tmima"],
+		"tmima_ar"=>$select_source[0]["tmima_ar"],
+		"xrisi"=>$select_source[0]["xrisi"],
+		"climate"=>$select_source[0]["climate"],
+		"height"=>$select_source[0]["height"],
+		"zone"=>$select_source[0]["zone"],
+		"pros"=>$select_source[0]["pros"],
+		"idioktitis"=>$select_source[0]["idioktitis"],
+		"idio_kathestos"=>$select_source[0]["idio_kathestos"],
+		"ypeythinos_type"=>$select_source[0]["ypeythinos_type"],
+		"ypeythinos_name"=>$select_source[0]["ypeythinos_name"],
+		"ypeythinos_tel"=>$select_source[0]["ypeythinos_tel"],
+		"ypeythinos_mail"=>$select_source[0]["ypeythinos_mail"]
+	);
+	$update_meleti = $database->update($tb_meletes,$update_meleti_params,$where_target);
+	
+	
+	//ΒΑΣΗ meleti_id=POST source_id και ΒΑΣΗ target_id=POST target_id
+	$where_source2 = array ("AND" => array("meleti_id" => $source_meleti,"user_id" => $_SESSION['user_id']));
+	$where_target2 = array ("AND" => array("meleti_id" => $target_meleti,"user_id" => $_SESSION['user_id']));
+	
+	//Αντιγραφή στοιχείων από πίνακα μελέτης meletes_stoixeiapea
+	$select_source_pea = $database->select($tb_pea,$col,$where_source2);
+	$update_pea_params=array(
+		"type_u"=>$select_source_pea[0]["type_u"],
+		"type_psi"=>$select_source_pea[0]["type_psi"],
+		"percent"=>$select_source_pea[0]["percent"],
+		"thermo_kat"=>$select_source_pea[0]["thermo_kat"],
+		"prostasia"=>$select_source_pea[0]["prostasia"],
+		"plaisio"=>$select_source_pea[0]["plaisio"],
+		"per_plaisio"=>$select_source_pea[0]["per_plaisio"],
+		"yalosi"=>$select_source_pea[0]["yalosi"],
+		"aerismos"=>$select_source_pea[0]["aerismos"],
+		"piges"=>$select_source_pea[0]["piges"],
+		"synthikes"=>$select_source_pea[0]["synthikes"],
+		"levels"=>$select_source_pea[0]["levels"],
+		"typical_h"=>$select_source_pea[0]["typical_h"],
+		"floor_h"=>$select_source_pea[0]["floor_h"],
+		"ekthesi"=>$select_source_pea[0]["ekthesi"]
+	);
+	$update_pea = $database->update($tb_pea,$update_pea_params,$where_target2);
+	
+	//Αντιγραφή στοιχείων από πίνακα μελέτης meletes_stoixeiameleti
+	$select_source_stoixeiamel = $database->select($tb_meletistoix,$col,$where_source2);
+	$update_stoixeiamel_params=array(
+		"sxedio"=>$select_source_stoixeiamel[0]["sxedio"],
+		"odos"=>$select_source_stoixeiamel[0]["odos"],
+		"apostaseis"=>$select_source_stoixeiamel[0]["apostaseis"],
+		"u_t"=>$select_source_stoixeiamel[0]["u_t"],
+		"u_yp"=>$select_source_stoixeiamel[0]["u_yp"],
+		"u_dok"=>$select_source_stoixeiamel[0]["u_dok"],
+		"u_syr"=>$select_source_stoixeiamel[0]["u_syr"],
+		"u_dap"=>$select_source_stoixeiamel[0]["u_dap"],
+		"u_or"=>$select_source_stoixeiamel[0]["u_or"],
+		"u_an"=>$select_source_stoixeiamel[0]["u_an"],
+		"therm_dap"=>$select_source_stoixeiamel[0]["therm_dap"],
+		"therm_or"=>$select_source_stoixeiamel[0]["therm_or"],
+		"therm_yp"=>$select_source_stoixeiamel[0]["therm_yp"],
+		"therm_dok"=>$select_source_stoixeiamel[0]["therm_dok"],
+		"therm_syr"=>$select_source_stoixeiamel[0]["therm_syr"],
+		"therm_an"=>$select_source_stoixeiamel[0]["therm_an"],
+		"therm_kat"=>$select_source_stoixeiamel[0]["therm_kat"],
+		"therm_l"=>$select_source_stoixeiamel[0]["therm_l"]
+	);
+	$update_stoixeiamel = $database->update($tb_meletistoix,$update_stoixeiamel_params,$where_target2);
+	
+	//Αντιγραφή στοιχείων από πίνακα μελέτης meletes_stoixeiadiastaseis
+	$select_source_diastaseis = $database->select($tb_diastaseis,$col,$where_source2);
+	$update_diastaseis_params=array(
+		"t_l"=>$select_source_diastaseis[0]["t_l"],
+		"t_h"=>$select_source_diastaseis[0]["t_h"],
+		"t_d"=>$select_source_diastaseis[0]["t_d"],
+		"yp_l"=>$select_source_diastaseis[0]["yp_l"],
+		"dok_h"=>$select_source_diastaseis[0]["dok_h"],
+		"syr_l"=>$select_source_diastaseis[0]["syr_l"],
+		"syr_h"=>$select_source_diastaseis[0]["syr_h"],
+		"a"=>$select_source_diastaseis[0]["a"],
+		"e"=>$select_source_diastaseis[0]["e"],
+		"an_l"=>$select_source_diastaseis[0]["an_l"],
+		"an_h"=>$select_source_diastaseis[0]["an_h"],
+		"an_pod"=>$select_source_diastaseis[0]["an_pod"]
+	);
+	$update_diastaseis = $database->update($tb_diastaseis,$update_diastaseis_params,$where_target2);
+	
+	
+	$err[] = "Αντιγράφηκαν τα δομικά στοιχεία της μελέτης:";
+	$err[] = "<font color=\"red\">".$source_meleti_name."</font>";
+	$err[] = "στη μελέτη:";
+	$err[] = "<font color=\"blue\">".$target_meleti_name."</font>";
+	
+	//Υπάρχουν μηνύματα για εμφάνιση.
+	if(count($err)){
+		$_SESSION['msg']['login-err'] = implode('<br />',$err);
+	}
+}
 
 //Σύνδεση μέσω GOOGLE_ID
 // Η Google περνάει την παράμετρο "code" στο επιστρεφόμενο URL

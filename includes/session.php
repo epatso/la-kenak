@@ -1,10 +1,7 @@
 <?php
-// Αρχή συνεδρίας
-session_start();
-//Όνομα συνεδρίας
-session_name('kenakv5');
-// Το cookie έχει διάρκεια 2 εβδομάδων
-session_set_cookie_params(2*7*24*60*60);
+session_name('kenakv5');//Όνομα συνεδρίας
+session_set_cookie_params(2*7*24*60*60);// Το cookie έχει διάρκεια 2 εβδομάδων
+session_start();// Αρχή συνεδρίας
 /*
 Copyright (C) 2013 - Labros kenak v.4.0 beta
 Author: Labros Karoyntzos 
@@ -30,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
 
-require("include_check.php");
+//require("include_check.php");
 
 
 function logged_in() {

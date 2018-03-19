@@ -1128,17 +1128,32 @@ function get_columns_xaraktiristiki($xaraktiristiki){
 		if ($xaraktiristiki <= 2) {
 		$grammi1 = "2";
 		}
+		if ($xaraktiristiki == 3) {
+		$grammi1 = "3";
+		}
 		if ($xaraktiristiki == 4) {
 		$grammi1 = "4";
+		}
+		if ($xaraktiristiki == 5) {
+		$grammi1 = "5";
 		}
 		if ($xaraktiristiki == 6) {
 		$grammi1 = "6";
 		}
+		if ($xaraktiristiki == 7) {
+		$grammi1 = "7";
+		}
 		if ($xaraktiristiki == 8) {
 		$grammi1 = "8";
 		}
+		if ($xaraktiristiki == 9) {
+		$grammi1 = "9";
+		}
 		if ($xaraktiristiki == 10) {
 		$grammi1 = "10";
+		}
+		if ($xaraktiristiki == 12) {
+		$grammi1 = "12";
 		}
 		if ($xaraktiristiki == 14) {
 		$grammi1 = "14";
@@ -1155,24 +1170,44 @@ function get_columns_xaraktiristiki($xaraktiristiki){
 		if ($xaraktiristiki >= 30) {
 		$grammi1 = "30";
 		}
-		if ($xaraktiristiki > 2 && $xaraktiristiki < 4) {
+		if ($xaraktiristiki > 2 && $xaraktiristiki < 3) {
 		$grammi1 = "2";
+		$grammi2 = "3";
+		}
+		if ($xaraktiristiki > 3 && $xaraktiristiki < 4) {
+		$grammi1 = "3";
 		$grammi2 = "4";
 		}
-		if ($xaraktiristiki > 4 && $xaraktiristiki < 6) {
+		if ($xaraktiristiki > 4 && $xaraktiristiki < 5) {
 		$grammi1 = "4";
+		$grammi2 = "5";
+		}
+		if ($xaraktiristiki > 5 && $xaraktiristiki < 6) {
+		$grammi1 = "5";
 		$grammi2 = "6";
 		}
-		if ($xaraktiristiki > 6 && $xaraktiristiki < 8) {
+		if ($xaraktiristiki > 6 && $xaraktiristiki < 7) {
 		$grammi1 = "6";
+		$grammi2 = "7";
+		}
+		if ($xaraktiristiki > 7 && $xaraktiristiki < 8) {
+		$grammi1 = "7";
 		$grammi2 = "8";
 		}
-		if ($xaraktiristiki > 8 && $xaraktiristiki < 10) {
+		if ($xaraktiristiki > 8 && $xaraktiristiki < 9) {
 		$grammi1 = "8";
+		$grammi2 = "9";
+		}
+		if ($xaraktiristiki > 9 && $xaraktiristiki < 10) {
+		$grammi1 = "9";
 		$grammi2 = "10";
 		}
-		if ($xaraktiristiki > 10 && $xaraktiristiki < 14) {
+		if ($xaraktiristiki > 10 && $xaraktiristiki < 12) {
 		$grammi1 = "10";
+		$grammi2 = "12";
+		}
+		if ($xaraktiristiki > 12 && $xaraktiristiki < 14) {
+		$grammi1 = "12";
 		$grammi2 = "14";
 		}
 		if ($xaraktiristiki > 14 && $xaraktiristiki < 18) {
@@ -1219,10 +1254,13 @@ function get_lines_dapedovathos($vathos){
 		if ($vathos == 3) {
 		$grammi1 = 3;
 		}
-		if ($vathos == 4.5) {
-		$grammi1 = 4.5;
+		if ($vathos == 4) {
+		$grammi1 = 4;
 		}
-		if ($vathos == 6) {
+		if ($vathos == 5) {
+		$grammi1 = 5;
+		}
+		if ($vathos >= 6) {
 		$grammi1 = 6;
 		}
 		if ($vathos >= 9) {
@@ -1252,12 +1290,16 @@ function get_lines_dapedovathos($vathos){
 		$grammi1 = 2.5;
 		$grammi2 = 3;
 		}
-		if ($vathos > 3 && $vathos < 4.5) {
+		if ($vathos > 3 && $vathos < 4) {
 		$grammi1 = 3;
-		$grammi2 = 4.5;
+		$grammi2 = 4;
 		}
-		if ($vathos > 4.5 && $vathos < 6) {
-		$grammi1 = 4.5;
+		if ($vathos > 4 && $vathos < 5) {
+		$grammi1 = 4;
+		$grammi2 = 5;
+		}
+		if ($vathos > 5 && $vathos < 6) {
+		$grammi1 = 5;
 		$grammi2 = 6;
 		}
 		if ($vathos > 6 && $vathos < 9) {
@@ -1341,7 +1383,7 @@ function get_ufb($xaraktiristiki, $vathos, $ufb){
 	$tb = "vivliothiki_domika9a";
 	$col = "*";
 	$vathos=(string)($vathos);
-	$ufb=(string)($ufb);
+	$ufb=(string)($ufb);	
 	$where=array("AND"=>array("Ufb"=>$ufb,"z"=>$vathos));
 	$data_table = $database->select($tb,$col,$where);
 	$zitoymeno = $data_table[0][$xaraktiristiki];
@@ -1360,9 +1402,15 @@ function get_utb($vathos, $utb){
 }
 
 //Εύρεση Um,max στον πίνακα vivliothiki_ummax
-function get_ummax($zwni, $aprosv){
+//type:0 παλιό, 1 ριζ. ανακ. (παλίος κενακ), 2 νέο (παλίος κενακ), 3 ριζ. ανακ. (νέος κενακ), 4 νέο (νέος κενακ)
+function get_ummax($zwni, $aprosv, $bld_type=0){
 	$database = new medoo(DB_NAME);
-	$tb = "vivliothiki_ummax";
+	if($bld_type<=3){
+		$tb = "vivliothiki_ummax_old";
+	}
+	if($bld_type==4){
+		$tb = "vivliothiki_ummax_new";
+	}
 	$zwni=(string)($zwni);
 	$col = $zwni;
 	
@@ -1387,10 +1435,83 @@ function get_ummax($zwni, $aprosv){
 function isodynamos_dapedoy($ufb, $z, $b){
 	$database = new medoo(DB_NAME);
 	$tb = "vivliothiki_domika9a";
-	$col = "$b";
-	$where=array("AND"=>array("Ufb"=>$ufb,"z"=>$z));
-	$u = $database->select($tb,$col,$where);
-	$u=$u[0];
+	
+	$ufb_times = get_lines_ufb($ufb);
+	$ufb1=$ufb_times[0];
+	$ufb2 = $ufb_times[1];
+	
+	$stiles=get_columns_xaraktiristiki($b);
+	$b1 = $stiles[0];
+	$b2 = $stiles[1];
+	$grammes=get_lines_dapedovathos($z);
+	$z1 = $grammes[0];
+	$z2 = $grammes[1];
+	
+	//Για το 1ο Ufb
+	$ufb=$ufb1;
+	if ($b2==""){ //Οι στήλες (χαρακτηριστική) ακριβώς
+		if ($z2=="") { //Οι γραμμές (βάθος) ακριβώς
+			$u = get_ufb($b1, $z1, $ufb);
+		}else{//Οι γραμμές (βάθος) έχουν 2 γραμμές
+			$u1 = get_ufb($b1, $z1, $ufb);
+			$u2 = get_ufb($b1, $z2, $ufb);
+			$u = paremvoli($z1, $z2, $u1, $u2, $z);
+		}//γραμμές
+	}else{ //Οι στήλες (χαρακτηριστική) έχει 2 στήλες
+		if ($z2=="") { //Οι γραμμές (βάθος) ακριβώς
+			$u1 = get_ufb($b1, $z1, $ufb);
+			$u2 = get_ufb($b2, $z1, $ufb);
+			$u = paremvoli($b1, $b2, $u1, $u2, $b);
+		}else{//Οι γραμμές (βάθος) έχουν 2 γραμμές
+			$u1_1 = get_ufb($b1, $z1, $ufb);
+			$u1_2 = get_ufb($b1, $z2, $ufb);
+			$u1 = paremvoli($z1, $z2, $u1_1, $u1_2, $z);
+			$u2_1 = get_ufb($b2, $z1, $ufb);
+			$u2_2 = get_ufb($b2, $z2, $ufb);
+			$u2 = paremvoli($z1, $z2, $u2_1, $u2_2, $z);
+			$u = paremvoli($b1, $b2, $u1, $u2, $b);
+		}//γραμμές
+	}//Στήλες
+	
+	$ufb1_u=$u;
+		
+	if($ufb2!=""){
+	$ufb=$ufb2;
+		if ($b2==""){ //Οι στήλες (χαρακτηριστική) ακριβώς
+			if ($z2=="") { //Οι γραμμές (βάθος) ακριβώς
+				$u = get_ufb($b1, $z1, $ufb);
+			}else{//Οι γραμμές (βάθος) έχουν 2 γραμμές
+				$u1 = get_ufb($b1, $z1, $ufb);
+				$u2 = get_ufb($b1, $z2, $ufb);
+				$u = paremvoli($z1, $z2, $u1, $u2, $z);
+			}//γραμμές
+		}else{ //Οι στήλες (χαρακτηριστική) έχει 2 στήλες
+			if ($z2=="") { //Οι γραμμές (βάθος) ακριβώς
+				$u1 = get_ufb($b1, $z1, $ufb);
+				$u2 = get_ufb($b2, $z1, $ufb);
+				$u = paremvoli($b1, $b2, $u1, $u2, $b);
+			}else{//Οι γραμμές (βάθος) έχουν 2 γραμμές
+				$u1_1 = get_ufb($b1, $z1, $ufb);
+				$u1_2 = get_ufb($b1, $z2, $ufb);
+				$u1 = paremvoli($z1, $z2, $u1_1, $u1_2, $z);
+				$u2_1 = get_ufb($b2, $z1, $ufb);
+				$u2_2 = get_ufb($b2, $z2, $ufb);
+				$u2 = paremvoli($z1, $z2, $u2_1, $u2_2, $z);
+				$u = paremvoli($b1, $b2, $u1, $u2, $b);
+			}//γραμμές
+		}//Στήλες
+		
+		$ufb2_u=$u;
+	}else{//δεν υπάρχει 2η γραμμή για Ufb
+		$ufb2_u=$ufb1_u;
+	}
+	
+	//Έλεγχος των 2 τιμών Ufb
+	if($ufb1_u!=$ufb2_u){
+		$u = paremvoli($ufb1, $ufb2, $ufb1_u, $ufb2_u, $ufb);
+	}else{
+		$u=$ufb1_u;
+	}
 	
 	return $u;
 }

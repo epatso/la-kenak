@@ -348,6 +348,7 @@ $array_diafani_uids = teyxos_getdiafaniuids();
 
 //Εκτύπωση υπολογισμών συντελεστών θερμοπερατότητας αδιαφανών
 $analysiu = "";
+$analysiu_win = "";
 if (!empty($array_adiafani_uids)) {
 foreach($array_adiafani_uids as $id){
 	$analysiu .= teyxos_adiafaniu($id);
@@ -358,7 +359,7 @@ foreach($array_adiafani_uids as $id){
 //Συντελεστές θερμοπερατότητας διαφανών
 if (!empty($array_diafani_uids)) {
 foreach($array_diafani_uids as $id){
-	$analysiu_win = teyxos_diafaniu($id);
+	$analysiu_win .= teyxos_diafaniu($id)."<br/>";
 }//Για κάθε id της array με υπολογισμούς ανοιγμάτων που χρησιμοποιήθηκαν στη μελέτη
 }//Εάν η array με τους υπολογισμούς ανοιγμάτων δεν είναι κενή - έχουν χρησιμοποιηθεί υπολογισμοί στη μελέτη
 
@@ -407,7 +408,7 @@ $kef43_winug=$win_standar[5];
 $kef44pin46 = teyxos_adiafani_checkum();
 
 //ΚΕΦΑΛΑΙΟ 5
-//Κείμενα θέρμσνης
+//Κείμενα θέρμνσης
 $kef5_therm=teyxos_kef5_therm();
 $kef5thermp_type = $kef5_therm[0];
 $kef5thermp_pigi = $kef5_therm[1];
@@ -450,6 +451,9 @@ $kef6ktirio = teyxos_kef6ktirio();
 $kef6air = teyxos_kef6air();
 $kef6conditions = teyxos_kef6conditions();
 $kef6zonechapter = teyxos_kef6zonechapter();
+
+$kef4_umax=teyxos_kef4_umax();
+$kef4_ummax=teyxos_kef4_ummax();
 
 
 //Εικόνες τοίχων
@@ -551,7 +555,9 @@ $z[66]="{KEF6CONDITIONS}";
 $z[67]="{KEF6ZONECHAPTER}";
 $z[68]="{ZWNI}";
 $z[69]="{XRISIKTIRIO1}";
-$z[70]="<table>";
+$z[70]="{UMAX_GENERAL}";
+$z[71]="{ADIAV_GENERAL}";
+$z[72]="<table>";
 
 
 $z1[0]="<p style=\"page-break-before:always;\"></p>";
@@ -631,7 +637,9 @@ $z1[66]=$kef6conditions;
 $z1[67]=$kef6zonechapter;
 $z1[68]=$climatezone;
 $z1[69]=$kef6xrisi;
-$z1[70]="<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"width:100%;\" >";
+$z1[70]=$kef4_umax;
+$z1[71]=$kef4_ummax;
+$z1[72]="<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\" style=\"width:100%;\" >";
 
 
 	for($i=1;$i<=8;$i++){

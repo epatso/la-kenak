@@ -88,7 +88,7 @@ confirm_meleti_isset();
 			}
 			</script>
 		
-		<div class="col-md-1">
+		<div class="col-md-2">
 			       <div class="btn-group">
 						<button class="btn btn-solar dropdown-toggle" data-toggle="dropdown"><i class="fa fa-life-ring"></i> Βοήθεια
 						<span class="caret"></span>
@@ -132,21 +132,36 @@ confirm_meleti_isset();
 					<div id="systems_info"></div>
 			
 			<?php
-				$bld_info = systems_calc_ea();
-				$bld_e=$bld_info[0];
-				$bld_a=$bld_info[1];
+				$bld_ea = systems_calc_ea();
+				$bld_e=$bld_ea[0];
+				$bld_a=$bld_ea[1];
+				$bld_ump = systems_calc_um();
+				$bld_um=$bld_ump[0];
+				$bld_av=$bld_ump[1];
+				$bld_ummax=$bld_ump[2];
+				$pgens = systems_calc_pgen();
 			?>
 			
 			<!-- info-box -->
 			 <div class="info-box bg-red">
 				<a class="tip-top" href="#" title="E:Συνολικό εμβαδόν ζωνών<br/>A:Εμβαδόν παράπλευρης επιφάνειας ζωνών (τοίχοι εκτός μεσοτοιχίας, δάπεδα, οροφές)"><i class="fa fa-cog fa-2x"></i></a>
 				<br/><br/>
+				Κτίριο<br/>
 				Ε: <?php echo round($bld_e,2);?> m<sup>2</sup><br/>
 				A: <?php echo round($bld_a,2);?> m<sup>2</sup><br/>
-				U<sub>m</sub>:  W/m<sup>2</sup>.K<br/>
-				P<sub>gen</sub>:  KW<br/>
-				P<sub>n</sub> (ZNX):  KW<br/>
-				P<sub>light</sub>:  KW<br/>
+				U<sub>m</sub>: <?php echo round($bld_um,2);?> W/m<sup>2</sup>.K<br/>
+				A/V: <?php echo round($bld_av,2);?> m<sup>-1</sup><br/>
+				U<sub>m,max</sub>: <?php echo round($bld_ummax,2);?> W/m<sup>2</sup>.K<br/>
+				<hr/>
+				Ζώνες<br/>
+				<?php
+				
+					foreach($pgens as $pgen){
+						echo $pgen["name"]." - E:".$pgen["e"]."m<sup>2</sup> A:".$pgen["a"]."m<sup>2</sup><br/>";
+						echo "P<sub>gen</sub>: ".$pgen["pgen"]."KW<br/><br/>";
+					}
+					
+				?>
           </div>
           <!-- /.info-box -->
 		  
@@ -232,7 +247,7 @@ confirm_meleti_isset();
 </div>
 <!-- ######################### Κρυφή ΒΟΗΘΕΙΑ για εμφάνιση ######################### -->		
 		
-		<div class="col-md-11">
+		<div class="col-md-10">
 			<div class="nav-tabs-custom">
 			<div id='wait' style="display:none;position:absolute;top:130px;left:500px;"><img src="images/interface/ajax-loader.gif"></div>
 			<ul class="nav nav-tabs">

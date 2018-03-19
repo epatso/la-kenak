@@ -216,6 +216,7 @@ confirm_logged_in();
 				<li><a href="#tabs-2" data-toggle="tab"><i class="fa fa-key"></i> Αλλαγή κωδικού</a></li>
 				<li><a href="#tabs-3" data-toggle="tab"><i class="fa fa-user-secret"></i> Χρήση</a></li>
 				<li><a href="#tabs-4" data-toggle="tab"><i class="fa fa-eye"></i> Εμφάνιση</a></li>
+				<li><a href="#tabs-5" data-toggle="tab"><i class="fa fa-trash"></i> Διαγραφή δεδομένων</a></li>
 			</ul>
 			
 			<div class="tab-content">
@@ -755,10 +756,10 @@ document.getElementById('address_z').value=number_format(z,2);
 							<div id="file_result"></div>
 						</div>
 					</div>
-					</form>
+				</form>
 				
 			</div>
-			
+					
 <script type="text/javascript">
 
 window.onload = function () {
@@ -805,6 +806,28 @@ window.onload = function () {
   }
 }
 </script>
+		
+		
+		<div class="tab-pane" id="tabs-5">
+		
+		<font color="red"><h4><i class="fa fa-trash"></i> ΠΡΟΣΟΧΗ: Διαγραφή δεδομένων</h4></font>
+		Ο συγκεκριμένος τομέας αφορά τη διαγραφή μελετών, δεδομένων και στοιχείων χρήστη από το λογισμικό. <br/>
+		Η επιλογή αυτή δίνεται σε περίπτωση που ο χρήστης επιθυμεί τη διαγραφή των προσωπικών του στοιχείων από το λογαριασμό του (δικαίωμα στη λήθη). <br/>
+		Τα δεδομένα δεν μπορούν να ανακτηθούν. Έτσι οι συγκεκριμένες επιλογές θα πρέπει να χρησιμοποιείται με προσοχή. <br/>
+		
+		<font color="red"><h5><i class="fa fa-trash"></i> Διαγραφή όλων των μελετών</h5></font>
+		<form class="clearfix" action="" method="post">
+			<div class="row">
+				<div class="col-md-12">
+					<button type="submit" id="deletemeletes_submit" name="submit" value="delete_meletesall" class="btn btn-danger">Διαγραφή μελετών</button>
+					<div id="delall_result"></div>
+				</div>
+			</div>
+		</form>
+		
+		</div>
+
+
 	
 <script>
 function check_pass(){

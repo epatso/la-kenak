@@ -254,6 +254,12 @@ if (isset($_GET["nav"])){
 		<i class="fa fa-dashboard"></i> <span>Αρχική</span>
 	  </a>
 	</li>
+	
+	<?php
+	//######## ΛΟΓΙΣΜΙΚΟ ONLINE ##################
+	if($offline!=1){//Ανοικτό λογισμικό
+	?>
+	
 	<li class="header">ΒΙΒΛΙΟΘΗΚΕΣ</li>
 	<li class="<?php echo $class_library;?>treeview">
 	  <a href="#">
@@ -286,7 +292,7 @@ if (isset($_GET["nav"])){
 	  <ul class="treeview-menu">
 		<li<?php echo $class_library_materials;?>><a href="?nav=library_materials"><i class="fa fa-bars"></i> Υλικά ΚΕΝΑΚ</a></li>
 		<li<?php echo $class_library_systems;?>><a href="?nav=library_systems"><i class="fa fa-industry"></i> Συστήματα</a></li>
-		<li<?php echo $class_library_paremvaseis;?>><a href="?nav=library_paremvaseis"><i class="fa fa-sitemap"></i> Εξοικονομώ I</a></li>
+		<li<?php echo $class_library_paremvaseis;?>><a href="?nav=library_paremvaseis"><i class="fa fa-sitemap"></i> Εξοικονομώ</a></li>
 	  </ul>
 	</li>
 	<li class="<?php echo $class_calc;?>treeview">
@@ -338,6 +344,12 @@ if (isset($_GET["nav"])){
 		<li<?php echo $class_calc_xml;?>><a href="?nav=calc_xml"><i class="fa fa-random"></i> Σενάρια xml</a></li>
 	  </ul>
 	</li>
+	
+	<?php
+	//######## ΛΟΓΙΣΜΙΚΟ ONLINE ##################
+	}//Ανοικτό λογισμικό
+	?>
+	
 	
 	<?php
 	if (isset($_SESSION['username'])){
@@ -406,7 +418,7 @@ if (isset($_GET["nav"])){
 	-->
 	
 	<?php
-	}
+	}//έχει οριστεί μελέτη
 	?>
 	
 	<li class="header">ΧΡΗΣΤΗΣ</li>
@@ -440,18 +452,13 @@ if (isset($_GET["nav"])){
 				<i class="fa fa-calendar"></i> <span>Ημερολόγιο</span>
 				</a>
 			</li>
-			<!--
+			
 			<li<?php echo $class_user_messaging;?>>
 			  <a href="?nav=user_messaging">
-				<i class="fa fa-envelope"></i> <span>Μηνύματα</span>
-					<span class="pull-right-container">
-					<small class="label pull-right bg-yellow">12</small>
-					<small class="label pull-right bg-green">16</small>
-					<small class="label pull-right bg-red">5</small>
-					</span>
+				<i class="fa fa-envelope"></i> <span>Υποστήριξη</span>
 				</a>
 			</li>
-			-->
+			
 			<li<?php echo $class_user_logout;?>>
 				<a href="?logoff">
 					<i class="fa fa-power-off"></i> <span>Αποσύνδεση</span>
@@ -466,7 +473,7 @@ if (isset($_GET["nav"])){
 				</a>
 			</li>
 			<li>
-				<a href="?nav=user_register">
+				<a href="?nav=user_login">
 					<i class="fa fa-user"></i> <span>Δημιουργία</span>
 				</a>
 			</li>
@@ -498,7 +505,7 @@ if (isset($_GET["nav"])){
 			</li>
 			<li<?php echo $class_admin_users;?>>
 				<a href="?nav=admin_users">
-					<i class="fa fa-users"></i> <span>Χρήστες</span>
+					<i class="fa fa-users"></i> <span>Χρήστες/Υποστήριξη</span>
 				</a>
 			</li>
 			<li<?php echo $class_admin_libraries;?>>
@@ -523,9 +530,9 @@ if (isset($_GET["nav"])){
 	?>
 	
 	<li class="header">ΣΧΕΤΙΚΑ</li>
-	<li><a href="https://sourceforge.net/p/lakenak/wiki/browse_pages/" target="_blank"><i class="fa fa-circle-o text-red"></i> <span>Wiki</span></a></li>
-	<li><a href="http://www.chem-lab.gr" target="_blank"><i class="fa fa-circle-o text-yellow"></i> <span>chem-lab.gr</span></a></li>
-	<li><a href="#peri_popup" data-toggle="modal"><i class="fa fa-circle-o text-aqua"></i> <span>Περί...</span></a></li>
+	<li><a href="https://github.com/ks1f14s/la-kenak" target="_blank"><i class="fa fa-code-fork text-red"></i> <span>Download</span></a></li>
+	<li><a href="http://www.chem-lab.gr" target="_blank"><i class="fa fa-id-card-o text-yellow"></i> <span>Contact</span></a></li>
+	<li><a href="#peri_popup" data-toggle="modal"><i class="fa fa-life-ring text-aqua"></i> <span>About...</span></a></li>
   </ul>
 </section>
 <!-- /.sidebar -->

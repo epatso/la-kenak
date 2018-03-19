@@ -487,11 +487,11 @@ function calc_ngen(){
 	</tr>
 	
 	<tr>
-		<th colspan="2">Εάν τηρεί τον κανονισμό Ενεργειακής Επισήμανσης της ΕΕ</th>
+		<th colspan="2">Εάν τηρεί τον κανονισμό Ενεργειακής Επισήμανσης της ΕΕ και με βάση θερμαινόμενο μέσο: </th>
 		<th>SCOP</th>
 	</tr>
 	<tr>
-		<td>Αερόψυκτη αντλία ΕΕ 626/2011</td>
+		<td>Α. Αέρας (ΕΕ 626/2011)</td>
 		<td>
 			<div class="input-group">
 				<span class="input-group-addon">SCOP<sub>ΕΣ</sub></span>
@@ -506,7 +506,7 @@ function calc_ngen(){
 		</td>
 	</tr>
 	<tr>
-		<td>Υδρόψυκτη αντλία ΕΕ 811/2011</td>
+		<td>Β. Νερό (ΕΕ 811/2011)</td>
 		<td>
 			<div class="input-group">
 				<span class="input-group-addon">Τύπος</span>

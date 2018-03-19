@@ -79,7 +79,7 @@ class MYPDF extends TCPDF {
 	}
 }
 
-
+//ΚΕΦΑΛΑΙΑ ΤΕΥΧΟΥΣ
 for($i=1;$i<=8;$i++){
 $teyxos = $kefalaio["kef".$i];
 $teyxos .= "<p style=\"page-break-before:always;\">&nbsp;</p>";

@@ -110,10 +110,15 @@ require("include_check.php");
 				if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 					document.getElementById("synthikes_text").innerHTML=xmlhttp.responseText;
 					document.getElementById('wait').style.display="none";
+				}else{
+					document.getElementById("synthikes_text").innerHTML=xmlhttp.statusText;
 				}}
 			}
 			get_synthikes();
 			</script>
+			<?php
+				//echo create_library_synthikes(0,1);
+			?>
 		</div>
 		<!-- /.box-body -->
 		<div class="box-footer clearfix">

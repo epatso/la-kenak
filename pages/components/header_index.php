@@ -95,7 +95,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 <script type="text/javascript" src="bower_components/bootstrap/js/tooltip.js" /></script>
 <script type="text/javascript" src="bower_components/bootstrap/js/collapse.js" /></script>
 <script type="text/javascript" src="bower_components/bootstrap/js/popover.js" /></script>
-
+<script type="text/javascript" src="javascripts/datetime.js" /></script>
 
     <?php
 	//Προτιμήσεις λογισμικού

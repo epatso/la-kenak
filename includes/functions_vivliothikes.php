@@ -177,7 +177,7 @@ function create_user_meletes($page=1,$like=""){
 	$meletes .= "</button>";
 	$meletes .= "<ul class=\"dropdown-menu\">";
 	$meletes .= "<li><a tabindex=\"1\" href=\"?nav=user_login&action=select_meleti&meleti_id=".$data["id"]."\"><i class=\"fa fa-check-square-o\"></i> Επιλογή</a></li>";
-	$meletes .= "<li><a tabindex=\"2\" href=\"?nav=user_login&action=copy_meleti&meleti_id=".$data["id"]."\"><i class=\"fa fa-files-o\"></i> Αντιγραφή</a></li>";
+	$meletes .= "<li><a tabindex=\"2\" href=\"#\" onclick=\"copy_meleti(".$data["id"].")\"><i class=\"fa fa-files-o\"></i> Αντιγραφή</a></li>";
 	$meletes .= "<li><a tabindex=\"3\" href=\"?nav=user_login&action=delete_meleti&meleti_id=".$data["id"]."\"><i class=\"fa fa-times\"></i> Διαγραφή</a></li>";
 	$meletes .= "</ul>";
 	$meletes .= "</div></td>";

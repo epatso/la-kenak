@@ -68,11 +68,11 @@ require("include_check.php");
 	</tr>
 	
 	<tr>
-		<th colspan="2">Εάν τηρεί τον κανονισμό Ενεργειακής Επισήμανσης της ΕΕ</th>
+		<th colspan="2">Εάν τηρεί τον κανονισμό Ενεργειακής Επισήμανσης της ΕΕ και με βάση θερμαινόμενο μέσο: </th>
 		<th>SEER</th>
 	</tr>
 	<tr>
-		<td>Αερόψυκτη αντλία ΕΕ 626/2011</td>
+		<td>Α. Αέρας (ΕΕ 626/2011)</td>
 		<td>
 			<div class="input-group">
 				<span class="input-group-addon">SEER<sub>ΕΣ</sub></span>

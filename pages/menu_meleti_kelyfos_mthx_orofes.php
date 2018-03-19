@@ -94,6 +94,10 @@ var prefix = "editmthx_orofes_";
 	mthx_orofes_u();
 	document.getElementById(prefix+"ap").selectedIndex = 0;
 	document.getElementById(prefix+"ek").selectedIndex = 0;
+	
+	document.getElementById(prefix+"z").value = "";
+	document.getElementById(prefix+"p").value = "";
+	
 	document.getElementById(prefix+"fhor_h").value = "";
 	document.getElementById(prefix+"fhor_c").value = "";
 	document.getElementById(prefix+"fov_h").value = "";
@@ -129,6 +133,10 @@ var prefix = "editmthx_orofes_";
 				}
 				document.getElementById(prefix+"ap").value = arr["ap"];
 				document.getElementById(prefix+"ek").value = arr["ek"];
+				
+				document.getElementById(prefix+"z").value = arr["z"];
+				document.getElementById(prefix+"p").value = arr["p"];
+				
 				document.getElementById(prefix+"fhor_h").value = arr["fhor_h"];
 				document.getElementById(prefix+"fhor_c").value = arr["fhor_c"];
 				document.getElementById(prefix+"fov_h").value = arr["fov_h"];
@@ -176,6 +184,10 @@ var prefix = "editmthx_orofes_";
 	var u_id = document.getElementById(prefix+"u_id").value;
 	var ap = document.getElementById(prefix+"ap").value;
 	var ek = document.getElementById(prefix+"ek").value;
+	
+	var z = document.getElementById(prefix+"z").value;
+	var p = document.getElementById(prefix+"p").value;
+	
 	var fhor_h = document.getElementById(prefix+"fhor_h").value;
 	var fhor_c = document.getElementById(prefix+"fhor_c").value;
 	var fov_h = document.getElementById(prefix+"fov_h").value;
@@ -194,7 +206,7 @@ var prefix = "editmthx_orofes_";
 	link += "&table=meletes_mthx_orofes";
 	link += "&action="+action;
 	link += "&id="+id;
-	link += "&values="+mthx_id+","+type+","+name+","+g+","+b+","+e+","+u+","+u_id+","+ap+","+ek+","+fhor_h+","+fhor_c+","+fov_h+","+fov_c+","+ffin_h+","+ffin_c;
+	link += "&values="+mthx_id+","+type+","+name+","+g+","+b+","+e+","+u+","+u_id+","+ap+","+ek+","+z+","+p+","+fhor_h+","+fhor_c+","+fov_h+","+fov_c+","+ffin_h+","+ffin_c;
 	
 	document.getElementById('wait').style.display="inline";
 	//AJAX call
@@ -232,9 +244,17 @@ function del_mthx_orofes(id,page){
 }
 
 function mthx_orofes_changetype(){
-var prefix = "editmthx_orofes_";
-var type = document.getElementById(prefix+"type").value;
-
+	var prefix = "editmthx_orofes_";
+	var type = document.getElementById(prefix+"type").value;
+	//πρόσθετα
+	for (var i=0;i<=1;i++){
+		document.getElementById(prefix+"help"+i).style.display="none";
+		}
+	if(type==1){
+	document.getElementById(prefix+"help0").style.display="inline";
+	}else{
+	document.getElementById(prefix+"help1").style.display="inline";
+	}
 }
 
 function mthx_orofes_change_g(){
@@ -320,31 +340,63 @@ var u = document.getElementById(prefix+"u_id").value;
 			</td>
 			<td rowspan="8">
 			<span id="editmthx_orofes_help"></span>
-				<table class="table table-bordered table-condensed">
-					<tr>
-						<td>
-							<div class="input-group">
-							<span class="input-group-addon">
-								<span class="tip-top" href="#" title="Επιλέξτε τύπο σκίασης για αυτόματη προσθήκη συντελεστών"><i class="fa fa-sun-o"></i> Τύπος σκίασης</span>
-							</span>
-							<select class="form-control input-sm" id="editmthx_orofes_f" onchange="mthx_orofes_f();">
-								<option value="">Επιλέξτε τύπο σκίασης</option>
-								<option value=1>Χωρίς σκίαση</option>
-								<option value=0.9>Περιορισμένη σκίαση ή U<0.6</option>
-								<option value=0.6>Μερική σκίαση</option>
-								<option value=0.3>Σημαντική σκίαση</option>
-								<option value=0>Πλήρης σκίαση</option>
-							</select>
-							</div>
-						</td>
-					</tr>	
-					<tr><td>Fhor_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fhor_h"></td></tr>
-					<tr><td>Fhor_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fhor_c"></td></tr>
-					<tr><td>Fov_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fov_h"></td></tr>
-					<tr><td>Fov_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fov_c"></td></tr>
-					<tr><td>Ffin_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_ffin_h"></td></tr>
-					<tr><td>Ffin_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_ffin_c"></td></tr>
-				</table>
+				<div id="editmthx_orofes_help0" style="display:none;">
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td>
+								Βάθος έδρασης
+							</td>
+							<td>
+								<div class="input-group">
+								<span class="input-group-addon">
+									<span class="tip-top" href="#" title="Βάθος έδρασης (θετική τιμή) από τη θέση +0.00"><i class="fa fa-arrow-down"></i> Β. έδρασης</span>
+								</span>
+								<input class="form-control input-sm" type="text" id="editmthx_orofes_z">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Περίμετρος
+							</td>
+							<td>
+								<div class="input-group">
+								<span class="input-group-addon">
+									<span class="tip-top" href="#" title="Η ελεύθερη περίμετρος (σε αέρα) της οροφής σε έδαφος"><i class="fa fa-retweet"></i> Περίμετρος</span>
+								</span>
+								<input class="form-control input-sm" type="text" id="editmthx_orofes_p">
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="editmthx_orofes_help1" style="display:none;">
+					<table class="table table-bordered table-condensed">
+						<tr>
+							<td>
+								<div class="input-group">
+								<span class="input-group-addon">
+									<span class="tip-top" href="#" title="Επιλέξτε τύπο σκίασης για αυτόματη προσθήκη συντελεστών"><i class="fa fa-sun-o"></i> Τύπος σκίασης</span>
+								</span>
+								<select class="form-control input-sm" id="editmthx_orofes_f" onchange="mthx_orofes_f();">
+									<option value="">Επιλέξτε τύπο σκίασης</option>
+									<option value=1>Χωρίς σκίαση</option>
+									<option value=0.9>Περιορισμένη σκίαση ή U<0.6</option>
+									<option value=0.6>Μερική σκίαση</option>
+									<option value=0.3>Σημαντική σκίαση</option>
+									<option value=0>Πλήρης σκίαση</option>
+								</select>
+								</div>
+							</td>
+						</tr>	
+						<tr><td>Fhor_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fhor_h"></td></tr>
+						<tr><td>Fhor_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fhor_c"></td></tr>
+						<tr><td>Fov_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fov_h"></td></tr>
+						<tr><td>Fov_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_fov_c"></td></tr>
+						<tr><td>Ffin_h</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_ffin_h"></td></tr>
+						<tr><td>Ffin_c</td><td><input class="form-control input-sm" type="text" id="editmthx_orofes_ffin_c"></td></tr>
+					</table>
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -354,7 +406,8 @@ var u = document.getElementById(prefix+"u_id").value;
 					<span class="tip-top" href="#" title="Τύπος επαφής οροφής"><i class="fa fa-braille"></i> Τύπος</span>
 				</span>
 				<select class="form-control input-sm" id="editmthx_orofes_type" onchange="mthx_orofes_changetype();">
-				<option value=0>Σε αέρα</option>
+					<option value=0>Σε αέρα</option>
+					<option value=1>Σε έδαφος</option>
 				</select>
 				</div>
 			</td>
