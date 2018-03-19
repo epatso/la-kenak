@@ -2,7 +2,7 @@
 Energy calculations in Greece (K.EN.A.K. legislation)
 
 14/1/2018 - Right now the code is being uploaded in pieces. Keep up for the few more days. 
-20/1/2018 - Crusial update of chapter study (pdf). Fewer errors and warnings. 
+20/1/2018 - Crusial update of chapter study (pdf). Fewer errors and warnings. Rewrite some calculations
 
 Introduction
 ============
