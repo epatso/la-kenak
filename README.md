@@ -55,6 +55,8 @@ to help in many ways:
 ## Installation Guide
 Visit [WIKI](https://github.com/ks1f14s/la-kenak/wiki) for the most updated guide regarding installing the software.
 
+## Looking for a portable version?
+Visit [this link](https://sourceforge.net/projects/lakenak/files/) for a portable web server with the software.
 
 ### Contribution
 Contribution are **welcome and recommended**! Here is how:
