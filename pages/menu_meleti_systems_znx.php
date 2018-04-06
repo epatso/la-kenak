@@ -1274,7 +1274,7 @@ document.getElementById('editznxp_w').value = number_format(pn,3);
 					<td>
 					<select class="form-control" id="editznxt_type_thermikes" onchange=calc_thermikes(); >
 					<option value=0>Επιλέξτε...</option>
-					<option value=5>Τοπικοί ή κεντρικοί θερμαντήρες (boiler)</option>
+					<option value=5>Τοπικοί ή κεντρικοί θερμαντήρες (boiler με εναλλάκτη)</option>
 					<option value=0>Ηλεκτρικοί θερμαντήρες (θερμοσίφωνες)</option>
 					</select>
 					</td>
