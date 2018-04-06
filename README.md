@@ -57,6 +57,7 @@ Visit [WIKI](https://github.com/ks1f14s/la-kenak/wiki) for the most updated guid
 
 ## Looking for a portable version?
 Visit [this link](https://sourceforge.net/projects/lakenak/files/) for a portable web server with the software.
+If you use xampp or the portable version for the first time you need to install [vc11 2012 vc redist.x86.exe](https://www.microsoft.com/en-us/download/details.aspx?id=30679) first for php 5.4+ as suggested in [uwamp download section](https://www.uwamp.com/en/?page=download). 
 
 ### Contribution
 Contribution are **welcome and recommended**! Here is how:
