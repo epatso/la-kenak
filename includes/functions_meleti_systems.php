@@ -764,8 +764,16 @@ function systems_calc_um($zone_id=0){
 	}
 	}//για κάθε ζώνη
 	
-	$bld_um = $bld_ua/$bld_a;
-	$bld_av = $bld_a/$bld_v;
+	if($bld_a!=0){
+		$bld_um = $bld_ua/$bld_a;
+	}else{
+		$bld_um = 0;
+	}
+	if($bld_v!=0){
+		$bld_av = $bld_a/$bld_v;
+	}else{
+		$bld_av = 0;
+	}
 	$ummax=get_ummax($col_umax, $bld_av, $bld_type);
 	
 	return array($bld_um,$bld_av,$ummax);
@@ -1097,11 +1105,11 @@ function systems_theoretical(){
 			$query_aerp["type"] = 0;
 			$query_aerp["active_h"] = 0;
 			$query_aerp["f_h"] = $aerp_w;
-			$query_aerp["r_h"] = 1;
-			$query_aerp["q_r_h"] = 1;
+			$query_aerp["r_h"] = 0;
+			$query_aerp["q_r_h"] = 0;
 			$query_aerp["f_c"] = $aerp_w;
-			$query_aerp["r_c"] = 1;
-			$query_aerp["q_r_c"] = 1;
+			$query_aerp["r_c"] = 0;
+			$query_aerp["q_r_c"] = 0;
 			$query_aerp["active_y"] = 0;
 			$query_aerp["h_r"] = 0;
 			$query_aerp["filters"] = 0;
