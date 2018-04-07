@@ -1,9 +1,9 @@
 <?php
 /*
-Copyright (C) 2012 - Labros KENAK v.4.0 
+Copyright (C) 2012 - Labros kenak v.4.0 beta
 Author: Labros Karoyntzos 
 
-Labros KENAK v.4.0 from Labros Karountzos is free software: 
+Labros kenak v.4.0 beta from Labros Karountzos is free software: 
 you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3 of the License.
