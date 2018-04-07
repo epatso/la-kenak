@@ -284,7 +284,7 @@ confirm_meleti_isset();
 	var camera, scene, renderer,
 	bulbLight, bulbMat, hemiLight,
 	object, loader, stats, light, sun, sun1;
-	var winMat, cubeMat, floorMat, horMat, ovMat, finMat;
+	var winMat, doorMat, cubeMat, floorMat, horMat, ovMat, finMat;
 	var lat=<?php echo $lat;?>;
 	var lon=<?php echo $lon;?>;
 	</script>
@@ -430,7 +430,7 @@ function savecanvas() {
 					"0xFEF7FA",
 					"0x00FF00"
 				];
-				/*
+				
 				textureLoader.load( "includes/three.js/textures/brick_diffuse.jpg", function( map ) {
 					map.wrapS = THREE.RepeatWrapping;
 					map.wrapT = THREE.RepeatWrapping;
@@ -439,6 +439,7 @@ function savecanvas() {
 					cubeMat.map = map;
 					cubeMat.needsUpdate = true;
 				} );
+				/*
 				textureLoader.load( "includes/three.js/textures/brick_bump.jpg", function( map ) {
 					map.wrapS = THREE.RepeatWrapping;
 					map.wrapT = THREE.RepeatWrapping;
@@ -498,6 +499,25 @@ function savecanvas() {
 					winMat.needsUpdate = true;
 				} );
 				//ΥΛΙΚΟ ΑΝΟΙΓΜΑΤΩΝ
+				
+				//ΥΛΙΚΟ ΠΟΡΤΑΣ
+				//var texture = new THREE.TextureLoader().load( 'textures/land_ocean_ice_cloud_2048.jpg' );
+				//var material = new THREE.MeshBasicMaterial( { map: texture } );
+				doorMat = new THREE.MeshStandardMaterial( {
+					roughness: 0.5,
+					bumpScale: 0.1,
+					metalness: 0.1,
+					transparent: false
+				});
+				textureLoader.load( "includes/three.js/textures/hardwood2_diffuse.jpg", function( map ) {
+					map.wrapS = THREE.RepeatWrapping;
+					map.wrapT = THREE.RepeatWrapping;
+					map.anisotropy = 4;
+					map.repeat.set( 1, 2 );
+					doorMat.map = map;
+					doorMat.needsUpdate = true;
+				} );
+				//ΥΛΙΚΟ ΠΟΡΤΑΣ
 				
 				//Άξονες
 				var grid = new THREE.GridHelper( 100, 100, 0xffffff, 0x555555 );
@@ -672,6 +692,7 @@ if($fov!=0){//Πρόβολος
 				$win_p=$window["p"];
 				$win_apoar=$window["apoar"];
 				
+				$win_type=$window["type"];
 				$win_gw=$window["g_w"];
 				
 				$win_x1=$leftside_x+$win_apoar* cos(deg2rad($wall_g-180));
@@ -680,7 +701,7 @@ if($fov!=0){//Πρόβολος
 				$win_y2=$win_y1-$win_l* sin(deg2rad($wall_g-180));
 				
 ?>
-				windowMesh = draw_window(<?php echo $win_x1;?>, <?php echo $win_y1;?>, <?php echo $win_x2;?>, <?php echo $win_y2;?>, <?php echo $win_h;?>, <?php echo $win_p;?>, <?php echo $d;?>, b, winMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
+				windowMesh = draw_window(<?php echo $win_x1;?>, <?php echo $win_y1;?>, <?php echo $win_x2;?>, <?php echo $win_y2;?>, <?php echo $win_h;?>, <?php echo $win_p;?>, <?php echo $d;?>, b, doorMat);//το υλικό είναι πλεονασμός. Δεν παίζει ρόλο
 				window_bsp = new ThreeBSP( windowMesh );
 				
 				//αξονας z
@@ -696,10 +717,21 @@ if($i==1){//Την 1η φορά αφαιρεί από τον τοίχο
 				subtract_bsp = subtract_bsp.subtract( window_bsp );
 <?php 
 }//τέλος if
+ 
+	if($win_type==0){//αδιαφανής πόρτα
+?>
+			//σχεδίαση πόρτας
+			result1 = window_bsp.toMesh( doorMat );//Εδώ το υλικό παίζει ρόλο. Πόρτα
+
+<?php
+	}else{//παράθυρο
 ?>
 			//σχεδίαση παραθύρου
 			winMat.opacity = <?php echo $win_gw;?>;
 			result1 = window_bsp.toMesh( winMat );//Εδώ το υλικό παίζει ρόλο. Παράθυρο
+<?php 
+}//τέλος if
+?>
 			
 			//κλιση παραθύρου ως προς κατακόρυφο
 			if(b!=0){
@@ -717,7 +749,7 @@ if($i==1){//Την 1η φορά αφαιρεί από τον τοίχο
 			}//για κάθε άνοιγμα
 if($count_win!=0){//εάν υπάρχουν παράθυρα (με τις αφαιρέσεις) - σχεδίαση
 ?>
-			//cubeMat.color = wall_ap[<?php echo $wall_ap;?>-1];
+			//cubeMat.color = wall_ap[<?php echo $wall_ap-1;?>];
 			result = subtract_bsp.toMesh( cubeMat );//Εδώ το υλικό παίζει ρόλο. Τοίχος
 <?php 
 }else{//δεν υπάρχουν παράθυρα (χωρίς τις αφαιρέσεις) - σχεδίαση
@@ -848,6 +880,8 @@ light = new THREE.SpotLight( 0xffffff, 15 );
 light.position.set(10, 10, 10);
 light.shadowDarkness = 0.5;
 light.castShadow = true;
+light.shadow.mapSize.width = 2048;
+light.shadow.mapSize.height = 2048;
 scene.add(light);
 //var spotLightHelper = new THREE.SpotLightHelper( light );
 //scene.add( spotLightHelper );

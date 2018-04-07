@@ -999,7 +999,7 @@ confirm_logged_in();
 </div>
 <!-- ######################### Κρυφό div για εμφάνιση ######################### -->
 <!-- ###################### Κρυφό modal_del_thermp για εμφάνιση ###################### -->
-<div id="modal_del_thermp" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modal_del_thermp" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
 	<div class="modal-header">
@@ -1372,7 +1372,7 @@ confirm_logged_in();
 </div>
 <!-- ######################### Κρυφό div για εμφάνιση ######################### -->
 <!-- ###################### Κρυφό modal_del_thermd για εμφάνιση ###################### -->
-<div id="modal_del_thermd" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modal_del_thermd" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 <div class="modal-content">
 	<div class="modal-header">

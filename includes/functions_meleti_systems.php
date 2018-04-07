@@ -376,6 +376,7 @@ function systems_calc_um($zone_id=0){
 		$zone_ua_adiafani=0;
 		$zone_ua_diafani=0;
 		$zone_ua_orizontia=0;
+		$zone_ua_orizontia_diaf=0;
 		$zone_ua_psi=0;
 		$zone_ua=0;
 		
