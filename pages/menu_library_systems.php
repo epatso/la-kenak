@@ -50,7 +50,7 @@ require("include_check.php");
 		<div class="nav-tabs-custom">
 		<div id='wait' style="display:none;position:absolute;top:130px;left:500px;"><img src="images/interface/ajax-loader.gif"></div>
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#tabs-1" data-toggle="tab">Αντλίες θερμότητας (επιλέξιμες)</a></li>
+			<li class="active"><a href="#tabs-1" data-toggle="tab">Επιλέξιμες Α.Θ. (ΕΚΟ Ι)</a></li>
 			<li><a href="#tabs-2" data-toggle="tab">Αντλίες θερμότητας</a></li>
 			<li><a href="#tabs-3" data-toggle="tab">Λέβητες</a></li>
 			<li><a href="#tabs-4" data-toggle="tab">Ηλιακοί</a></li>
@@ -63,7 +63,7 @@ require("include_check.php");
 			<div class="tab-pane active" id="tabs-1">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο αναζήτησης</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Αφορά το πρόγραμμα "Εξοικονόμηση κατ' οίκον Ι")</div>
 			<div class="panel-body">
 			
 				<div class="row">
@@ -123,7 +123,7 @@ require("include_check.php");
 			<div class="tab-pane" id="tabs-2">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Βιβλιοθήκη la-kenak)</div>
 			<div class="panel-body">
 			Κατασκευαστής:
 				<select id="heatpumps_manufacturer" name="heatpumps_manufacturer">
@@ -156,7 +156,7 @@ require("include_check.php");
 			<div class="tab-pane" id="tabs-3">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Βιβλιοθήκη la-kenak)</div>
 			<div class="panel-body">
 			Κατασκευαστής:
 				<select id="boilermanufacturer" name="boilermanufacturer">
@@ -184,7 +184,7 @@ require("include_check.php");
 			<div class="tab-pane" id="tabs-4">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Βιβλιοθήκη la-kenak)</div>
 			<div class="panel-body">
 			Τύπος:
 				<select id="solarheaters_type" name="solarheaters_type">
@@ -232,7 +232,7 @@ require("include_check.php");
 			<div class="tab-pane" id="tabs-5">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Βιβλιοθήκη la-kenak)</div>
 			<div class="panel-body">
 			Κατασκευαστής:
 				<select id="pv_manufacturer" name="pv_manufacturer">
@@ -266,7 +266,7 @@ require("include_check.php");
 			<div class="tab-pane" id="tabs-6">
 			<br/>
 			<div class="panel panel-default">
-			<div class="panel-heading">Φίλτρο</div>
+			<div class="panel-heading">Φίλτρο αναζήτησης (Βιβλιοθήκη la-kenak)</div>
 			<div class="panel-body">
 			Κατασκευαστής:
 				<select id="terminals_manufacturer" name="terminals_manufacturer">
