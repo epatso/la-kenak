@@ -1,6 +1,8 @@
 # La-kenak V.5.0
 Energy calculations in Greece (K.EN.A.K. legislation)
 
+![GitHub issues](https://img.shields.io/github/issues/badges/shields.svg)
+
 14/1/2018 - Right now the code is being uploaded in pieces. Keep up for the few more days. 
 
 20/1/2018 - Crusial update of chapter study (pdf). Fewer errors and warnings. Rewrite some calculations
