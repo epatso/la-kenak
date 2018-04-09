@@ -1,7 +1,10 @@
 # La-kenak V.5.0
 Energy calculations in Greece (K.EN.A.K. legislation)
 
-![GitHub issues](https://img.shields.io/github/issues/badges/shields.svg)
+[![GitHub forks](https://img.shields.io/github/forks/ks1f14s/la-kenak.svg)](https://github.com/ks1f14s/la-kenak/network)
+[![GitHub stars](https://img.shields.io/github/stars/ks1f14s/la-kenak.svg)](https://github.com/ks1f14s/la-kenak/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/ks1f14s/la-kenak.svg)](https://github.com/ks1f14s/la-kenak/issues)
+[![GitHub license](https://img.shields.io/github/license/ks1f14s/la-kenak.svg)](https://github.com/ks1f14s/la-kenak/blob/master/LICENSE)
 
 14/1/2018 - Right now the code is being uploaded in pieces. Keep up for the few more days. 
 
