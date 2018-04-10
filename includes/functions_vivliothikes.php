@@ -94,6 +94,27 @@ if (isset($_GET['get_heatpumpsex'])){
 	exit;
 }
 
+if (isset($_GET['get_domika9a'])){
+	$page = $_GET['page'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	$tb_domika9a = create_library_domika9a($page);
+	echo $tb_domika9a;
+	exit;
+}
+
+if (isset($_GET['get_climate_tb'])){
+	$table = $_GET['table'];
+	$page = $_GET['page'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	$tb_climate_tb = create_library_climate("vivliothiki_climate".$table, $page);
+	echo $tb_climate_tb;
+	exit;
+}
+
 if (isset($_GET['get_help'])){
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");
@@ -650,42 +671,46 @@ function create_library_heatpumpsex($manufacturer="",$outdoor="",$page=1,$like="
 	$tb = "vivliothiki_exoikonomw_heatpumps";
 	$col = "*";
 	
-	if($manufacturer=="" AND $outdoor=="" AND $like==""){
-		$tb_data = $database->select($tb,$col);
-	}
+	//Κριτήριο επιλογής
+	$where=array();
 	if($manufacturer!="" OR $outdoor!="" OR $like!=""){
-		if($manufacturer=="" AND $outdoor=="" AND $like!=""){
-			$where=array("LIKE"=>array("name"=>$like));
+		$where["LIKE"]=array();
+		$where["LIKE"]["AND"]=array();
+		if($manufacturer!=""){
+			$where["LIKE"]["AND"]["company"]=$manufacturer;
 		}
-		if($manufacturer=="" AND $outdoor!="" AND $like!=""){
-			$where=array("LIKE"=>array("AND"=>array("name"=>$like,"outdoor"=>$outdoor)) );
+		if($outdoor!=""){
+			$where["LIKE"]["AND"]["outdoor"]=$outdoor;
 		}
-		if($manufacturer!="" AND $outdoor=="" AND $like!=""){
-			$where=array("LIKE"=>array("AND"=>array("name"=>$like,"company"=>$manufacturer)) );
+		if($like!=""){
+			$where["LIKE"]["AND"]["name"]=$like;
 		}
-		if($manufacturer!="" AND $outdoor!="" AND $like!=""){
-			$where=array("LIKE"=>array("AND"=>array("name"=>$like,"company"=>$manufacturer,"outdoor"=>$outdoor)) );
-		}
-		if($manufacturer!="" AND $outdoor=="" AND $like==""){
-			$where=array("company"=>$manufacturer);
-		}
-		if($manufacturer=="" AND $outdoor!="" AND $like==""){
-			$where=array("LIKE"=>array("outdoor"=>$outdoor));
-		}
-		if($manufacturer!="" AND $outdoor!="" AND $like==""){
-			$where=array("LIKE"=>array("AND"=>array("company"=>$manufacturer,"outdoor"=>$outdoor)) );
-		}
-		$tb_data = $database->select($tb,$col,$where);
 	}
 	
-	$count = count($tb_data);
+	//Μέτρηση όλων
+	if($manufacturer=="" AND $outdoor=="" AND $like==""){
+		$count=$database->count($tb);
+	}else{
+		$count=$database->count($tb,$where);
+	}
+	
+	//Επιλογή μόνο της σελίδας $page με LIMIT $db_rows OFFSET $db_offset
+	$db_offset = ($page-1)*10;
+	$db_rows = 10;
+	$where["LIMIT"]=array($db_offset,$db_rows);
+	$tb_data=$database->select($tb,$col,$where);
+	//echo $database->last_query();
+	
+	//Σύνολο σελίδων
 	$total_pages = ceil($count/10);
-	$count_start = $page*10-9;
-	$count_end = $page*10;
+	$count_start = $db_offset+1;
+	$count_end = $db_offset+10;
 	$previous_page=$page-1;
 	$next_page=$page+1;
+	
 		if($page==$total_pages AND $count<$count_end){$count_end=$count;}
 	$new_page=ceil(($count+1)/10);
+	
 	
 	$txt = "<div class=\"box panel-info\">";
 	$txt .= "<div class=\"box-header\"> Επιλέξιμες αντλίες θερμότητας (Εξοικονομώ) </div>";
@@ -705,9 +730,8 @@ function create_library_heatpumpsex($manufacturer="",$outdoor="",$page=1,$like="
 	
 	$i=1;
 	foreach($tb_data as $data){
-		if($i<=$page*10 AND $i>$page*10-10){
 		$txt .= "<tr>";
-		$txt .= "<td><span class=\"label label-info\">".$i."</span></td>";
+		$txt .= "<td><span class=\"label label-info\">".($db_offset+$i)."</span></td>";
 		$txt .= "<td>".$data["company"]."</td>";
 		$txt .= "<td>".$data["fuel"]."</td>";
 		$txt .= "<td>".$data["name"]."</td>";	
@@ -717,7 +741,6 @@ function create_library_heatpumpsex($manufacturer="",$outdoor="",$page=1,$like="
 		$txt .= "<td>".$data["cop35"]."</td>";
 		$txt .= "<td>".$data["cop45"]."</td>";
 		$txt .= "</tr>";
-		}
 	$i++;
 	}
 	$txt .= "</table></div><div class=\"box-footer clearfix no-border\">";
@@ -773,40 +796,57 @@ function create_library_laws($type=0,$page=1,$like=""){
 	$tb = "vivliothiki_laws";
 	$col = "*";
 	
-	
-	if($type==0 AND $like!=""){
-		$where=array("LIKE"=>array("name"=>$like));
-		$data_laws = $database->select($tb,$col,$where);
-	}
-	if($type!=0 AND $like==""){
-		$where=array("type"=>$type);		
-		$data_laws = $database->select($tb,$col,$where);
-	}
-	if($type!=0 AND $like!=""){
-		$where=array("LIKE"=>array("AND"=>array("name"=>$like,"type"=>$type)) );
-		$data_laws = $database->select($tb,$col,$where);
-	}
-	if($like=="" AND $type==0){
-		$data_laws = $database->select($tb,$col);
+	//Κριτήριο επιλογής
+	$where=array();
+	if($type!=0 OR $like!=""){
+		$where["LIKE"]=array();
+		$where["LIKE"]["AND"]=array();
+		if($type!=0){
+			$where["LIKE"]["AND"]["type"]=$type;
+		}
+		if($like!=""){
+			$where["LIKE"]["AND"]["name"]=$like;
+		}
 	}
 	
-	$count_laws = count($data_laws);
-	$total_pages = ceil($count_laws/10);
-	$count_start = $page*10-9;
-	$count_end = $page*10;
+	//Μέτρηση όλων
+	if($type==0 AND $like==""){
+		$count=$database->count($tb);
+	}else{
+		$count=$database->count($tb,$where);
+	}
+	
+	//Επιλογή μόνο της σελίδας $page με LIMIT $db_rows OFFSET $db_offset
+	$db_offset = ($page-1)*10;
+	$db_rows = 10;
+	$where["LIMIT"]=array($db_offset,$db_rows);
+	$tb_data=$database->select($tb,$col,$where);
+	//echo $database->last_query();
+	
+	//Σύνολο σελίδων
+	$total_pages = ceil($count/10);
+	$count_start = $db_offset+1;
+	$count_end = $db_offset+10;
 	$previous_page=$page-1;
 	$next_page=$page+1;
-		if($page==$total_pages AND $count_laws<$count_end){$count_end=$count_laws;}
+	if($page==$total_pages AND $count_laws<$count_end){$count_end=$count_laws;}
 	
-	
-	$laws = "<table border=\"1\" class=\"table table-bordered table-hover\">";
-	$laws .= "<tr><th width=\"5%\">α/α</th><th>Τύπος</th><th>Όνομα (σύνδεσμος)</th><th>Περιγραφή</th></tr>";
+	$laws = "<div class=\"box panel-info\">";
+	$laws .= "<div class=\"box-header\"> Πίνακας νομοθεσίας </div>";
+	$laws .= "<div class=\"box-body table-responsive no-padding\">";
+	$laws .= "<table class=\"table table-bordered table-hover table-condensed\">";
+	$laws .= "<table border=\"1\" class=\"table table-bordered table-hover\">
+	<tr>
+	<th width=\"5%\">α/α</th>
+	<th>Τύπος</th>
+	<th>Όνομα (σύνδεσμος)</th>
+	<th>Περιγραφή</th>
+	</tr>";
 	
 		$i=1;
-		foreach($data_laws as $data){
-			if($i<=$page*10 AND $i>$page*10-10){
+		foreach($tb_data as $data){
 			$laws .= "<tr>";
-			$laws .= "<td>".$i."</td>";
+			$laws .= "<td>".($db_offset+$i)."</td>";
 			
 				if($data["type"]==1){$type="Νομοθεσία";}
 				if($data["type"]==2){$type="ΤΟΤΕΕ";}
@@ -821,25 +861,52 @@ function create_library_laws($type=0,$page=1,$like=""){
 				}
 			$laws .= "<td>".$data["perigrafi"]."</td>";
 			$laws .= "</tr>";
-			
-			}$i++;
+			$i++;
 		}
-		
-	$laws .= "</table>";
-	$laws .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count_laws." αποτελεσμάτων.";
 	
-	$laws .= "<div class=\"text-center\"><ul class=\"pagination pagination-sm\">";
+	
+	$laws .= "</table></div><div class=\"box-footer clearfix no-border\">";
+	
+	if($count!=0){
+		$laws .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count." αποτελεσμάτων.";
+	}else{
+		$laws .= "Δεν βρέθηκαν αποτελέσματα.";
+	}
+	
+	//PAGINATION
+	$laws .= "<ul class=\"pagination pagination-sm pull-right\">";
 		if($page==1){$disabled_prev=" class=\"disabled\"";$onclick="";}else{$disabled_prev="";$onclick="\"get_laws(".$previous_page.")\"";}
 	$laws .= "<li".$disabled_prev."><a href=\"#\" onclick=".$onclick.">Προηγούμενο</a></li>";
 	
+	if($total_pages<=10){
 		for($j=1; $j<=$total_pages; $j++){
 			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
 			$laws .= "<li".$disabled."><a href=\"#\" onclick=\"get_laws(".$j.")\">".$j."</a></li>";
 		}
+	}else{
+		if($page>3){
+			$laws .= "<li><a href=\"#\" onclick=\"get_laws(1)\">1</a></li>";
+			$laws .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+		}
+		for($j=$page-2; $j<=$page+2; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			if($j>0 AND $j<=$total_pages){
+				$laws .= "<li".$disabled."><a href=\"#\" onclick=\"get_laws(".$j.")\">".$j."</a></li>";
+			}
+		}
+		if($page<$total_pages-3){
+			$laws .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+			$laws .= "<li><a href=\"#\" onclick=\"get_laws(".$total_pages.")\">".$total_pages."</a></li>";
+		}
+	}
 		
-		if($page==$total_pages){$disabled_next=" class=\"disabled\"";$onclick="";}else{$disabled_next="";$onclick="\"get_laws(".$next_page.")\"";}
+	if($page==$total_pages OR $total_pages==0){$disabled_next=" class=\"disabled\"";$onclick="";}else{$disabled_next="";$onclick="\"get_laws(".$next_page.")\"";}
 	$laws .= "<li".$disabled_next."><a href=\"#\" onclick=".$onclick.">Επόμενο</a></li>";		
 	$laws .= "</ul></div>";
+	//PAGINATION
+	
+	$laws .= "</div>";
+	
 	
 	return $laws;
 }
@@ -1003,7 +1070,8 @@ function create_library_lightzones(){
 	);
 	
 	$txt = "<div class=\"box\">";
-	$txt .= "<div class=\"box-header\">Πίνακας 2.4.α Εγκατεστημένη ισχύς φωτισμού  (W/m<sup>2</sup>) κτιρίου αναφοράς ανάλογα της στάθμης φωτισμού για τον υπολογισμό της ενεργειακής του απόδοσης.</div>";
+	$txt .= "<div class=\"box-header\">Πίνακας 2.4.α Εγκατεστημένη ισχύς φωτισμού  (W/m<sup>2</sup>) κτιρίου αναφοράς ανάλογα της στάθμης 
+	φωτισμού για τον υπολογισμό της ενεργειακής του απόδοσης.</div>";
 	$txt .= "<div class=\"box-body table-responsive no-padding\">";
 	$txt .= "<table border=\"1\" class=\"table table-bordered table-hover\">";
 	$txt .= "<tr bgcolor=\"#d19292\">
@@ -1079,7 +1147,8 @@ function create_library_znxhospitals(){
 	);
 	
 	$txt = "<div class=\"box\">";
-	$txt .= "<div class=\"box-header\">Πίνακας 2.5 Τυπική κατανάλωση ζεστού νερού χρήσης (σε θερμοκρασίες 45<sup>ο</sup>C) ανά χρήση κτιρίου για τον υπολογισμό της κατανάλωσης ενέργειας (Νοσοκομεία-Κλινικές).</div>";
+	$txt .= "<div class=\"box-header\">Πίνακας 2.5 Τυπική κατανάλωση ζεστού νερού χρήσης (σε θερμοκρασίες 45<sup>ο</sup>C) ανά 
+	χρήση κτιρίου για τον υπολογισμό της κατανάλωσης ενέργειας (Νοσοκομεία-Κλινικές).</div>";
 	$txt .= "<div class=\"box-body table-responsive no-padding\">";
 	$txt .= "<table border=\"1\" class=\"table table-bordered table-hover\">";
 	$txt .= "<tr bgcolor=\"#d6d6a5\">
@@ -1136,7 +1205,8 @@ function create_library_znxhotels(){
 	
 	
 	$txt = "<div class=\"box\">";
-	$txt .= "<div class=\"box-header\">Πίνακας 2.5 Τυπική κατανάλωση ζεστού νερού χρήσης (σε θερμοκρασίες 45<sup>ο</sup>C) ανά χρήση κτιρίου για τον υπολογισμό της κατανάλωσης ενέργειας (Ξενοδοχεία - Κατάταξη).</div>";
+	$txt .= "<div class=\"box-header\">Πίνακας 2.5 Τυπική κατανάλωση ζεστού νερού χρήσης (σε θερμοκρασίες 45<sup>ο</sup>C) 
+	ανά χρήση κτιρίου για τον υπολογισμό της κατανάλωσης ενέργειας (Ξενοδοχεία - Κατάταξη).</div>";
 	$txt .= "<div class=\"box-body table-responsive no-padding\">";
 	$txt .= "<table border=\"1\" class=\"table table-bordered table-hover\">";
 	$txt .= "<tr bgcolor=\"#9898d0\">
@@ -1336,13 +1406,32 @@ function create_library_umax_kthk(){
 }
 
 //Κατασκευή πίνακα ισοδύναμων
-function create_library_domika9a(){
+function create_library_domika9a($page=1){
 	
 	$database = new medoo(DB_NAME);
-	$table="vivliothiki_domika9a";
-	$columns = "*";
+	$tb="vivliothiki_domika9a";
+	$col = "*";
 	
-	$data_table = $database->select($table,$columns);	
+	$where=array();
+	
+	//Μέτρηση όλων
+	$count=$database->count($tb);
+	
+	//Επιλογή μόνο της σελίδας $page με LIMIT $db_rows OFFSET $db_offset
+	$db_offset = ($page-1)*10;
+	$db_rows = 10;
+	$where["LIMIT"]=array($db_offset,$db_rows);
+	$tb_data=$database->select($tb,$col,$where);
+	//echo $database->last_query();
+	
+	//Σύνολο σελίδων
+	$total_pages = ceil($count/10);
+	$count_start = $db_offset+1;
+	$count_end = $db_offset+10;
+	$previous_page=$page-1;
+	$next_page=$page+1;
+	if($page==$total_pages AND $count_laws<$count_end){$count_end=$count_laws;}
+		
 	
 	$domika9a = "<div class=\"box\">";
 	$domika9a .= "<div class=\"box-header\">Πίνακας 8α. Ισοδύναμος συντελεστής θερμοπερατότητας οριζόντιου δομικού στοιχείου σε επαφή με το έδαφος.</div>";
@@ -1369,10 +1458,10 @@ function create_library_domika9a(){
 	<th>30</th>
 	</tr>";
 	
-		$i=1;
-		foreach($data_table as $data){
+	$i=1;
+	foreach($tb_data as $data){
 		$domika9a .= "<tr>";
-		$domika9a .= "<td>".$i."</td>";
+		$domika9a .= "<td>".($db_offset+$i)."</td>";
 		$domika9a .= "<td>".$data["Ufb"]."</td>";
 		$domika9a .= "<td>".$data["z"]."</td>";
 		$domika9a .= "<td>".$data["2"]."</td>";
@@ -1392,10 +1481,49 @@ function create_library_domika9a(){
 		$domika9a .= "<td>".$data["30"]."</td>";
 		$domika9a .= "</tr>";
 		$i++;
+	}
+	
+	$domika9a .= "</table></div><div class=\"box-footer clearfix no-border\">";
+	
+	if($count!=0){
+		$domika9a .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count." αποτελεσμάτων.";
+	}else{
+		$domika9a .= "Δεν βρέθηκαν αποτελέσματα.";
+	}
+	
+	//PAGINATION
+	$domika9a .= "<ul class=\"pagination pagination-sm pull-right\">";
+		if($page==1){$disabled_prev=" class=\"disabled\"";$onclick="";}else{$disabled_prev="";$onclick="\"get_domika9a(".$previous_page.")\"";}
+	$domika9a .= "<li".$disabled_prev."><a href=\"#\" onclick=".$onclick.">Προηγούμενο</a></li>";
+	
+	if($total_pages<=10){
+		for($j=1; $j<=$total_pages; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			$domika9a .= "<li".$disabled."><a href=\"#\" onclick=\"get_domika9a(".$j.")\">".$j."</a></li>";
 		}
-	$domika9a .= "</table>";
-	$domika9a .= "</div>";//box-body
-	$domika9a .= "</div>";//box
+	}else{
+		if($page>3){
+			$domika9a .= "<li><a href=\"#\" onclick=\"get_domika9a(1)\">1</a></li>";
+			$domika9a .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+		}
+		for($j=$page-2; $j<=$page+2; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			if($j>0 AND $j<=$total_pages){
+				$domika9a .= "<li".$disabled."><a href=\"#\" onclick=\"get_domika9a(".$j.")\">".$j."</a></li>";
+			}
+		}
+		if($page<$total_pages-3){
+			$domika9a .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+			$domika9a .= "<li><a href=\"#\" onclick=\"get_domika9a(".$total_pages.")\">".$total_pages."</a></li>";
+		}
+	}
+		
+	if($page==$total_pages OR $total_pages==0){$disabled_next=" class=\"disabled\"";$onclick="";}else{$disabled_next="";$onclick="\"get_domika9a(".$next_page.")\"";}
+	$domika9a .= "<li".$disabled_next."><a href=\"#\" onclick=".$onclick.">Επόμενο</a></li>";		
+	$domika9a .= "</ul></div>";
+	//PAGINATION
+	
+	$domika9a .= "</div>";
 	
 	return $domika9a;
 }
@@ -2019,20 +2147,45 @@ function create_library_shading($from="hor"){
 
 //ΒΙΒΛΙΟΘΗΚΕΣ ΚΛΙΜΑΤΙΚΑ
 //Κατασκευή πινάκων κλιματικών δεδομένων
-function create_library_climate($table="vivliothiki_climate31"){
+function create_library_climate($table="vivliothiki_climate31", $page=1){
 	
 	$database = new medoo(DB_NAME);
-	$columns = "*";
+	$col = "*";
+	$tb=$table;
+	$tb_no=trim($table,"vivliothiki_climate");
 	
-	$data_table = $database->select($table,$columns);	
+	$where=array();
 	
-	$climate = "<table border=\"1\" class=\"table table-bordered table-hover\">";
-	$climate .= "<tr><th width=\"5%\">α/α</th>";
+	//Μέτρηση όλων
+	$count=$database->count($tb);
+	
+	//Επιλογή μόνο της σελίδας $page με LIMIT $db_rows OFFSET $db_offset
+	$db_offset = ($page-1)*10;
+	$db_rows = 10;
+	$where["LIMIT"]=array($db_offset,$db_rows);
+	$tb_data=$database->select($tb,$col,$where);
+	//echo $database->last_query();
+	
+	//Σύνολο σελίδων
+	$total_pages = ceil($count/10);
+	$count_start = $db_offset+1;
+	$count_end = $db_offset+10;
+	$previous_page=$page-1;
+	$next_page=$page+1;
+	if($page==$total_pages AND $count_laws<$count_end){$count_end=$count_laws;}
+		
+	
+	$climate = "<div class=\"box panel-info\">";
+	$climate .= "<div class=\"box-header\"> Πίνακας κλιματικών δεδομένων </div>";
+	$climate .= "<div class=\"box-body table-responsive no-padding\">";
+	$climate .= "<table class=\"table table-bordered table-hover table-condensed\">";
+	$climate .= "<table border=\"1\" class=\"table table-bordered table-hover\">
+	<tr><th width=\"5%\">α/α</th>";
 	
 	if($table=="vivliothiki_climate44"){$climate .= "<th>Κλίση β (<sup>o</sup>)</th>";}
 	
-	$climate .= "<th>Τοποθεσία</th>";	
-	$climate .= "<th>ΙΑΝ</th>
+	$climate .= "<th>Τοποθεσία</th>	
+	<th>ΙΑΝ</th>
 	<th>ΦΕΒ</th>
 	<th>ΜΑΡ</th>
 	<th>ΑΠΡ</th>
@@ -2050,9 +2203,9 @@ function create_library_climate($table="vivliothiki_climate31"){
 	$climate .= "</tr>";
 	
 		$i=1;
-		foreach($data_table as $data){
-		$climate .= "<tr onclick=\"open_popup_climate(".trim($table,"vivliothiki_climate").", ".$data["id"].");\">";
-		$climate .= "<td>".$i."</td>";
+		foreach($tb_data as $data){
+		$climate .= "<tr onclick=\"open_popup_climate(".$tb_no.", ".$data["id"].");\">";
+		$climate .= "<td>".($db_offset+$i)."</td>";
 		
 		if($table=="vivliothiki_climate44"){$climate .= "<td>".$data["deg"]."</td>";}
 		
@@ -2080,7 +2233,48 @@ function create_library_climate($table="vivliothiki_climate31"){
 		$climate .= "</tr>";
 		$i++;
 		}
-	$climate .= "</table>";
+	
+	$climate .= "</table></div><div class=\"box-footer clearfix no-border\">";
+	
+	if($count!=0){
+		$climate .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count." αποτελεσμάτων.";
+	}else{
+		$climate .= "Δεν βρέθηκαν αποτελέσματα.";
+	}
+	
+	//PAGINATION
+	$climate .= "<ul class=\"pagination pagination-sm pull-right\">";
+		if($page==1){$disabled_prev=" class=\"disabled\"";$onclick="";}else{$disabled_prev="";$onclick="\"get_climate_tb(".$tb_no.",".$previous_page.")\"";}
+	$climate .= "<li".$disabled_prev."><a href=\"#\" onclick=".$onclick.">Προηγούμενο</a></li>";
+	
+	if($total_pages<=10){
+		for($j=1; $j<=$total_pages; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			$climate .= "<li".$disabled."><a href=\"#\" onclick=\"get_climate_tb(".$tb_no.",".$j.")\">".$j."</a></li>";
+		}
+	}else{
+		if($page>3){
+			$climate .= "<li><a href=\"#\" onclick=\"get_climate_tb(".$tb_no.",1)\">1</a></li>";
+			$climate .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+		}
+		for($j=$page-2; $j<=$page+2; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			if($j>0 AND $j<=$total_pages){
+				$climate .= "<li".$disabled."><a href=\"#\" onclick=\"get_climate_tb(".$tb_no.",".$j.")\">".$j."</a></li>";
+			}
+		}
+		if($page<$total_pages-3){
+			$climate .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+			$climate .= "<li><a href=\"#\" onclick=\"get_climate_tb(".$tb_no.",".$total_pages.")\">".$total_pages."</a></li>";
+		}
+	}
+		
+	if($page==$total_pages OR $total_pages==0){$disabled_next=" class=\"disabled\"";$onclick="";}else{$disabled_next="";$onclick="\"get_climate_tb(".$tb_no.",".$next_page.")\"";}
+	$climate .= "<li".$disabled_next."><a href=\"#\" onclick=".$onclick.">Επόμενο</a></li>";		
+	$climate .= "</ul></div>";
+	//PAGINATION
+	
+	$climate .= "</div>";
 	
 	return $climate;
 }

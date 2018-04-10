@@ -252,9 +252,25 @@ function calc_isu_oriz(){
 						?>
 					</div>
 					<div class="tab-pane" id="tabs-42">
-						<?php
-							echo create_library_domika9a();
-						?>
+						<div id="domika9a_text"></div>
+						<script>
+							function get_domika9a(page){
+							page = typeof page !== 'undefined' ? page : 1;
+								document.getElementById('wait').style.display="inline";
+								//AJAX call
+								var xmlhttp=new XMLHttpRequest();
+								
+								xmlhttp.open("GET","includes/functions_vivliothikes.php?get_domika9a=1&page="+page ,true);
+								xmlhttp.send();
+								
+								xmlhttp.onreadystatechange=function()  {
+								if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+									document.getElementById("domika9a_text").innerHTML=xmlhttp.responseText;
+									document.getElementById('wait').style.display="none";
+								}}
+							}
+							get_domika9a();
+						</script>
 					</div>
 				</div>
 				</div>

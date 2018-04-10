@@ -83,90 +83,78 @@ require("include_check.php");
 			</ul>
 		<div class="tab-content">
 			<div class="tab-pane" id="tabs-inside-1">
+				<h4>Θερμοκρασία</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab11" data-toggle="tab">Μέση μηνιαία Τ 24ώρου</a></li>
-					<li><a href="#tab12" data-toggle="tab">Μέση μηνιαία Τ (περ. ηλιοφάνειας)</a></li>
-					<li><a href="#tab13" data-toggle="tab">Μέση μηνιαία μέγιστη Τ</a></li>
-					<li><a href="#tab14" data-toggle="tab">Μέση μηνιαία ελάχιστη Τ</a></li>
-					<li><a href="#tab15" data-toggle="tab">Μέση μηνιαία απολύτως μέγιστη Τ</a></li>
-					<li><a href="#tab16" data-toggle="tab">Μέση μηνιαία απολύτως ελάχιστη Τ</a></li>
+					<li class="active" onclick="get_climate_tb(31,1);"><a href="#tab11" data-toggle="tab">Μέση μηνιαία Τ 24ώρου</a></li>
+					<li onclick="get_climate_tb(32,1);"><a href="#tab12" data-toggle="tab">Μέση μηνιαία Τ (περ. ηλιοφάνειας)</a></li>
+					<li onclick="get_climate_tb(33,1);"><a href="#tab13" data-toggle="tab">Μέση μηνιαία μέγιστη Τ</a></li>
+					<li onclick="get_climate_tb(34,1);"><a href="#tab14" data-toggle="tab">Μέση μηνιαία ελάχιστη Τ</a></li>
+					<li onclick="get_climate_tb(35,1);"><a href="#tab15" data-toggle="tab">Μέση μηνιαία απολύτως μέγιστη Τ</a></li>
+					<li onclick="get_climate_tb(36,1);"><a href="#tab16" data-toggle="tab">Μέση μηνιαία απολύτως ελάχιστη Τ</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab11">
 					Πίνακας 3.1. Μέση μηνιαία θερμοκρασία 24ώρου [<sup>o</sup>C] 
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate31");
-					?>
+						<div id="txt_climatetb31"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab12">
 					Πίνακας 3.2. Μέση μηνιαία θερμοκρασία κατά τη διάρκεια της ημέρας [<sup>o</sup>C] (μέση θερμοκρασία για την περίοδο ηλιοφάνειας της ημέρας)
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate32");
-					?>
+						<div id="txt_climatetb32"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab13">
 					Πίνακας 3.3. Μέση μέγιστη μηνιαία θερμοκρασία [<sup>o</sup>C]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate33");
-					?>
+						<div id="txt_climatetb33"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab14">
 					Πίνακας 3.4. Μέση ελάχιστη μηνιαία θερμοκρασία [<sup>o</sup>C]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate34");
-					?>
+						<div id="txt_climatetb34"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab15">
 					Πίνακας 3.5. Μέση απολύτως μέγιστη μηνιαία θερμοκρασία [<sup>o</sup>C]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate35");
-					?>
+						<div id="txt_climatetb35"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab16">
 					Πίνακας 3.6. Μέση απολύτως ελάχιστη μηνιαία θερμοκρασία [<sup>o</sup>C]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate36");
-					?>
+						<div id="txt_climatetb36"></div>
 					</div>
 				</div>	
 				</div>
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-2">
+				<h4>Βαθμοημέρες</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab21" data-toggle="tab">Βαθμοημέρες θέρμανσης</a></li>
-					<li><a href="#tab22" data-toggle="tab">Βαθμοώρες ψύξης</a></li>
+					<li class="active" onclick="get_climate_tb(37,1);"><a href="#tab21" data-toggle="tab">Βαθμοημέρες θέρμανσης</a></li>
+					<li onclick="get_climate_tb(38,1);"><a href="#tab22" data-toggle="tab">Βαθμοώρες ψύξης</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab21">
 					Πίνακας 3.7. Βαθμοημέρες θέρμανσης DD με θερμοκρασίες αναφοράς 18<sup>o</sup>C
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate37");
-					?>
+						<div id="txt_climatetb37"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab22">
 					Πίνακας 3.8. Βαθμοώρες ψύξης CDH με θερμοκρασίες αναφοράς 26<sup>o</sup>C
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate38");
-					?>
+						<div id="txt_climatetb38"></div>
 					</div>
 					
 				</div>
@@ -174,27 +162,25 @@ require("include_check.php");
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-3">
+				<h4>Υγρασία</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab31" data-toggle="tab">Μέση μηνιαία σχετική υγρασία</a></li>
-					<li><a href="#tab32" data-toggle="tab">Μέση μηνιαία ειδική υγρασία</a></li>
+					<li class="active" onclick="get_climate_tb(39,1);"><a href="#tab31" data-toggle="tab">Μέση μηνιαία σχετική υγρασία</a></li>
+					<li onclick="get_climate_tb(310,1);"><a href="#tab32" data-toggle="tab">Μέση μηνιαία ειδική υγρασία</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab31">
 					Πίνακας 3.9. Μέση μηνιαία σχετική υγρασία [%]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate39");
-					?>
+						<div id="txt_climatetb39"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab32">
 					Πίνακας 3.10. Μέση μηνιαία ειδική υγρασία [%]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate310");
-					?>
+						<div id="txt_climatetb310"></div>
 					</div>
 					
 				</div>
@@ -202,18 +188,18 @@ require("include_check.php");
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-4">
+				<h4>Άνεμος</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab41" data-toggle="tab">Μέση ταχύτητα ανέμου</a></li>
+					<li class="active" onclick="get_climate_tb(311,1);"><a href="#tab41" data-toggle="tab">Μέση ταχύτητα ανέμου</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab41">
 					Πίνακας 3.11. Μέση ταχύτητα του ανέμου [m/s]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate311");
-					?>
+						<div id="txt_climatetb311"></div>
 					</div>
 					
 				</div>
@@ -221,46 +207,40 @@ require("include_check.php");
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-5">
+				<h4>Ηλιακή ακτινοβολία</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab51" data-toggle="tab">Μέση μηνιαία ολική ηλιακή ακτινοβολία (οριζόντιο)</a></li>
-					<li><a href="#tab52" data-toggle="tab">Μέση μηνιαία διάχυτη ηλιακή ακτινοβολία (οριζόντιο)</a></li>
-					<li><a href="#tab53" data-toggle="tab">Μέσος μηνιαίος συντελεστής αιθριότητας</a></li>
-					<li><a href="#tab54" data-toggle="tab">Μηνιαία ηλιακή ακτινοβολία (Βέλτιστη κλίση)</a></li>
+					<li class="active" onclick="get_climate_tb(41,1);"><a href="#tab51" data-toggle="tab">Μέση μηνιαία ολική ηλιακή ακτινοβολία (οριζόντιο)</a></li>
+					<li onclick="get_climate_tb(42,1);"><a href="#tab52" data-toggle="tab">Μέση μηνιαία διάχυτη ηλιακή ακτινοβολία (οριζόντιο)</a></li>
+					<li onclick="get_climate_tb(43,1);"><a href="#tab53" data-toggle="tab">Μέσος μηνιαίος συντελεστής αιθριότητας</a></li>
+					<li onclick="get_climate_tb(44,1);"><a href="#tab54" data-toggle="tab">Μηνιαία ηλιακή ακτινοβολία (Βέλτιστη κλίση)</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab51">
 					Πίνακας 4.1. Μέση μηνιαία ολική ηλιακή ακτινοβολία στο οριζόντιο επίπεδο [kWh/m<sup>2</sup>.mo]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate41");
-					?>
+						<div id="txt_climatetb41"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab52">
 					Πίνακας 4.2. Μέση μηνιαία διάχυτη ηλιακή ακτινοβολία στο οριζόντιο επίπεδο [kWh/m<sup>2</sup>.mo]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate42");
-					?>
+						<div id="txt_climatetb42"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab53">
 					Πίνακας 4.3. Μέσος μηνιαίος συντελεστής αιθριότητας k<sub>t</sub>
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate43");
-					?>
+						<div id="txt_climatetb43"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab54">
 					Πίνακας 4.4. Μηνιαία ηλιακή ακτινοβολία για τις βέλτιστες γωνίες κλίσης β των Φ/Β (kWh/m<sup>2</sup>.mo), και 
 					βέλτιστη κλίση σε ετήσια (Ε) βάση, χειμερινή (Χ) και θερινή (Θ) περίοδο για διάφορες περιοχές της Ελλάδας
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate44");
-					?>
+						<div id="txt_climatetb44"></div>
 					</div>
 					
 				</div>	
@@ -268,27 +248,25 @@ require("include_check.php");
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-6">
+				<h4>Θερμοκρασία νερού</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab61" data-toggle="tab">Μέση θερμοκρασία νερού δικτύου (ΕΛΟΤ)</a></li>
-					<li><a href="#tab62" data-toggle="tab">Μέση θερμοκρασία νερού δικτύου (ΚΕΝΑΚ)</a></li>
+					<li class="active" onclick="get_climate_tb(61,1);"><a href="#tab61" data-toggle="tab">Μέση θερμοκρασία νερού δικτύου (ΕΛΟΤ)</a></li>
+					<li onclick="get_climate_tb(62,1);"><a href="#tab62" data-toggle="tab">Μέση θερμοκρασία νερού δικτύου (ΚΕΝΑΚ)</a></li>
 					</ul>
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab61">
 					Πίνακας 6.1. Μέση θερμοκρασία νερού δικτύου [<sup>o</sup>C] σύμφωνα με ΕΛΟΤ 1291
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate61");
-					?>
+						<div id="txt_climatetb61"></div>
 					</div>
 					
 					<div class="tab-pane" id="tab62">
 					Πίνακας 6.2. Μέση μηνιαία θερμοκρασία νερού δικτύου [<sup>o</sup>C] για τις διάφορες κλιματικές ζώνες
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-					<?php
-					echo create_library_climate("vivliothiki_climate62");
-					?>
+						<div id="txt_climatetb62"></div>
 					</div>
 					
 				</div>
@@ -297,6 +275,8 @@ require("include_check.php");
 			
 			
 			<div class="tab-pane" id="tabs-inside-7">
+				<h4>Συντελεστές ηλιακής αξιοποίησης</h4>
+				<h6></h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
 					<li class="active"><a href="#tab71" data-toggle="tab">Κατοικίες</a></li>
@@ -323,9 +303,11 @@ require("include_check.php");
 			</div>
 			
 			<div class="tab-pane" id="tabs-inside-8">
+				<h4>Βροχόπτωση</h4>
+				<h6>Πατήστε σε κάθε μενού για φόρτωση / Επιλέξτε περιοχή</h6>
 				<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 					<ul class="nav nav-tabs">
-					<li class="active"><a href="#tab81" data-toggle="tab">Μέση μηνιαία βροχόπτωση</a></li>
+					<li class="active" onclick="get_climate_tb(999,1);"><a href="#tab81" data-toggle="tab">Μέση μηνιαία βροχόπτωση</a></li>
 					<li><a href="#tab82" data-toggle="tab">Ομβροθερμικό διάγραμμα</a></li>
 					</ul>
 
@@ -333,9 +315,7 @@ require("include_check.php");
 					<div class="tab-pane active" id="tab81">
 					Μέση μηνιαία βροχόπτωση [mm]
 					<br/> <i>Πατήστε σε κάθε γραμμή για διάγραμμα</i>
-						<?php
-						echo create_library_climate("vivliothiki_climate999");
-						?>
+						<div id="txt_climatetb999"></div>
 					</div>
 				
 					<div class="tab-pane" id="tab82">
@@ -356,11 +336,33 @@ require("include_check.php");
 					</div>
 					
 				</div>
-					
+					 
 				</div>
 			</div>
 			
+			<script>
+			function get_climate_tb(table, page){
+			page = typeof page !== 'undefined' ? page : 1;
+			table = typeof table !== 'undefined' ? table : 31;
+				document.getElementById('wait').style.display="inline";
+				//AJAX call
+				var xmlhttp=new XMLHttpRequest();
+				
+				xmlhttp.open("GET","includes/functions_vivliothikes.php?get_climate_tb=1&table="+table+"&page="+page ,true);
+				xmlhttp.send();
+				
+				xmlhttp.onreadystatechange=function()  {
+				if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+					document.getElementById("txt_climatetb"+table).innerHTML=xmlhttp.responseText;
+					document.getElementById('wait').style.display="none";
+				}}
+			}
+			</script>
+			
+			
 			<div class="tab-pane" id="tabs-inside-9">
+				<h4>Μέση μηνιαία ηλιακή ακτινοβολία</h4>
+				<h6>Επιλέξτε περιοχή και τρόπο τοποθέτησης</h6>
 				<select id="place_solar" name="place_solar" onchange="get_climate_b();">
 					<option value="no" selected="selected">Επιλέξτε περιοχή....</option>
 					<option value="Αθήνα (Ελληνικό)">Αθήνα (Ελληνικό)</option>
