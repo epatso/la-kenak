@@ -391,7 +391,7 @@ class medoo
 					is_numeric($where['LIMIT'][1])
 				)
 				{
-					$where_clause .= ' LIMIT ' . $where['LIMIT'][0] . ',' . $where['LIMIT'][1];
+					$where_clause .= ' LIMIT ' . $where['LIMIT'][1] . ' OFFSET ' . $where['LIMIT'][0];
 				}
 			}
 		}

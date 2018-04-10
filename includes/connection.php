@@ -26,7 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 
 include ('include_check.php');
 require("database.php");
-
+$database = new medoo(DB_NAME);
 /*
 // 1. Δημιουργία σύνδεσης με τη βάση δεδομένων
 $connection = mysql_connect(DB_SERVER,DB_USER,DB_PASS);

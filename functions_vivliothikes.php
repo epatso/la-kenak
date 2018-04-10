@@ -554,7 +554,7 @@ function create_library_materials($category=0,$subcategory=0,$page=1,$like=""){
 	$db_rows = 10;
 	$where["LIMIT"]=array($db_offset,$db_rows);
 	$tb_data=$database->select($tb,$col,$where);
-	echo $database->last_query();
+	//echo $database->last_query();
 	
 	//Σύνολο σελίδων
 	$total_pages = ceil($count/10);
