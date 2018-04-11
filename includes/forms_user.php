@@ -61,7 +61,9 @@ if(isset($_POST['submit']) AND $_POST['submit']=='Login'){
 		//Έλεγχος πριν την είσοδο στη βάση
 		$_POST['username'] = $_POST['username'];
 		$_POST['password'] = $_POST['password'];
-		$_POST['rememberMe'] = (int)$_POST['rememberMe'];
+		if(isset($_POST['rememberMe'])){
+			$_POST['rememberMe'] = (int)$_POST['rememberMe'];
+		}
 		
 		//Αυτή η γραμμή ελέγχει το χρήστη στη βάση δεδομένων
 		//Για τη σύνδεση σε ήδη υπάρχουσες βάσεις δεδομένων με χρήστες μπορεί να γίνει το εξής:
@@ -76,9 +78,6 @@ if(isset($_POST['submit']) AND $_POST['submit']=='Login'){
 		$user_table = "core_users";
 		$where_parameters = array ("usr" => $_POST['username']);
 		$user_data = $database->select($user_table,"*",$where_parameters);
-		$correct_hash = $user_data[0]["pass"];
-		
-		$password = $_POST['password'];
 		
 		//Πρέπει να επιστρέφει 1.
 		$count_user = $database->count($user_table, $where_parameters);
@@ -87,13 +86,20 @@ if(isset($_POST['submit']) AND $_POST['submit']=='Login'){
 		if($count_user==0){
 			$err[]='Το όνομα πρόσβασης είναι λανθασμένο. Διορθώστε το όνομα ή εάν δεν έχετε λογαριασμό χρησιμοποιήστε τη φόρμα εγγραφής.';
 		}else{
+			
+			$correct_hash = $user_data[0]["pass"];
+			$password = $_POST['password'];
+			
 			if(validate_password($password, $correct_hash)){
 				$_SESSION['username']=$user_data[0]["usr"];
 				$_SESSION['user_id'] = $user_data[0]["id"];
-				$_SESSION['rememberMe'] = $_POST['rememberMe'];
+				if(isset($_POST['rememberMe'])){
+					$_SESSION['rememberMe'] = $_POST['rememberMe'];
+				}
 				
 				//Ορίζω δεδομένα στο cookie kenakv5Remember
-				setcookie('kenakv5Remember',$_POST['rememberMe']);
+				//Μπήκε στο session στην 1η γραμμή
+				//setcookie('kenakv5Remember',$_POST['rememberMe']);
 				
 				$log_table = "user_logs";
 				$dt = date("Y-m-d H:i:s");
@@ -468,7 +474,7 @@ if(isset($_POST['submit']) AND $_POST['submit']=='neameleti'){
 		chmod($folder,0777);
 		
 		$file = fopen($folder."/emptyfolder.txt","w");
-		echo fwrite($file,"Empty userdata folder");
+		fwrite($file,"Empty userdata folder");
 		fclose($file);
 	}//υπάρχει δικαίωμα προσθήκης
 	

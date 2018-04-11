@@ -222,28 +222,62 @@ confirm_logged_in();
 			<div class="tab-content">
 			<div class="tab-pane active" id="tabs-1">
 			
-				<form name="user_pref" action="" method="POST">
+				<form name="user_pref" action="" method="POST" data-toggle="validator">
 				
 					<table class="table table-bordered">
 					<tr class="info">
 						<td colspan="2"><i class="fa fa-user"></i> Στοιχεία μηχανικού</td>
 					<tr>
-					<tr><td><b>e-mail:</b></td><td><input class="form-control input-sm" type="text" id="email" name="email" value="<?php echo $email;?>"></td></tr>
-					<tr><td><b>Όνομα:</b></td><td><input class="form-control input-sm" type="text" id="onoma" name="onoma" value="<?php echo $onoma;?>"></td></tr>
-					<tr><td><b>Επώνυμο:</b></td><td><input class="form-control input-sm" type="text" id="epwnymo" name="epwnymo" value="<?php echo $epwnymo;?>"></td></tr>
+					<tr>
+						<td>
+							<b>e-mail:</b>
+						</td>
+						<td>
+							<div class="form-group has-feedback">
+								<input class="form-control input-sm" type="text" id="email" name="email" value="<?php echo $email;?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Όνομα:</b>
+						</td>
+						<td>
+							<div class="form-group has-feedback">
+								<input class="form-control input-sm" type="text" id="onoma" name="onoma" value="<?php echo $onoma;?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<b>Επώνυμο:</b>
+						</td>
+						<td>
+							<div class="form-group has-feedback">
+								<input class="form-control input-sm" type="text" id="epwnymo" name="epwnymo" value="<?php echo $epwnymo;?>" required>
+								<div class="help-block with-errors"></div>
+							</div>
+						</td>
+					</tr>
 					<tr>
 					<td>
 						<b>Ειδικότητα:</b>
 					</td>
 						<td>
-						<select class="form-control input-sm" id="eidikotita" name="eidikotita">
-						<?php
-						echo create_select_optionsid("core_eidikotitesmhx","name");
-						?>
-						</select>
-						<script language="JavaScript">
-							document.getElementById("eidikotita").selectedIndex=<?php echo $eidikotita-1;?>;
-						</script>
+							<div class="form-group has-feedback">
+								<select class="form-control input-sm" id="eidikotita" name="eidikotita" required>
+								<?php
+								echo create_select_optionsid("core_eidikotitesmhx","name");
+								?>
+								</select>
+								<div class="help-block with-errors"></div>
+								
+								<script language="JavaScript">
+									document.getElementById("eidikotita").selectedIndex=<?php echo $eidikotita-1;?>;
+								</script>
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -685,33 +719,59 @@ document.getElementById('address_z').value=number_format(z,2);
 			</div>
 			
 			<div class="tab-pane" id="tabs-2"> 
-			<form class="clearfix" action="" method="post">
+			<form class="clearfix" action="" method="post" data-toggle="validator">
 				<table>
 				<tr>
-					<td><b>Παλαιός κωδικός:</b></td>
-					<td><div id="control1" class="control-group">
-					<input class="form-control input-sm" type="password" id="password1" name="password1" onkeyup=check_pass() /></div></td>
+					<td>
+						<b>Παλαιός κωδικός:</b>
+					</td>
+					<td>
+						<div id="control1" class="form-group has-feedback">
+							<input class="form-control input-sm" type="password" id="password1" name="password1" onkeyup=check_pass() required />
+							<div class="help-block with-errors"></div>
+						</div>
+					</td>
 					<td rowspan="2">
-					<span id="oldpass_help" class="help-inline"></span>
+						<span id="oldpass_help" class="help-inline"></span>
 					</td>
 				</tr>
 				<tr>
-					<td><b>Παλαιός κωδικός (επιβεβαίωση):</b></td>
-					<td><div id="control2" class="control-group">
-					<input class="form-control input-sm" type="password" id="password2" name="password2" onkeyup=check_pass() /></div></td>
+					<td>
+						<b>Παλαιός κωδικός (επιβεβαίωση):</b>
+					</td>
+					<td>
+						<div id="control2" class="form-group has-feedback">
+							<input class="form-control input-sm" type="password" id="password2" name="password2" onkeyup=check_pass() 
+							data-match="#password1" data-match-error="Οι 2 υφιστάμενοι κωδικοί δε συμβαδίζουν" required />
+							<div class="help-block with-errors"></div>
+						</div>
+					</td>
 				</tr>
 				<tr>
-					<td><b>Νέος κωδικός:</b></td>
-					<td><div id="control3" class="control-group">
-					<input class="form-control input-sm" type="password" id="newpassword1" name="newpassword1" onkeyup=check_pass() /></div></td>
+					<td>
+						<b>Νέος κωδικός:</b>
+					</td>
+					<td>
+						<div id="control3" class="form-group has-feedback">
+							<input class="form-control input-sm" type="password" id="newpassword1" name="newpassword1" onkeyup=check_pass() required />
+							<div class="help-block with-errors"></div>
+						</div>
+					</td>
 					<td rowspan="2">
 					<span id="newpass_help" class="help-inline"></span>
 					</td>
 				</tr>
 				<tr>
-					<td><b>Νέος κωδικός (επιβεβαίωση):</b></td>
-					<td><div id="control4" class="control-group">
-					<input class="form-control input-sm" type="password" id="newpassword2" name="newpassword2" onkeyup=check_pass() /></div></td>
+					<td>
+						<b>Νέος κωδικός (επιβεβαίωση):</b>
+					</td>
+					<td>
+						<div id="control4" class="form-group has-feedback">
+							<input class="form-control input-sm" type="password" id="newpassword2" name="newpassword2" onkeyup=check_pass() 
+							data-match="#newpassword1" data-match-error="Οι 2 νέοι κωδικοί δε συμβαδίζουν" required />
+							<div class="help-block with-errors"></div>
+						</div>
+					</td>
 				</tr>
 				</table>
 				<button type="submit" id="passsubmit" name="submit" value="update-password" class="btn btn-primary">Αλλαγή κωδικού</button>
@@ -731,6 +791,15 @@ document.getElementById('address_z').value=number_format(z,2);
 			echo "Στις : <span class=\"label label-info\">".$logs["dt"]."</span> από <span class=\"badge\">".$logs["regIP"]."</span><br/>";
 			}
 			?>
+				<font color="red"><h5><i class="fa fa-trash"></i> Διαγραφή στοιχείων σύνδεσης χρήστη</h5></font>
+				<form class="clearfix" action="" method="post">
+					<div class="row">
+						<div class="col-md-12">
+							<button type="submit" id="deleteuserlogs_submit" name="submit" value="delete_userlogs" class="btn btn-danger">Διαγραφή στοιχείων σύνδεσης</button>
+							<div id="dellogs_result"></div>
+						</div>
+					</div>
+				</form>
 			</div>
 			
 			<div class="tab-pane" id="tabs-4">

@@ -209,21 +209,27 @@ require("include_check.php");
 				<div class="login-box-body">
 					<p class="login-box-msg">Συνδεθείτε για να ξεκινήσετε :)</p>
 
-					<form action="" method="post">
+					<form action="" method="post" data-toggle="validator">
 						<div class="form-group has-feedback">
-							<input type="text" class="form-control" placeholder="Username"  id="username" name="username">
+							<input type="text" class="form-control" placeholder="Username"  id="username" name="username" data-error="To username είναι απαραίτητο" required>
 							<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+							<div class="help-block with-errors"></div>
 						</div>
 						<div class="form-group has-feedback">
-							<input type="password" class="form-control" placeholder="Password" id="password" name="password">
+							<input type="password" class="form-control" placeholder="Password" id="password" name="password" data-error="To συνθηματικό είναι απαραίτητο" required>
 							<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+							<div class="help-block with-errors"></div>
 						</div>
 						<div class="row">
 							<div class="col-xs-8">
+								<div class="form-group has-feedback">
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="rememberMe" id="rememberMe" value="1"> Να με θυμάσαι
+										<input type="checkbox" name="rememberMe" id="rememberMe" value="1" 
+										data-error="Είναι απαραίτητη η συναίνεση (αποθήκευση της συνεδρίας σας) εάν χρησιμοποιείτε το λογισμικό" required> Να με θυμάσαι
 									</label>
+								</div>
+								<div class="help-block with-errors"></div>
 								</div>
 							</div>
 							<!-- /.col -->
@@ -298,27 +304,39 @@ require("include_check.php");
 		
 				<form action="" method="post" data-toggle="validator">
 					<div class="form-group has-feedback">
-						<input type="text" class="form-control" placeholder="Username" data-minlength="2" name="username" id="username">
+						<input type="text" class="form-control" placeholder="Username" data-minlength="5" name="username" id="username" 
+						pattern="^[_A-z0-9]{1,}$" maxlength="15" data-error="To username είναι απαραίτητο να είναι μεταξύ 5 και 15 χαρακτήρων και αλφαριθμητικούς χαρακτήρες μόνο" required>
 						<span class="glyphicon glyphicon-user form-control-feedback"></span>
+						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
-						<input type="email" class="form-control" placeholder="Email" name="email" id="email">
+						<input type="email" class="form-control" placeholder="Email" name="email" id="email" data-error="To e-mail είναι απαραίτητο και έχει τη μορφή x@x.x" required>
 						<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
-						<input type="password" class="form-control" placeholder="Password" name="pass1" id="pass1">
+						<input type="password" class="form-control" placeholder="Password" name="pass1" id="pass1" 
+						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες" data-minlength="6" maxlength="15" required>
 						<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
-						<input type="password" class="form-control" placeholder="Retype password" name="pass2" id="pass2">
+						<input type="password" class="form-control" placeholder="Retype password" name="pass2" id="pass2" 
+						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες" data-minlength="6" maxlength="15" required>
 						<span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+						<div class="help-block with-errors"></div>
 					</div>
 					<div class="row">
 						<div class="col-xs-8">
+							<div class="form-group has-feedback">
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="reg_terms" id="reg_terms"> Συμφωνώ με τους <a href="?nav=library_help">όρους</a>
+									<input type="checkbox" name="reg_terms" id="reg_terms" 
+									data-error="Είναι απαραίτητη η συναίνεση (αποδοχή των όρων) εάν χρησιμοποιείτε το λογισμικό" required> 
+									Συμφωνώ με τους <a href="?nav=library_help">όρους</a>
 								</label>
+							</div>
+							<div class="help-block with-errors"></div>
 							</div>
 						</div>
 						<!-- /.col -->
