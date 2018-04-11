@@ -305,24 +305,27 @@ require("include_check.php");
 				<form action="" method="post" data-toggle="validator">
 					<div class="form-group has-feedback">
 						<input type="text" class="form-control" placeholder="Username" data-minlength="5" name="username" id="username" 
-						pattern="^[_A-z0-9]{1,}$" maxlength="15" data-error="To username είναι απαραίτητο να είναι μεταξύ 5 και 15 χαρακτήρων και αλφαριθμητικούς χαρακτήρες μόνο" required>
+						pattern="^[_A-z0-9]{5,}$" maxlength="15" data-error="To username είναι απαραίτητο να είναι μεταξύ 5 και 15 χαρακτήρων και αλφαριθμητικούς χαρακτήρες μόνο" required>
 						<span class="glyphicon glyphicon-user form-control-feedback"></span>
 						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
-						<input type="email" class="form-control" placeholder="Email" name="email" id="email" data-error="To e-mail είναι απαραίτητο και έχει τη μορφή x@x.x" required>
+						<input type="email" class="form-control" placeholder="Email" name="email" id="email" 
+						data-error="To e-mail είναι απαραίτητο και έχει τη μορφή x@x.x" required>
 						<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
 						<input type="password" class="form-control" placeholder="Password" name="pass1" id="pass1" 
-						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες" data-minlength="6" maxlength="15" required>
+						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες να περιέχει 1 αριθμό, 1 μικρό και 1 κεφαλαίο γράμμα" 
+						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" data-minlength="6" maxlength="15" required>
 						<span class="glyphicon glyphicon-lock form-control-feedback"></span>
 						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group has-feedback">
 						<input type="password" class="form-control" placeholder="Retype password" name="pass2" id="pass2" 
-						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες" data-minlength="6" maxlength="15" required>
+						data-error="To συνθηματικό είναι απαραίτητο και πρέπει να είναι μεταξύ 6-15 χαρακτήρες να περιέχει 1 αριθμό, 1 μικρό και 1 κεφαλαίο γράμμα" 
+						pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" data-minlength="6" maxlength="15" required>
 						<span class="glyphicon glyphicon-log-in form-control-feedback"></span>
 						<div class="help-block with-errors"></div>
 					</div>

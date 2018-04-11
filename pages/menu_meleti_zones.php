@@ -388,7 +388,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td width=50%>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-keyboard-o"></i> Όνομα</span>
-				<input type="text" class="form-control input-sm" id="editzone_name">
+				<input type="text" class="form-control input-sm" id="editzone_name" pattern="[^,|\^]+"><!--όλα εκτός ,|^ που χρησιμοποιούνται ως delimeters-->
 				</div>
 			</td>
 			<td width=50%>
@@ -406,7 +406,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group" id="div_klines" style="display: none;">
 				<span class="input-group-addon" style="background-color: #C1FFC1"><i class="fa fa-bed" aria-hidden="true"></i> Κλίνες</span>
-				<input type="text" class="form-control input-sm" id="editzone_klines">
+				<input type="text" class="form-control input-sm" id="editzone_klines" pattern="[^,|\^]+">
 				</div>
 				<div class="input-group" id="div_hotel" style="display: none;">
 				<span class="input-group-addon" style="background-color: #ffcfdf"><i class="fa fa-plane" aria-hidden="true"></i> Ξενοδοχείο</span>
@@ -488,13 +488,13 @@ var div_hospital = document.getElementById('div_hospital');
 				<div class="col-md-6">
 					<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-free-code-camp"></i> Καμινάδες</span>
-					<input type="text" class="form-control input-sm" id="editzone_kaminades">
+					<input type="text" class="form-control input-sm" id="editzone_kaminades" pattern="[^,|\^]+">
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-flag-o"></i> Θυρίδες</span>
-					<input type="text" class="form-control input-sm" id="editzone_thyrides">
+					<input type="text" class="form-control input-sm" id="editzone_thyrides" pattern="[^,|\^]+">
 					</div>
 				</div>
 				</div>
@@ -504,13 +504,13 @@ var div_hospital = document.getElementById('div_hospital');
 				<div class="col-md-6">
 					<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-window-maximize"></i> Εξώθυρες</span>
-					<input type="text" class="form-control input-sm" id="editzone_ekswthyres">
+					<input type="text" class="form-control input-sm" id="editzone_ekswthyres" pattern="[^,|\^]+">
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="input-group">
 					<span class="input-group-addon"><i class="fa fa-flag-checkered"></i> Ανεμιστήρες</span>
-					<input type="text" class="form-control input-sm" id="editzone_anemistires">
+					<input type="text" class="form-control input-sm" id="editzone_anemistires" pattern="[^,|\^]+">
 					</div>
 				</div>
 				</div>
@@ -714,7 +714,7 @@ var div_hospital = document.getElementById('div_hospital');
 		<td>
 			<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-keyboard-o"></i> Όνομα</span>
-			<input type="text" class="form-control input-sm" id="editmthx_name">
+			<input type="text" class="form-control input-sm" id="editmthx_name" pattern="[^,|\^]+">
 			</div>
 		</td>
 		</tr>
@@ -1006,7 +1006,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-keyboard-o"></i> Όνομα</span>
-				<input type="text" class="form-control input-sm" id="editxwroi_name">
+				<input type="text" class="form-control input-sm" id="editxwroi_name" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
@@ -1014,7 +1014,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-arrows-h"></i> Μήκος (Α)</span>
-				<input type="text" class="form-control input-sm" id="editxwroi_l" onchange="xwroi_change_info();">
+				<input type="text" class="form-control input-sm" id="editxwroi_l" onchange="xwroi_change_info();" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
@@ -1022,7 +1022,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-arrows-h"></i> Πλάτος (Β)</span>
-				<input type="text" class="form-control input-sm" id="editxwroi_w" onchange="xwroi_change_info();">
+				<input type="text" class="form-control input-sm" id="editxwroi_w" onchange="xwroi_change_info();" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
@@ -1030,7 +1030,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-arrows-v"></i> Ύψος (h)</span>
-				<input type="text" class="form-control input-sm" id="editxwroi_h" onchange="xwroi_change_info();">
+				<input type="text" class="form-control input-sm" id="editxwroi_h" onchange="xwroi_change_info();" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
@@ -1352,7 +1352,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-sort"></i> Πλήθος</span>
-				<input type="text" class="form-control input-sm" id="editthermo_n">
+				<input type="text" class="form-control input-sm" id="editthermo_n" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
@@ -1360,7 +1360,7 @@ var div_hospital = document.getElementById('div_hospital');
 			<td>
 				<div class="input-group">
 				<span class="input-group-addon"><i class="fa fa-arrows-v"></i> Μήκος</span>
-				<input type="text" class="form-control input-sm" id="editthermo_h">
+				<input type="text" class="form-control input-sm" id="editthermo_h" pattern="[^,|\^]+">
 				</div>
 			</td>
 		</tr>
