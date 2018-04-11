@@ -77,6 +77,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 		<span class="badge badge-inverse">3</span>Την συμμετοχή και συνεργασία συναδέλφων είτε σε επίπεδο μελέτης είτε στο ίδιο το λογισμικό. <br/>
 		<span class="badge badge-inverse">4</span>Την ανάλυση των διαθέσιμων στοιχείων των ΤΟΤΕΕ ακόμη παραπέρα. πχ την παρουσίαση της μεταβολής των συντελεστών σκίασης 
 		ανάλογα με τη γωνία σκίασης για κάποιο προσανατολισμό.<br/><br/>
+		
+		<h5>Δείτε <a href="?nav=library_help">εδώ</a> την πολιτική χρήσης προσωπικών δεδομένων.</h5>
+		<h4>Συμφωνείτε με την πολιτική χρήσης δεδομένων; 
+			<a href="#"><font color="blue">NAI <i class="fa fa-thumbs-up"></i></font></a>
+			<a href="http://www.google.gr"><font color="red">OXI <i class="fa fa-thumbs-down"></i></font></a>
+		</h4>
 		</div>
 		<!-- /.box-body -->
 		

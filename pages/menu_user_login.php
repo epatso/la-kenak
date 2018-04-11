@@ -222,7 +222,7 @@ require("include_check.php");
 							<div class="col-xs-8">
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="rememberMe" id="rememberMe" checked="checked" value="1"> Να με θυμάσαι
+										<input type="checkbox" name="rememberMe" id="rememberMe" value="1"> Να με θυμάσαι
 									</label>
 								</div>
 							</div>
@@ -296,9 +296,9 @@ require("include_check.php");
 				?>
 				</p>
 		
-				<form action="" method="post">
+				<form action="" method="post" data-toggle="validator">
 					<div class="form-group has-feedback">
-						<input type="text" class="form-control" placeholder="Username" name="username" id="username">
+						<input type="text" class="form-control" placeholder="Username" data-minlength="2" name="username" id="username">
 						<span class="glyphicon glyphicon-user form-control-feedback"></span>
 					</div>
 					<div class="form-group has-feedback">
@@ -317,7 +317,7 @@ require("include_check.php");
 						<div class="col-xs-8">
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" name="reg_terms" id="reg_terms"> Συμφωνώ με τους <a href="#">όρους</a>
+									<input type="checkbox" name="reg_terms" id="reg_terms"> Συμφωνώ με τους <a href="?nav=library_help">όρους</a>
 								</label>
 							</div>
 						</div>
