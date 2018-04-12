@@ -215,18 +215,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 			  <!-- Progress bars -->
 			  <div class="clearfix">
 				<span class="pull-left">Τεύχος μελέτης</span>
-				<small class="pull-right">50%</small>
+				<small class="pull-right">100%</small>
 			  </div>
 			  <div class="progress xs">
-				<div class="progress-bar progress-bar-green" style="width: 50%;"></div>
+				<div class="progress-bar progress-bar-green" style="width: 100%;"></div>
 			  </div>
 
 			  <div class="clearfix">
 				<span class="pull-left">Μελέτη</span>
-				<small class="pull-right">90%</small>
+				<small class="pull-right">100%</small>
 			  </div>
 			  <div class="progress xs">
-				<div class="progress-bar progress-bar-green" style="width: 90%;"></div>
+				<div class="progress-bar progress-bar-green" style="width: 100%;"></div>
 			  </div>
 			</div>
 			<!-- /.col -->
@@ -241,10 +241,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 
 			  <div class="clearfix">
 				<span class="pull-left">Βοήθεια συστήματα</span>
-				<small class="pull-right">95%</small>
+				<small class="pull-right">100%</small>
 			  </div>
 			  <div class="progress xs">
-				<div class="progress-bar progress-bar-green" style="width: 95%;"></div>
+				<div class="progress-bar progress-bar-green" style="width: 100%;"></div>
 			  </div>
 			</div>
 			<!-- /.col -->

@@ -90,11 +90,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 		<a href="javascript:void(0)">
 		  <h4 class="control-sidebar-subheading">
 			Τεύχος μελέτης
-			<span class="label label-danger pull-right">70%</span>
+			<span class="label label-danger pull-right">100%</span>
 		  </h4>
 
 		  <div class="progress progress-xxs">
-			<div class="progress-bar progress-bar-danger" style="width: 80%"></div>
+			<div class="progress-bar progress-bar-danger" style="width: 100%"></div>
 		  </div>
 		</a>
 	  </li>
@@ -114,11 +114,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 		<a href="javascript:void(0)">
 		  <h4 class="control-sidebar-subheading">
 			Σχεδίαση-WebGL
-			<span class="label label-warning pull-right">50%</span>
+			<span class="label label-warning pull-right">80%</span>
 		  </h4>
 
 		  <div class="progress progress-xxs">
-			<div class="progress-bar progress-bar-warning" style="width: 50%"></div>
+			<div class="progress-bar progress-bar-warning" style="width: 80%"></div>
 		  </div>
 		</a>
 	  </li>
@@ -126,11 +126,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 		<a href="javascript:void(0)">
 		  <h4 class="control-sidebar-subheading">
 			Βοήθειες συστημάτων
-			<span class="label label-primary pull-right">68%</span>
+			<span class="label label-primary pull-right">100%</span>
 		  </h4>
 
 		  <div class="progress progress-xxs">
-			<div class="progress-bar progress-bar-primary" style="width: 90%"></div>
+			<div class="progress-bar progress-bar-primary" style="width: 100%"></div>
 		  </div>
 		</a>
 	  </li>
