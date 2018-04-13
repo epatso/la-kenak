@@ -97,7 +97,7 @@ DROP TABLE IF EXISTS `core_users`;
 CREATE TABLE IF NOT EXISTS `core_users` (
 `id` int(11) NOT NULL,
   `usr` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `pass` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `pass` varchar(250) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `is_admin` int(11) NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `onoma` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
