@@ -35,6 +35,10 @@ $time = explode(' ', $time);
 $time = $time[1] + $time[0];
 $start = $time;
 
+//Διαδρομή GD
+//enviroment variable for GD
+putenv('GDFONTPATH=' . realpath('.'));
+
 //Ορίζω μια μεταβλητή μόνο στις σελίδες που βλέπει ο χρήστης.
 // Τα αρχεία php εκτελούνται μόνο εκεί που ορίζεται το INCLUDE_CHECK.
 //Έτσι πχ αν ζητήσει κάποιος στο browser το includes/medoo.php αυτό δεν εκτελείται.
