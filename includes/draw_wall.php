@@ -36,7 +36,7 @@ Tsak mods - Κώστας Τσακίρης - πολιτικός μηχανικό�
 	$hatch3='../images/hatch/tile.png';
 	$hatch4='../images/hatch/glass.png';
 	$hatch5='../images/hatch/granitis.png';
-	$font = 'verdana.ttf';
+	$font = './verdana.ttf';
 	
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");

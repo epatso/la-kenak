@@ -28,7 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 	$hatch3='../images/hatch/tile.png';
 	$hatch4='../images/hatch/glass.png';
 	$hatch5='../images/hatch/granitis.png';
-	$font = 'verdana.ttf';
+	$font = './verdana.ttf';
 	
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");

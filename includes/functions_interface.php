@@ -37,10 +37,109 @@ if (isset($_GET['get_mthx'])){
 
 require("include_check.php");
 
+//Κατασκευή μενού από βάση δεδομένων (έως 3 επίπεδα)
+function menu_array(){
+	//Σύνδεση στη βάση - Πίνακας μενού
+	$database = new medoo(DB_NAME);
+	$tb = "core_menu";
+	$col = "*";
+	$menu=array();
+	
+	//Κεντρικές κατηγορίες (είναι κατηγορία και δεν έχει parent δηλαδή: category_id==0)
+	$where_categories=array(
+		"AND"=>array("is_category"=>1,"category_id"=>0),
+		"ORDER"=>array(
+			"order"=>"ASC"
+		)
+	);
+	$data_categories=$database->select($tb,$col,$where_categories);
+	
+	//Για κάθε κεντρική κατηγορία
+	$i=0;
+	foreach($data_categories as $category){
+		$menu[$i]=array(
+			"id"=>$category["id"],
+			"is_category"=>$category["is_category"],
+			"category_id"=>$category["category_id"],
+			"order"=>$category["order"],
+			"name"=>$category["name"],
+			"link"=>$category["link"],
+			"link_type"=>$category["link_type"],
+			"icon"=>$category["icon"],
+			"accesslevel"=>$category["accesslevel"],
+			"active"=>$category["active"]
+		);
+		$where_category=array(
+		"AND"=>array("category_id"=>$category["id"]),
+		"ORDER"=>array(
+			"order"=>"ASC"
+			)
+		);
+		$count_category=$database->count($tb,$where_category);
+		$menu[$i]["children_count"]=$count_category;
+		if($count_category>0){
+			
+			$menu[$i]["children"]=array();
+			
+			$data_category=$database->select($tb,$col,$where_category);
+			$j=0;
+			foreach($data_category as $datacategory){
+				$menu[$i]["children"][$j]=array(
+					"id"=>$datacategory["id"],
+					"is_category"=>$datacategory["is_category"],
+					"category_id"=>$datacategory["category_id"],
+					"order"=>$datacategory["order"],
+					"name"=>$datacategory["name"],
+					"link"=>$datacategory["link"],
+					"link_type"=>$datacategory["link_type"],
+					"icon"=>$datacategory["icon"],
+					"accesslevel"=>$datacategory["accesslevel"],
+					"active"=>$category["active"]
+				);
+			
+				$where_subcategory=array(
+				"AND"=>array("category_id"=>$datacategory["id"]),
+				"ORDER"=>array(
+					"order"=>"ASC"
+					)
+				);
+				$count_subcategory=$database->count($tb,$where_subcategory);
+				$menu[$i]["children"][$j]["children_count"]=$count_subcategory;
+				if($count_subcategory>0){
+					$menu[$i]["children"][$j]["children"]=array();
+					
+					$data_subcategory=$database->select($tb,$col,$where_subcategory);
+					$z=0;
+					foreach($data_subcategory as $datasubcategory){
+						$menu[$i]["children"][$j]["children"][$z]=array(
+							"id"=>$datasubcategory["id"],
+							"is_category"=>$datasubcategory["is_category"],
+							"category_id"=>$datasubcategory["category_id"],
+							"order"=>$datasubcategory["order"],
+							"name"=>$datasubcategory["name"],
+							"link"=>$datasubcategory["link"],
+							"link_type"=>$datasubcategory["link_type"],
+							"icon"=>$datasubcategory["icon"],
+							"accesslevel"=>$datasubcategory["accesslevel"],
+							"active"=>$category["active"],
+							"children_count"=>0
+						);
+					$z++;
+					}//για κάθε στοιχείο στην υπό κατηγορία
+				}//υπάρχουν στοιχεία στην υπό κατηγορία
+				$j++;
+			}//για κάθε στοιχείο στην κεντρική κατηγορία
+		}//υπάρχουν στοιχεία στην κεντρική κατηγορία
+		$i++;
+	}//κεντρικές κατηγορίες
+	
+	return $menu;
+}
+
+
 function checkEmail($str){
 	return preg_match("/^[\.A-z0-9_\-\+]+[@][A-z0-9_\-]+([.][A-z0-9_\-]+)+[A-z]{1,4}$/", $str);
 }
-
 
 function send_mail($from,$to,$subject,$body){
 	$headers = '';

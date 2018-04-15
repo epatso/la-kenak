@@ -275,7 +275,8 @@ function create_solarpath($lat,$lon){
 	$xMajorScale   = 10;
 	$xMinorScale   = $xMajorScale / 2;
 	//-----------------------------------------------------------
-	$font="verdana.ttf";
+	//putenv('GDFONTPATH=' . realpath('.'));
+	$font="./verdana.ttf";
 	
 	// Create image
 	$image = @imageCreate( $imageWidth, $imageHeight )

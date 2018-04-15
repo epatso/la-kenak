@@ -1017,7 +1017,7 @@ class XY_Plot
       $lastRawX = $windowArray[ $index ][ "x" ];
 	  
     }
-	imagefttext($this->image, 11, 0, $x/2, $ytext+$marginTop, $this->color, "verdana.ttf", $date);
+	imagefttext($this->image, 11, 0, $x/2, $ytext+$marginTop, $this->color, "./verdana.ttf", $date);
   }
 
   /**
