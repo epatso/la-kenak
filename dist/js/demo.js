@@ -5,6 +5,19 @@
  * This file is for demo purposes only.
  */
 $(function () {
+	//Initialize Select2 Elements
+    $('.select2').select2({
+		width: "100%",
+		templateSelection: iformat,
+		templateResult: iformat,
+		allowHtml: true
+	})
+	
+function iformat(icon) {
+    var originalOption = icon.element;
+    return $('<span><i class="' + $(originalOption).val() + '"></i> ' + icon.text + '</span>');
+}
+	
   'use strict'
 
   /**
@@ -94,7 +107,7 @@ $(function () {
     })
 
     $('body').addClass(cls)
-    store('skin', cls)
+    store('skinkenak', cls)
     return false
   }
 
@@ -104,7 +117,7 @@ $(function () {
    * @returns void
    */
   function setup() {
-    var tmp = get('skin')
+    var tmp = get('skinkenak')
     if (tmp && $.inArray(tmp, mySkins))
       changeSkin(tmp)
 

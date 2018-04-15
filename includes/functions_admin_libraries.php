@@ -24,6 +24,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
 
+//Στοιχεία μενού
+if (isset($_GET['get_menudata'])){
+	$page = $_GET['page'];
+	define('INCLUDE_CHECK',true);
+	require("medoo.php");
+	require("session.php");
+	confirm_logged_in();
+	if(confirm_admin()){
+		$tb = create_menudata($page);
+		echo $tb;
+		exit;
+	}
+}
 //Κατηγορίες χρήσεων
 if (isset($_GET['get_genxriseis'])){
 	$page = $_GET['page'];
@@ -111,6 +124,149 @@ if (isset($_GET['del_id'])){
 }
 
 require("include_check.php");
+
+// ############################################### ΜΕΝΟΥ ΛΟΓΙΣΜΙΚΟΥ #########################################
+//Εκτύπωση πίνακα
+function create_menudata($page=1){
+	
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$tb = "core_menu";
+	$col = "*";
+	$where_categories=array(
+		"AND"=>array("is_category"=>1,"category_id"=>0),
+		"ORDER"=>array(
+			"order"=>"ASC"
+		)
+	);
+	
+	//Σύνολο εγγραφών στη βάση
+	$count_data=$database->count($tb);
+	//Επιλογή μόνο της σελίδας $page με LIMIT $db_rows OFFSET $db_offset
+	$db_offset = ($page-1)*10;
+	$db_rows = 10;
+	$where["LIMIT"]=array($db_offset,$db_rows);
+	$tb_data=$database->select($tb,$col,$where);
+	//echo $database->last_query();
+	
+	//Σύνολο σελίδων
+	$total_pages = ceil($count_data/10);
+	$count_start = $db_offset+1;
+	$count_end = $db_offset+10;
+	$previous_page=$page-1;
+	$next_page=$page+1;
+		if($page==$total_pages AND $count_data<$count_end){$count_end=$count_data;}
+	$new_page=ceil(($count_data+1)/10);
+	
+	$array_tick=array(
+		0=>"<font color=red><i class=\"fa fa-ban\"></i></font>",
+		1=>"<font color=green><i class=\"fa fa-check\"></i></font>"
+	);
+	
+	$array_access=array(
+		0=>"Επισκέπτης",
+		1=>"Χρήστης",
+		2=>"Διαχειριστής",
+		3=>"Μελέτη"
+	);
+	
+	$txt = "<div class=\"box panel-info\">";
+	$txt .= "<div class=\"box-header\"> Μενού λογισμικού </div>";
+	$txt .= "<div class=\"box-body table-responsive no-padding\">";
+	$txt = "<table class=\"table table-bordered table-condensed table-hover\">
+	<tr class=\"active\">
+	<th width=5% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Αρίθμηση\">α/α</span></th>
+	<th width=15% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Όνομα όπως εμφανίζεται στο μενού\">Όνομα</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Εάν πρόκειται για κατηγορία ή όχι\">Κατηγορία</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Κατηγορία που ανήκει το στοιχείο\">Ανήκει</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Σειρά εμφάνισης στα μενού\">Σειρά</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Σύνδεσμος που οδηγεί το μενού\">Σύνδεσμος</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Εικονίδιο όπως φαίνεται στο μενού\">Εικόνα</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Πρόσβαση χρηστών\">Πρόσβαση</span></th>
+	<th width=10% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Ενεργοποιημένο/Απενεργοποιημένο στοιχείο\">Ενεργό</span></th>
+	<th width=2% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Κλικ για επεξεργασία\"><i class=\"fa fa-pencil-square-o\"></i></span></th>
+	<th width=2% style=\"text-align:center;\"><span class=\"tip-top\" href=\"#\" title=\"Κλικ για διαγραφή\"><i class=\"fa fa-times\"></i></span></th>
+	</tr>";
+	
+	$i=1;
+	foreach($tb_data as $data){
+	$txt .= "<tr>";
+	$txt .= "<td style=\"text-align:center;\"><span class=\"label label-default\">".($db_offset+$i)."</span></td>";
+	$txt .= "<td style=\"text-align:center;\">".$data["name"]."</td>";
+	$txt .= "<td style=\"text-align:center;\">".$array_tick[$data["is_category"]]."</td>";
+		if($data["category_id"]!=0){
+			$category_id = $database->select($tb,"name",array("id"=>$data["category_id"]));
+			$txt .= "<td>".$category_id[0]."</td>";
+		}else{
+			$txt .= "<td>Μητρικό</td>";
+		}
+	
+	$level;
+	if($data["category_id"]==0){$level="";}//level0
+	if($data["category_id"]!=0){
+		$category_idtmp1 = $database->select($tb,"category_id",array("id"=>$data["category_id"]));
+		if($category_idtmp1[0]!=0){
+			$level=" - - - - ";//level2
+		}else{
+			$level=" - - ";//level1
+		}
+	}
+	$txt .= "<td>".$level.$data["order"]."</td>";
+	$txt .= "<td>".$data["link"]."</td>";
+	$txt .= "<td style=\"text-align:center;\"><i class=\"".$data["icon"]."\"></i></td>";
+	$txt .= "<td style=\"text-align:center;\">".$array_access[$data["accesslevel"]]."</td>";
+	$txt .= "<td style=\"text-align:center;\">".$array_tick[$data["active"]]."</td>";
+	$txt .= "<td><button class=\"btn btn-xs btn-warning\" type=\"button\" onclick=\"form_menudata(".$data["id"].",".$page.");\"><i class=\"fa fa-pencil-square-o\"></i></button></td>";
+	$txt .= "<td><button class=\"btn btn-xs btn-danger\" type=\"button\" onclick=\"formdel_menudata(".$data["id"].",".$page.");\"><i class=\"fa fa-times\"></i></button></td>";
+	$txt .= "</tr>";
+	$i++;
+	}
+	$txt .= "</table></div><div class=\"box-footer clearfix no-border\">";
+	
+	if($count_data!=0){
+		$txt .= "Αποτελέσματα από ".$count_start." έως ".$count_end." σε σύνολο ".$count_data." στοιχείων.";
+	}else{
+		$txt .= "Δεν βρέθηκαν αποτελέσματα με βάση το όνομα που δηλώσατε.";
+	}
+	
+	//PAGINATION
+	$txt .= "<ul class=\"pagination pagination-sm pull-right\">";
+		if($page==1){$disabled_prev=" class=\"disabled\"";$onclick="";}else{$disabled_prev="";$onclick="\"get_menudata(".$previous_page.")\"";}
+	$txt .= "<li".$disabled_prev."><a href=\"#\" onclick=".$onclick.">Προηγούμενο</a></li>";
+	
+	if($total_pages<=10){
+		for($j=1; $j<=$total_pages; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			$txt .= "<li".$disabled."><a href=\"#\" onclick=\"get_menudata(".$j.")\">".$j."</a></li>";
+		}
+	}else{
+		if($page>3){
+			$txt .= "<li><a href=\"#\" onclick=\"get_menudata(1)\">1</a></li>";
+			$txt .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+		}
+		for($j=$page-2; $j<=$page+2; $j++){
+			if($page==$j){$disabled=" class=\"active\"";}else{$disabled="";}
+			if($j>0 AND $j<=$total_pages){
+				$txt .= "<li".$disabled."><a href=\"#\" onclick=\"get_menudata(".$j.")\">".$j."</a></li>";
+			}
+		}
+		if($page<$total_pages-3){
+			$txt .= "<li class=\"disabled\"><a href=\"#\">...</a></li>";
+			$txt .= "<li><a href=\"#\" onclick=\"get_menudata(".$total_pages.")\">".$total_pages."</a></li>";
+		}
+	}
+		
+	if($page==$total_pages OR $total_pages==0){$disabled_next=" class=\"disabled\"";$onclick="";}else{$disabled_next="";$onclick="\"get_menudata(".$next_page.")\"";}
+	$txt .= "<li".$disabled_next."><a href=\"#\" onclick=".$onclick.">Επόμενο</a></li>";		
+	$txt .= "</ul></div>";
+	//PAGINATION
+	$txt .= "</div>";
+	
+	return $txt;
+	
+}
+// ############################################### ΜΕΝΟΥ ΛΟΓΙΣΜΙΚΟΥ #########################################
+
 
 // ############################################### ΓΕΝΙΚΕΣ ΧΡΗΣΕΙΣ ΚΤΙΡΙΟΥ #########################################
 //Εκτύπωση πίνακα

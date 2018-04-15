@@ -50,6 +50,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 	<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
 	<!-- bootstrap wysihtml5 - text editor -->
 	<link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
 	<!-- iCheck for checkboxes and radio inputs -->
 	<!--<link rel="stylesheet" href="plugins/iCheck/all.css"> -->
 	<link rel="stylesheet" href="stylesheets/bootstrap-treenav.css">
@@ -95,6 +97,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 <script type="text/javascript" src="bower_components/bootstrap/js/tooltip.js" /></script>
 <script type="text/javascript" src="bower_components/bootstrap/js/collapse.js" /></script>
 <script type="text/javascript" src="bower_components/bootstrap/js/popover.js" /></script>
+<script type="text/javascript" src="javascripts/validator.js" /></script>
 <script type="text/javascript" src="javascripts/datetime.js" /></script>
 
     <?php
