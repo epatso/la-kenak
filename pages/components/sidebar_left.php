@@ -91,7 +91,10 @@ if (isset($_SESSION['username'])){
 	$class_tree="";
 	$btn="";
 	
-	
+	//Εάν δεν έχει επιλεγεί τίποτα πήγαινε στην αρχική
+	if(!isset($_GET["nav"])){$_GET["nav"]="index";}
+		
+	//Μενού
 	foreach($menudata as $level0){
 		if("?nav=".$_GET["nav"]==$level0["link"]){$class_active="active ";}else{$class_active="";}//επιλέγχθηκε κάποιο level0
 		if($level0["children_count"]>0){$class_tree=$tree;$btn=$right;}else{$class_tree="";$btn="";}//υπάρχει δέντρο
