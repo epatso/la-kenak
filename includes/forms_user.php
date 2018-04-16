@@ -470,8 +470,10 @@ if(isset($_POST['submit']) AND $_POST['submit']=='neameleti'){
 		
 		//Αρχεία μελέτης
 		$folder="includes/file_upload/server/php/files/user_".$_SESSION["user_id"]."/meleti_".$_SESSION["meleti_id"];
-		mkdir($folder,0777);
-		chmod($folder,0777);
+		if (!is_dir($folder)) {
+			mkdir($folder,0777, true);
+			chmod($folder,0777);
+		}
 		
 		$file = fopen($folder."/emptyfolder.txt","w");
 		fwrite($file,"Empty userdata folder");
