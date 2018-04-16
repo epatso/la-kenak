@@ -195,9 +195,13 @@ function create_user_meletes($page=1,$like=""){
 	$meletes .= "<td><span class=\"label label-default\">".($db_offset+$i)."</span><span class=\"label label-info\">".$data["datetime"]."</span></td>
 	<td>".$data["name"]."</td>
 	<td>".$data["address"]."</td>";
-	
+	if($data["xrisi"]!=0){
 		$data_xrisi = $database->select("vivliothiki_conditions_building","name",array("id"=>$data["xrisi"]));
-	$meletes .= "<td>".$data_xrisi[0]."</td>";
+		$data_xrisi=$data_xrisi[0];
+	}else{
+		$data_xrisi="";
+	}
+	$meletes .= "<td>".$data_xrisi."</td>";
 		if($data["type"]==0){$type="Παλιό";}
 		if($data["type"]==1){$type="Ριζ. Ανακαινιζόμενο (Κ.Εν.Α.Κ.)";}
 		if($data["type"]==2){$type="Νέο (Κ.Εν.Α.Κ.)";}
