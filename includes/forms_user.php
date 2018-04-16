@@ -445,11 +445,21 @@ if(isset($_POST['submit']) AND $_POST['submit']=='neameleti'){
 	}
 	
 	if($priviledge!=0){
+		$select_user = $database->select("core_users","*",array("id" => $_SESSION['user_id']));	
+		$edra_x = $select_user[0]["address_x"];
+		$edra_y = $select_user[0]["address_y"];
+		$edra_z = $select_user[0]["address_z"];
 		
 		$db_table = "user_meletes";
 		$db_columns = array ("id","name");
 		$dt = date("Y-m-d H:i:s");
-		$insert_parameters = array("user_id" => $_SESSION['user_id'],"name" => $_POST['onoma_meletis'],"datetime"=>$dt);
+		$insert_parameters = array(
+			"user_id" => $_SESSION['user_id'],
+			"name" => $_POST['onoma_meletis'],
+			"address_x" => $edra_x,
+			"address_y" => $edra_y,
+			"address_z" => $edra_z,
+			"datetime"=>$dt);
 		$select_parameters = array ("AND" => array("name" => $_POST['onoma_meletis'],"user_id" => $_SESSION['user_id']));
 		
 		//Εισαγωγή στη βάση
