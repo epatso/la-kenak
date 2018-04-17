@@ -79,6 +79,23 @@ if (isset($_POST['saveteyxos'])){
 //Το αρχείο δεν εκτελείται μόνο του
 require("include_check.php");
 
+//Προσθέτει αρχικά το τεύχος. 
+function insert_meleti_teyxos_blank(){
+	confirm_logged_in();
+	$database = new medoo(DB_NAME);
+	$teyxos_table = "meletes_teyxos";
+	$col = "*";
+	
+	$update_parameters = array();
+	$update_parameters["user_id"]=$_SESSION['user_id'];
+	$update_parameters["meleti_id"]=$_SESSION['meleti_id'];
+	
+	for($i=1;$i<=8;$i++){
+		$update_parameters["kef".$i]=" ";
+	}
+	$insert_teyxos = $database->insert($teyxos_table, $update_parameters);
+}
+
 //Δημιουργεί το τεύχος από το πρότυπο τεύχος μελέτης υπολογίζοντας όλα τα στοιχεία της μελέτης
 function update_meleti_teyxos(){
 
@@ -235,6 +252,7 @@ function calculate_teyxos($teyxos){
 	$place_lat = $data_lat[0];
 	$placez=round($meleti_address_z);
 	
+	if($meleti_xrisi==0){$meleti_xrisi=1;}//Έλεγχος εάν δεν έχει δηλωθεί ακόμα χρήση στο κτίριο
 	$data_xrisi = $database->select("vivliothiki_conditions_building","name",array("id"=>$meleti_xrisi));
 	$bld_xrisi = $data_xrisi[0];
 	

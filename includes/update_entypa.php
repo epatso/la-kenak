@@ -148,8 +148,12 @@ function calculate_entypa($array){
 	$meleti_tmima = $meleti["tmima"];
 	$meleti_tmima_ar = $meleti["tmima_ar"];
 	$xrisi_id = $meleti["xrisi"];
+	
+	if($xrisi_id==0){$xrisi_id=1;}//Έλεγχος εάν δεν έχει δηλωθεί ακόμα χρήση στο κτίριο
 	$xrisi = $database->select("vivliothiki_conditions_building", "name", array("id"=>$xrisi_id));
+	//print_r($xrisi);
 	$meleti_xrisi=$xrisi[0];
+	
 	$climate_id = $meleti["climate"];
 	$climate = $database->select("vivliothiki_climate_places", "place", array("id"=>$climate_id+1));
 	$meleti_climate=$climate[0];

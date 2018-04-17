@@ -56,7 +56,30 @@ confirm_meleti_isset();
 <div class="row">
 	
 		<div class="col-md-2">
-		<br/><br/>
+		<br/>
+		<?php
+		$database = new medoo(DB_NAME);
+		$teyxos_table = "meletes_teyxos";
+		$protypo_table = "meletes_teyxos_p";
+		$db_columns = "*";
+		$where_parameters = array("AND" => array("user_id" => $_SESSION['user_id'],"meleti_id" => $_SESSION['meleti_id']));
+		
+		//Μέτρηση γραμμών με τα τεύχη
+		$count_protypo = $database->count($protypo_table, $where_parameters);
+		$count_teyxos = $database->count($teyxos_table, $where_parameters);
+		
+		//εάν δεν υπάρχουν οι γραμμές του τεύχους για τη μελέτη->δημιουργία
+		if($count_protypo==0){
+			recreate_meleti_protypo();
+		}
+		if($count_teyxos==0){
+			//update_meleti_teyxos();
+			insert_meleti_teyxos_blank();
+			echo "Είναι η 1η φορά που βρίσκεστε εδώ. Δημιουργήστε το τεύχος πατώντας \"Δημιουργία τεύχους\"";
+			echo "<a class=\"btn btn-default\" href=\"#\" role=\"button\" onclick=\"update_teyxos();\">Δημιουργία τεύχους</a>";
+		}
+		?>
+		<br/>
 		<div class="btn-group">
 			<button class="btn btn-solar dropdown-toggle" data-toggle="dropdown">
 			<span class="fa fa-download"></span>  Ενέργειες χρήστη 
@@ -101,25 +124,8 @@ confirm_meleti_isset();
 		</div>
 		
 		<div class="col-md-10">
+		
 		<?php
-		$database = new medoo(DB_NAME);
-		$teyxos_table = "meletes_teyxos";
-		$protypo_table = "meletes_teyxos_p";
-		$db_columns = "*";
-		$where_parameters = array("AND" => array("user_id" => $_SESSION['user_id'],"meleti_id" => $_SESSION['meleti_id']));
-		
-		//Μέτρηση γραμμών με τα τεύχη
-		$count_protypo = $database->count($protypo_table, $where_parameters);
-		$count_teyxos = $database->count($teyxos_table, $where_parameters);
-		
-		//εάν δεν υπάρχουν οι γραμμές του τεύχους για τη μελέτη->δημιουργία
-		if($count_protypo==0){
-		recreate_meleti_protypo();
-		}
-		if($count_teyxos==0){
-		update_meleti_teyxos();
-		}
-		
 		//Επιλογή του πρότυπου τεύχους
 		$select_protypo = $database->select($protypo_table, $db_columns, $where_parameters);
 		$protypo = $select_protypo[0];
