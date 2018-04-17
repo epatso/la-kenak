@@ -485,6 +485,8 @@ function preview_tables_general(){
 		4=>"Άλλο"
 	);
 	
+	$txt= "";
+	
 	$txt.= "<div class=\"row\">
 		<div class=\"row\">
 		<div class=\"col-md-5\">Χρήση κτιρίου: </div>
@@ -655,6 +657,7 @@ function preview_tables_ktirio(){
 	$building_solars = $database->count("meletes_mthx",$where_solars);
 	
 	$txt = "";
+	
 	$txt.= "<div class=\"tabbable tabs-left\">";
 	$txt.= "<ul class=\"nav nav-pills red\">
 			<li class=\"active\"><a href=\"#ktiriotab_1\" data-toggle=\"tab\"><i class=\"fa fa-fire\"></i> Γενικά</a></li>
@@ -885,8 +888,8 @@ function preview_tables_ktirio(){
 				$txt .= "<tr>
 				<td>".$array_sith_type[$sith["type"]]."</td>
 				<td>".$array_sith_pigi[$sith["pigi"]]."</td>
-				<td>".$anelkystires["n_elec"]."</td>
-				<td>".$anelkystires["n_therm"]."</td>
+				<td>".$sith["n_elec"]."</td>
+				<td>".$sith["n_therm"]."</td>
 				</tr>";
 			}
 		$txt.="</table>";
@@ -981,8 +984,8 @@ function preview_tables_zone($id){
 	$data_xwroi = $database->select("meletes_xwroi","*",$where_zoneid);
 	
 	//Όνομα χρήσης
-	$zone_name = $database->select("vivliothiki_conditions_zone","name",array("id"=>$data_zone["xrisi"]));
-	$zone_name = $zone_name[0];
+	$zone_data = $database->select("vivliothiki_conditions_zone","*",array("id"=>$data_zone["xrisi"]));
+	$zone_name = $zone_data[0]["name"];
 	
 	//Εμβαδά ζώνης
 	$zone_e=0;
@@ -1005,7 +1008,7 @@ function preview_tables_zone($id){
 	}
 	
 	if($zone_data[0]["znx_calc_type"]==1){//ΜΕ ΒΑΣΗ ΚΛΙΝΕΣ (πχ ΜΟΝΟΚΑΤΟΙΚΙΕΣ)
-		$znx_year=$zones["klines"]*$zone_data[0]["znx_m3_perroom"];
+		$znx_year=$data_zone["klines"]*$zone_data[0]["znx_m3_perroom"];
 	}
 	
 	if($zone_data[0]["znx_calc_type"]==2){//ΜΕ ΒΑΣΗ ΚΛΙΝΕΣ ΚΑΙ ΤΥΠΟ ΞΕΝΟΔΟΧΕΙΟΥ
@@ -1018,26 +1021,26 @@ function preview_tables_zone($id){
 		if($zone_data[0]["id"]==8 OR $zone_data[0]["id"]==9){//Ξενοδοχείο χειμερινής λειτουργίας
 			$hotel_type=3;
 		}
-		$where_hotel=array("AND"=>array("hotel_type"=>$hotel_type,"category"=>$zones["hotel"]));
-		$data_hotels = $database->select("vivliothiki_conditions_znx_hotels",$columns,$where_hotel);
+		$where_hotel=array("AND"=>array("hotel_type"=>$hotel_type,"category"=>$data_zone["hotel"]));
+		$data_hotels = $database->select("vivliothiki_conditions_znx_hotels","*",$where_hotel);
 		$zone_data[0]["znx_lt_perperson"]=$data_hotels[0]["znx_lt_perperson"];
 		$zone_data[0]["znx_lt_perm2"]=$data_hotels[0]["znx_lt_perm2"];
 		$zone_data[0]["znx_m3_perroom"]=$data_hotels[0]["znx_m3_perroom"];
 		$zone_data[0]["znx_m3_perm2"]=$data_hotels[0]["znx_m3_perm2"];
 		
-		$znx_year=$zones["klines"]*$zone_data[0]["znx_m3_perroom"];
+		$znx_year=$data_zone["klines"]*$zone_data[0]["znx_m3_perroom"];
 	}
 	
 	//Εάν ο τύπος ΖΝΧ είναι υπολογισμός με βάση τον τύπο κλινικής - νοσοκομείου
 	if($zone_data[0]["znx_calc_type"]==3){//ΜΕ ΒΑΣΗ ΚΛΙΝΕΣ ΚΑΙ ΤΥΠΟ ΚΛΙΝΙΚΗΣ
-		$where_hospital=array("id"=>$zones["hospital"]);
-		$data_hospitals = $database->select("vivliothiki_conditions_znx_hospitals",$columns,$where_hospital);
+		$where_hospital=array("id"=>$data_zone["hospital"]);
+		$data_hospitals = $database->select("vivliothiki_conditions_znx_hospitals","*",$where_hospital);
 		$zone_data[0]["znx_lt_perperson"]=$data_hospitals[0]["znx_lt_perperson"];
 		$zone_data[0]["znx_lt_perm2"]=$data_hospitals[0]["znx_lt_perm2"];
 		$zone_data[0]["znx_m3_perroom"]=$data_hospitals[0]["znx_m3_perroom"];
 		$zone_data[0]["znx_m3_perm2"]=$data_hospitals[0]["znx_m3_perm2"];
 		
-		$znx_year=$zones["klines"]*$zone_data[0]["znx_m3_perroom"];
+		$znx_year=$data_zone["klines"]*$zone_data[0]["znx_m3_perroom"];
 	}
 	
 	
@@ -1298,32 +1301,32 @@ function preview_tables_kelyfos($type,$id){
 		$wall_e_sum = $wall_l*$wall_h + ($wall_l*$wall_dy)/2;
 		
 		// u τοίχων
-			if($wall["u"]!=0){
-				$u=$wall["u"];
-			}else{
+			if($wall['u_id']!=0){
 				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
 				$u=$data_u[0];
+			}else{
+				$u=$wall["u"];
 			}
 		// u υποστυλωμάτων
-			if($wall["yp_u"]!=0){
-				$yp_u=$wall["yp_u"];
-			}else{
+			if($wall["yp_u_id"]!=0){
 				$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
 				$yp_u=$data_yp_u[0];
+			}else{
+				$yp_u=$wall["yp_u"];
 			}
 		// u δοκών	
-			if($wall["dok_u"]!=0){
-				$dok_u=$wall["dok_u"];
-			}else{
+			if($wall["dok_u_id"]!=0){
 				$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
 				$dok_u=$data_dok_u[0];
+			}else{
+				$dok_u=$wall["dok_u"];
 			}
 		// u συρομένων	
-			if($wall["syr_u"]!=0){
-				$syr_u=$wall["syr_u"];
-			}else{
+			if($wall["syr_u_id"]!=0){
 				$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
 				$syr_u=$data_syr_u[0];
+			}else{
+				$syr_u=$wall["syr_u"];
 			}		
 			
 		// α/ε
@@ -2716,14 +2719,14 @@ function preview_tables_systems($id){
 			$txt.= "<tr>
 			<td width=20%>".$array_solar_type[$solar["type"]]."</td>";
 			if($solar["active_h"]==1){
-				$solar_h.= "checked";
+				$solar_h= "checked";
 			}else{
-				$solar_h.= "";
+				$solar_h= "";
 			}
 			if($solar["active_z"]==1){
-				$solar_z.= "checked";
+				$solar_z= "checked";
 			}else{
-				$solar_z.= "";
+				$solar_z= "";
 			}
 			$txt.= "<td width=10%><input type=\"checkbox\" disabled ".$solar_h."></td>
 			<td width=10%><input type=\"checkbox\" disabled ".$solar_z."></td>
@@ -2766,19 +2769,19 @@ function preview_tables_systems($id){
 			<td width=5%>".$array_light_ff[$light["auto_ff"]]."</td>
 			<td width=5%>".$array_light_move[$light["auto_move"]]."</td>";
 			if($light["active_heat"]==1){
-				$active_heat.= "checked";
+				$active_heat= "checked";
 			}else{
-				$active_heat.= "";
+				$active_heat= "";
 			}
 			if($light["active_safety"]==1){
-				$active_safety.= "checked";
+				$active_safety= "checked";
 			}else{
-				$active_safety.= "";
+				$active_safety= "";
 			}
 			if($light["active_backup"]==1){
-				$active_backup.= "checked";
+				$active_backup= "checked";
 			}else{
-				$active_backup.= "";
+				$active_backup= "";
 			}
 			
 			$txt.= "<td width=5%><input type=\"checkbox\" disabled ".$active_heat."></td>
@@ -2820,27 +2823,27 @@ function preview_tables_systems($id){
 			$txt.= "<tr>
 			<td width=20%>".$aerp["type"]."</td>";
 			if($aerp["active_h"]==1){
-				$active_h.= "checked";
+				$active_h= "checked";
 			}else{
-				$active_h.= "";
+				$active_h= "";
 			}
 			$txt.= "<td width=10%><input type=\"checkbox\" disabled ".$active_h."></td>";
 			$txt.= "<td width=5%>".$aerp["f_h"]."</td>
 			<td width=5%>".$aerp["r_h"]."</td>
 			<td width=5%>".$aerp["q_r_h"]."</td>";
 			if($aerp["active_c"]==1){
-				$active_c.= "checked";
+				$active_c= "checked";
 			}else{
-				$active_c.= "";
+				$active_c= "";
 			}
 			$txt.= "<td width=10%><input type=\"checkbox\" disabled ".$active_c."></td>";
 			$txt.= "<td width=10%>".$aerp["f_c"]."</td>
 			<td width=10%>".$aerp["r_c"]."</td>
 			<td width=10%>".$aerp["q_r_c"]."</td>";
 			if($aerp["active_y"]==1){
-				$active_y.= "checked";
+				$active_y= "checked";
 			}else{
-				$active_y.= "";
+				$active_y= "";
 			}
 			$txt.= "<td width=10%><input type=\"checkbox\" disabled ".$active_y."></td>";
 			$txt.= "<td width=10%>".$aerp["h_r"]."</td>
