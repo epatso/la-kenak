@@ -1144,7 +1144,7 @@ function create_meletes_mthx_dapeda($page=1){
 		
 		$kelyfos .= "<td>".$data_mthx[0]."</td>";
 			
-		$kelyfos .= "<td>".$array_type[$data["type"]].$mthx."</td>";
+		$kelyfos .= "<td>".$array_type[$data["type"]]."</td>";
 		$kelyfos .= "<td>".$data["name"]."</td>";
 		$kelyfos .= "<td>".$data["e"]."</td>";
 		
