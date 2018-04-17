@@ -324,12 +324,15 @@ var xrisi = document.getElementById('editzone_xrisi').value;
 var div_klines = document.getElementById('div_klines');
 var div_hotel = document.getElementById('div_hotel');
 var div_hospital = document.getElementById('div_hospital');
+var klines = document.getElementById("editzone_klines").value;
+var hotel = document.getElementById('editzone_hotel').value;
+var hospital = document.getElementById('editzone_hospital').value;
 	
 	if(xrisi!=0){
 	//AJAX call
 	var xmlhttp=new XMLHttpRequest();
 	
-	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi ,true);
+	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel="+hotel+"&hospital="+hospital ,true);
 	xmlhttp.send();
 	
 	xmlhttp.onreadystatechange=function()  {
