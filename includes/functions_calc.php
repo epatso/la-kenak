@@ -294,6 +294,7 @@ if (isset($_GET['diafani_get_rrb'])){
 }
 
 if (isset($_GET['ufb'])){
+	require("functions_math.php");
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");
 	require("session.php");
@@ -306,6 +307,7 @@ if (isset($_GET['ufb'])){
 }
 
 if (isset($_GET['utb'])){
+	require("functions_math.php");
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");
 	require("session.php");
@@ -1428,7 +1430,7 @@ function get_ummax($zwni, $aprosv, $bld_type=0){
 		$ummax = paremvoli($line1, $line2, $ummax1, $ummax2, $aprosv);
 	}
 	
-	return $ummax."b";
+	return $ummax;
 }
 
 //Υπολογισμός ισοδύναμου συντελεστή δαπέδου. Ορίζεται ο ονομαστικός, το βάθος και η χαρακτηριστική και επιστρέφει τον ισοδύναμο

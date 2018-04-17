@@ -34,7 +34,7 @@ require_once('./tcpdf/tcpdf.php');
 if(isset($_GET['skiasi'])){$skiasi=$_GET["skiasi"];}
 if(isset($_GET['print'])){$print=$_GET["print"];}
 
-
+$result = "";
 //#############################################################################
 	if ($skiasi==1){//σκίαση ορίζοντα
 	$prothema = "hor";

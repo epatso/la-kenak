@@ -231,12 +231,15 @@ var xrisi = document.getElementById('znx_xrisi').value;
 var div_klines = document.getElementById('znx_div_klines');
 var div_hotel = document.getElementById('znx_div_hotel');
 var div_hospital = document.getElementById('znx_div_hospital');
+var klines = document.getElementById("znx_klines").value;
+var hotel = document.getElementById('znx_hotel_cat').value;
+var hospital = document.getElementById('znx_hospital_cat').value;
 	
 	if(xrisi!=0){
 	//AJAX call
 	var xmlhttp=new XMLHttpRequest();
 	
-	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi ,true);
+	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel="+hotel+"&hospital="+hospital ,true);
 	xmlhttp.send();
 	
 	xmlhttp.onreadystatechange=function()  {

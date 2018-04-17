@@ -154,7 +154,7 @@ function get_prosanatolismo_pleyrika($pros){
 }
 // Εύρεση της σκίασης του τοίχου ή του ανοίγματος
 function get_skiasi_pleyrika($degtoixoy){
-		if ($degtoixoy == 0) {
+		if ($degtoixoy <= 0) {
 		$grammi1 = 0;
 		}
 		if ($degtoixoy == 10) {
@@ -213,7 +213,7 @@ function get_skiasi_pleyrika($degtoixoy){
 
 // Εύρεση της σκίασης του τοίχου ή του ανοίγματος από ορίζοντα
 function get_skiasi_orizonta($degtoixoy){
-		if ($degtoixoy == 0) {
+		if ($degtoixoy <= 0) {
 		$grammi1 = 0;
 		}
 		if ($degtoixoy == 5) {
@@ -587,12 +587,15 @@ $type = "Κινητές";
 		}
 		if ($type=="Σταθερές" AND $deg<=30){
 		$grammi1 = 30;
+		$grammi2 = "";
 		}
 		if ($type=="Σταθερές" AND $deg>=45){
 		$grammi1 = 45;
+		$grammi2 = "";
 		}
 		if ($type=="Κινητές"){
 		$grammi1 = 45;
+		$grammi2 = "";
 		}
 		
 		
