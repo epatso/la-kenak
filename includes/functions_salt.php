@@ -31,7 +31,7 @@ require("include_check.php");
  
 // These constants may be changed without breaking existing hashes.
 define("PBKDF2_HASH_ALGORITHM", "sha256");
-define("PBKDF2_ITERATIONS", 1000);
+define("PBKDF2_ITERATIONS", 100000);
 define("PBKDF2_SALT_BYTE_SIZE", 24);
 define("PBKDF2_HASH_BYTE_SIZE", 24);
 
