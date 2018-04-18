@@ -1,6 +1,7 @@
 <?php
 session_name('kenakv5');//Όνομα συνεδρίας
 session_set_cookie_params(2*7*24*60*60);// Το cookie έχει διάρκεια 2 εβδομάδων
+if(isset($_POST['submit']) AND $_POST['submit']=='Login' AND isset($_POST['rememberMe'])){setcookie('kenakv5Remember',$_POST['rememberMe']);}
 session_start();// Αρχή συνεδρίας
 /*
 Copyright (C) 2013 - Labros kenak v.4.0 beta

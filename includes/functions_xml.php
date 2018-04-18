@@ -1082,32 +1082,32 @@ function xml_save_tee(){
 		
 		//ΣΥΝΤΕΛΕΣΤΕΣ ΘΕΡΜΟΠΕΡΑΤΟΤΗΤΑΣ
 		// u τοίχων
-			if($wall["u"]!=0){
-				$u=$wall["u"];
-			}else{
+			if($wall["u_id"]!=0){
 				$data_u = $database->select("user_adiafani","u",array("id"=>$wall['u_id']) );
 				$u=$data_u[0];
+			}else{
+				$u=$wall["u"];
 			}
 		// u υποστυλωμάτων
-			if($wall["yp_u"]!=0){
-				$yp_u=$wall["yp_u"];
-			}else{
+			if($wall["yp_u_id"]!=0){
 				$data_yp_u = $database->select("user_adiafani","u",array("id"=>$wall['yp_u_id']) );
 				$yp_u=$data_yp_u[0];
+			}else{
+				$yp_u=$wall["yp_u"];
 			}
 		// u δοκών	
-			if($wall["dok_u"]!=0){
-				$dok_u=$wall["dok_u"];
-			}else{
+			if($wall["dok_u_id"]!=0){
 				$data_dok_u = $database->select("user_adiafani","u",array("id"=>$wall['dok_u_id']) );
 				$dok_u=$data_dok_u[0];
+			}else{
+				$dok_u=$wall["dok_u"];
 			}
 		// u συρομένων	
-			if($wall["syr_u"]!=0){
-				$syr_u=$wall["syr_u"];
-			}else{
+			if($wall["syr_u_id"]!=0){
 				$data_syr_u = $database->select("user_adiafani","u",array("id"=>$wall['syr_u_id']) );
 				$syr_u=$data_syr_u[0];
+			}else{
+				$syr_u=$wall["syr_u"];
 			}
 		
 		//Προσαύξηση μόνο σε αέρα
@@ -2732,7 +2732,7 @@ function xml_save_tee(){
 	}
 	$count_solar=0;
 	//ΗΛΙΑΚΟΣ - Συλλέκτης
-	foreach($sys_solar as $solar){			
+	foreach($sys_solar as $solar){
 		$solar_collector_column1 .= $array_solar_type[$solar["type"]].",";
 		$solar_collector_column2 .= $array_true[$solar["active_h"]].",";
 		$solar_collector_column3 .= $array_true[$solar["active_z"]].",";
@@ -2757,12 +2757,20 @@ function xml_save_tee(){
 		${"lighting_parameter".$i}="";
 	}
 	$count_light=0;
-	//ΦΩΤΙΣΜΟΣ - 1 γραμμή
+	
+	//ΦΩΤΙΣΜΟΣ - 1 γραμμή κανονικά
+	if($database->count($tb_sys_light,$where_zone)>0){//γραμμές φωτισμού
+		
 	$data_lightzones=explode("^", $sys_light[0]["zoneper"]);
+	if( is_array($data_lightzones) ){//isarray() Κυρίως για παλιές μελέτες που δεν είχαν προστεθεί οι ζώνες φωτισμού
 	$lightzones="";
 	for($i=0;$i<=6;$i++){
-		$lightzones .= $data_lightzones[$i].",";
+		if(array_key_exists($i,$data_lightzones)){
+			$lightzones .= $data_lightzones[$i].",";
+		}
 	}
+	}//isarray()
+	
 	foreach($sys_light as $light){
 		
 		$lighting_parameter1 .= $light["w"];
@@ -2779,6 +2787,9 @@ function xml_save_tee(){
 		$lighting_parameter12 .= $light["wffpar"];
 	$count_light++;
 	}//ΦΩΤΙΣΜΟΣ - 1 γραμμή
+	
+	}//γραμμές φωτισμού
+	
 	if($count_light>0){
 		$light_exists=1;
 	}else{

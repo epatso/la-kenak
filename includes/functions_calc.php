@@ -294,8 +294,8 @@ if (isset($_GET['diafani_get_rrb'])){
 }
 
 if (isset($_GET['ufb'])){
-	require("functions_math.php");
 	define('INCLUDE_CHECK',true);
+	require("functions_math.php");
 	require("medoo.php");
 	require("session.php");
 	$dapedo_ufb=$_GET['ufb'];
@@ -307,8 +307,8 @@ if (isset($_GET['ufb'])){
 }
 
 if (isset($_GET['utb'])){
-	require("functions_math.php");
 	define('INCLUDE_CHECK',true);
+	require("functions_math.php");
 	require("medoo.php");
 	require("session.php");
 	$utb=$_GET['utb'];
