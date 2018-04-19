@@ -942,7 +942,9 @@ var pass4 = document.getElementById('newpassword2').value;
 	<!--/col-md-10-->
 </div>
  <!-- /.row (main row) -->
-	
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

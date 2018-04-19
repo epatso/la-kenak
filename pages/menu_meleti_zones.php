@@ -44,7 +44,7 @@ confirm_meleti_isset();
 
 <!-- Main content -->
 <section class="content">
-<script>
+<script>	
 	$(function() {
 		$('.tooltipui').tooltip({
 			track: true,
@@ -370,8 +370,8 @@ var hospital = document.getElementById('editzone_hospital').value;
 		div_hospital.style.display = "none";
 	}
 }
-			
-			</script>
+
+</script>
 			
 <!-- ###################### Κρυφό modal_form_zone για εμφάνιση ###################### -->
 <div id="modal_form_zone" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -1644,8 +1644,13 @@ var hospital = document.getElementById('editzone_hospital').value;
 			</div><!--tabs-->
 
 </div>
- <!-- /.row (main row) -->
-
+<!-- /.row (main row) -->
+<script>
+	$("input").alphanum({
+		allow:  '-_.?=/@:',
+		disallow:  ','}
+	);	
+</script>
 </section>
 <!-- /.content -->
 </div>

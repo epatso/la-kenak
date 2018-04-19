@@ -145,4 +145,6 @@ function calc_he(){
 <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
+<script>
+	$("input").alphanum();	
+</script>

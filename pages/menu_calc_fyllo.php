@@ -299,7 +299,9 @@ function load_help(){
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

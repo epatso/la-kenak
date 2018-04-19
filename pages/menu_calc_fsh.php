@@ -244,7 +244,9 @@ x += "&fsh_a"+k+"=" + fsh_a + "&fsh_b"+k+"=" + fsh_b + "&fsh_c"+k+"=" + fsh_c;
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

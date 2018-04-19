@@ -282,6 +282,13 @@ function calc_isu_oriz(){
 </div>
  <!-- /.row (main row) -->
 
+ <script>
+	$("#katakoryfo_utb").numeric();	
+	$("#katakoryfo_z1").numeric();
+	$("#katakoryfo_z2").numeric();
+</script>
+ 
+ 
 </section>
 <!-- /.content -->
 </div>

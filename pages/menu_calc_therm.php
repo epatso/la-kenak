@@ -1267,3 +1267,6 @@ function number_format (number, decimals, dec_point, thousands_sep) {
 <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<script>
+	$("input").alphanum();	
+</script>	

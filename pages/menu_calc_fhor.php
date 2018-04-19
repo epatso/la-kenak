@@ -316,7 +316,9 @@ x += "&hor_a"+k+"=" + hor_a + "&hor_b"+k+"=" + hor_b + "&hor_c"+k+"=" + hor_c + 
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

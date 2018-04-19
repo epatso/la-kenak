@@ -103,8 +103,8 @@ var yp,dok,syr;
 	document.getElementById(prefix+"d").value = <?php echo $wall_d;?>;
 	document.getElementById(prefix+"dy").value = 0;
 	document.getElementById(prefix+"dx").value = 0;
-	document.getElementById(prefix+"roof").value = 1;
-	document.getElementById(prefix+"draw_order").value = 1;
+	//document.getElementById(prefix+"roof").value = 1;
+	//document.getElementById(prefix+"draw_order").value = 1;
 	
 	document.getElementById(prefix+"u").value = "";
 	document.getElementById(prefix+"u_id").value = <?php echo $wall_u_id;?>;

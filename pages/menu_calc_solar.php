@@ -447,4 +447,6 @@ function gotoBottom(id){
 <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
+<script>
+	$("input").alphanum();	
+</script>

@@ -4089,7 +4089,9 @@ function rotatemap(how){
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>
 </section>
 <!-- /.content -->
 </div>

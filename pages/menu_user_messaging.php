@@ -361,5 +361,8 @@ confirm_logged_in();
 	 <!-- /.row (main row) -->
 </section>
 <!-- /.content -->
+<script>
+	$("input").alphanum();	
+</script>
 </div>
 <!-- /.content-wrapper -->

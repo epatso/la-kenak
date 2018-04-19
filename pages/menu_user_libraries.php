@@ -716,7 +716,9 @@ confirm_logged_in();
 	<!--/col-md-10-->
 </div>
  <!-- /.row (main row) -->
-	
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

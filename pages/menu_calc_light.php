@@ -346,3 +346,6 @@ function lamp_zone(){
 <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<script>
+	$("input").alphanum();	
+</script>	

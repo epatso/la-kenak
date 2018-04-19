@@ -302,7 +302,9 @@ x += "&fin_a"+k+"=" + fin_a + "&fin_b"+k+"=" + fin_b + "&fin_c"+k+"=" + fin_c + 
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

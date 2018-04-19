@@ -32,7 +32,7 @@ if(confirm_admin()){
 <script>
 	get_genxriseis();
 	
-//Εμφάνιση πίνακα με όλες τις ΘΕΡΜΟΓΕΦΥΡΕΣ για τη ζώνη
+//Εμφάνιση πίνακα
 function get_genxriseis(page){
 page = typeof page !== 'undefined' ? page : 1;
 	document.getElementById('wait').style.display="inline";
@@ -128,7 +128,7 @@ var prefix = "editgenxriseis_";
 	}}
 }
 
-//Διαγραφή ΟΙΚΟΔΟΜΙΚΩΝ ΑΔΕΙΩΝ
+//Διαγραφή
 function del_genxriseis(id,page){
 	var link = "includes/functions_admin_libraries.php?del_id=1&table=vivliothiki_conditions_general&id="+id;
 	document.getElementById('wait').style.display="inline";

@@ -287,6 +287,12 @@ for ($i=1; $i<=3; $i++){
 		 <!-- /.row (main row) -->
 	</section>
 	<!-- /.content -->
+<script>
+	$("input").alphanum({
+		allow:  '-_.?=/@:',
+		disallow:  ','}
+	);	
+</script>
 </div>
 <!-- /.content-wrapper -->
 

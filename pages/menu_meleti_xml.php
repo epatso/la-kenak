@@ -323,5 +323,11 @@ document.getElementById('wait').style.display="inline";
 		?>
 	</section>
 	<!-- /.content -->
+<script>
+	$("input").alphanum({
+		allow:  '-_.?=/@:',
+		disallow:  ','}
+	);	
+</script>
 </div>
 <!-- /.content-wrapper -->

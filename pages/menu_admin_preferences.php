@@ -741,10 +741,10 @@ if(confirm_admin()){
 						
 						<div class="form-group has-feedback">
 							<span class="input-group-addon">
-								<span class="tip-top" href="#" title="Που οδηγεί το μενού.<br/>Για κεντρική κατηγορία: #<br/>Για εσωτερική σελίδα: nav?menu_index (οδηγεί στο menu_index.php)<br/>
+								<span class="tip-top" href="#" title="Που οδηγεί το μενού.<br/>Για κεντρική κατηγορία: κενό/0<br/>Για εσωτερική σελίδα: nav?menu_index (οδηγεί στο menu_index.php)<br/>
 								Για εξωτερικό σύνδεσμο: http://σύνδεσμος"><i class="fa fa-link"></i> Σύνδεσμος</span>
 							</span>
-							<input type="text" class="form-control input-sm"  id="editmenudata_link" data-error="Ο σύνδεσμος είναι απαραίτητος. Εάν είναι κεντρικό προσθέστε #" required>
+							<input type="text" class="form-control input-sm"  id="editmenudata_link" data-error="Ο σύνδεσμος είναι απαραίτητος. Εάν είναι κεντρικό προσθέστε κενό ή 0" required>
 							<span class="glyphicon glyphicon-cog form-control-feedback"></span>
 							<div class="help-block with-errors"></div>
 						</div>
@@ -1679,8 +1679,10 @@ if(confirm_admin()){
 	<!--/col-md-10-->
 	
 </div>
- <!-- /.row (main row) -->
-	
+<!-- /.row (main row) -->
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

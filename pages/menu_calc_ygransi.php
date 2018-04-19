@@ -172,7 +172,9 @@ function calc_ygransi(){
 </div><!--col-md-12-->
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

@@ -769,3 +769,6 @@ function get_cp_plirwsi(){
 <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<script>
+	$("input").alphanum();	
+</script>	

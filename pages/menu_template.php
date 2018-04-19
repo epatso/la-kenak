@@ -67,5 +67,8 @@ require("include_check.php");
 	 <!-- /.row (main row) -->
 </section>
 <!-- /.content -->
+<script>
+	$("input").alphanum();	
+</script>
 </div>
 <!-- /.content-wrapper -->

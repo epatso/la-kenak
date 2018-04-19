@@ -322,7 +322,9 @@ x += "&ovt_a"+k+"=" + ovt_a + "&ovt_b"+k+"=" + ovt_b + "&ovt_c"+k+"=" + ovt_c + 
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

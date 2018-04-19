@@ -593,7 +593,9 @@ function number_format (number, decimals, dec_point, thousands_sep) {
 </div><!--col-md-12-->
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

@@ -1009,5 +1009,11 @@ function show_tab(tab){
 		 <!-- /.row (main row) -->
 	</section>
 	<!-- /.content -->
+<script>
+	$("input").alphanum({
+		allow:  '-_.?=/@:',
+		disallow:  ','}
+	);	
+</script>
 </div>
 <!-- /.content-wrapper -->

@@ -1023,7 +1023,9 @@ require("include_check.php");
 
 </div>
  <!-- /.row (main row) -->
-	
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

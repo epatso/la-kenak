@@ -67,7 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 
 	<!-- Google Font -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    
+	
 	<!--
 	<link rel="stylesheet" href="stylesheets/jquery-ui-1.9.2.custom.css" type="text/css" />
 	<link rel="stylesheet" href="stylesheets/jtable_grey.css" type="text/css" />
@@ -79,6 +79,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+
+<!--Alphanum validator for single inputs-->
+<script type="text/javascript" src="javascripts/jquery.alphanum.js"></script>
+
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);

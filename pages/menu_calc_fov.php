@@ -299,7 +299,9 @@ x += "&ov_a"+k+"=" + ov_a + "&ov_b"+k+"=" + ov_b + "&ov_c"+k+"=" + ov_c + "&ov_d
 
 </div>
  <!-- /.row (main row) -->
-
+<script>
+	$("input").alphanum();	
+</script>	
 </section>
 <!-- /.content -->
 </div>

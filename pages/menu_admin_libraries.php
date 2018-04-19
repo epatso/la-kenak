@@ -192,6 +192,9 @@ if(confirm_admin()){
 	
 </section>
 <!-- /.content -->
+<script>
+	$("input").alphanum();	
+</script>	
 </div>
 <!-- /.content-wrapper -->
 <?php

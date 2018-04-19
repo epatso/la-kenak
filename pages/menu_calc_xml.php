@@ -196,3 +196,6 @@ document.getElementById('wait').style.display="inline";
 	<!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<script>
+	$("input").alphanum();	
+</script>	

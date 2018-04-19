@@ -723,7 +723,9 @@ get_usertable();
 	</div><!-- col-md-10 -->
 </div>
  <!-- /.row (main row) -->
-	
+<script>
+	$("input").alphanum();	
+</script>		
 </section>
 <!-- /.content -->
 </div>
