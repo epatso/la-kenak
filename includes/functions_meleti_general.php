@@ -182,7 +182,6 @@ if (isset($_GET['findu_adiafani'])){
 
 //ajax call για την επιστροφή g από προσανατολισμό κτιρίου
 if (isset($_GET['findg_adiafani'])){
-	$id = $_GET['id'];
 	define('INCLUDE_CHECK',true);
 	require("medoo.php");
 	require("session.php");

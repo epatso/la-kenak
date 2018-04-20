@@ -27,9 +27,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 //ini_set('display_errors',1); 
 //error_reporting(E_ALL);
 //πάρε τις τιμές
-define('INCLUDE_CHECK',true);
-require("medoo.php");
-require("session.php");
+//define('INCLUDE_CHECK',true);
+//require("medoo.php");
+//require("session.php");
 
 	$name=$_GET["name"];
 	$aw=$_GET["aw"];
@@ -103,7 +103,6 @@ $font = './verdana.ttf';
 // θέσε HTTP header type σε PNG
 header("Content-type: image/png");
 // στείλε την PNG εικόνα στο browser
-ob_clean();
 ImagePNG($im);
 
 // κατέστρεψε τον pointer για την εικόνα στη μνήμη για να απελευθερώσεις πόρους

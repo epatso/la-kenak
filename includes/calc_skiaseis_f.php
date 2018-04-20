@@ -23,7 +23,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 στην έκδοση 3 αυτής της άδειας.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
- 
 define('INCLUDE_CHECK',true);
 require("medoo.php");
 require("session.php");

@@ -332,7 +332,7 @@ var hospital = document.getElementById('editzone_hospital').value;
 	//AJAX call
 	var xmlhttp=new XMLHttpRequest();
 	
-	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel="+hotel+"&hospital="+hospital ,true);
+	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel=1&hospital=1" ,true);
 	xmlhttp.send();
 	
 	xmlhttp.onreadystatechange=function()  {

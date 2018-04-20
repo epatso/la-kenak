@@ -331,8 +331,10 @@ if (isset($_GET['floor'])){$floor=$_GET["floor"];}
 		
 		$i++;
 	}//Για κάθε τοίχο
-			
-	imagefilledpolygon($image, $points ,$i-1 ,$fill_color);
+	
+	if(count($points)>6){
+		imagefilledpolygon($image, $points ,$i-1 ,$fill_color);
+	}
 	
 	$e_sum=$e_sum+($current_x*$y0-$current_y*$x0);
 	$ev=(abs($e_sum)/2)/($scale*($scale/100)*100);

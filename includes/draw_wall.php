@@ -278,7 +278,7 @@ if(isset($_GET['draw']) AND $_GET['draw']==1){
 	
 	
 	$dW = $l;
-    $dH = $d+$ffin_r[1]*100;
+    $dH = $d+$ffin_r_txt[1]*100;
 	$values = array();
 	$image = imageCreateTrueColor ($dW, $dH);
 	$imagebg = imageCreateFromPNG ($hatch1); 
@@ -327,9 +327,3 @@ if(isset($_GET['draw']) AND $_GET['draw']==1){
     imagedestroy ($imagebg);
 }
 ?>
-
-
-
-
-
-

@@ -307,7 +307,7 @@ function lamp_zone(){
 	//AJAX call
 	var xmlhttp=new XMLHttpRequest();
 	
-	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel=0&hospital=0"  ,true);
+	xmlhttp.open("GET","includes/functions_calc.php?id_xrisi="+xrisi+"&hotel=1&hospital=1"  ,true);
 	xmlhttp.send();
 	
 	xmlhttp.onreadystatechange=function()  {

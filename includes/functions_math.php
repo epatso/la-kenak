@@ -201,8 +201,7 @@ function find_closer_climate($lat2, $lng2){
 }
 
 //Μετατροπή συντεταγμένων από μοίρες, λεπτά, δεύτερα σε δεκαδικό
-function DMStoDEC($deg,$min,$sec)
-{
+function DMStoDEC($deg,$min,$sec){
 
 // Converts DMS ( Degrees / minutes / seconds ) 
 // to decimal format longitude / latitude
@@ -211,8 +210,7 @@ function DMStoDEC($deg,$min,$sec)
 }    
 
 //Μετατροπή συντεταγμένων από δεκαδικό σε μοίρες, λεπτά, δεύτερα
-function DECtoDMS($dec)
-{
+function DECtoDMS($dec){
 
 // Converts decimal longitude / latitude to DMS
 // ( Degrees / minutes / seconds ) 
