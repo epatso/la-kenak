@@ -3089,6 +3089,8 @@ function insert_iddata($table,$action,$id,$array){
 		if(in_array($table, $tables_limited)){
 		$select = $database->select($table,$columns,array("zone_id"=>$query["zone_id"]));
 		$count_select = count($select);
+		}else{
+			$count_select=0;
 		}
 		if($count_select==0){
 		$insert = $database->insert($table, $query_insert);
@@ -3125,7 +3127,7 @@ function insert_iddata($table,$action,$id,$array){
 function del_iddata($table, $id){
 	$database = new medoo(DB_NAME);
 	$where_user=array("AND"=>array("id"=>$id,"user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
-	$data_inuser = $database->select($table,$columns,$where_user);
+	$data_inuser = $database->select($table,"*",$where_user);
 	
 	if(count($data_inuser)!=0){
 		$where_id = array("id"=>$id);

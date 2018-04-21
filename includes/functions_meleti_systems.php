@@ -487,6 +487,13 @@ function systems_calc_um($zone_id=0){
 				$yp_uis=isodynamos_katakoryfoy($yp_u, $z1, $z2);
 				$syr_uis=isodynamos_katakoryfoy($syr_u, $z1, $z2);
 			}
+			if($wall["type"]==3){
+				$b=0;
+				$uis=$u*$b;
+				$dok_uis=$dok_u*$b;
+				$yp_uis=$yp_u*$b;
+				$syr_uis=$syr_u*$b;
+			}
 			
 			//Εμβαδόν σύνολο
 			$wall_e_sum = $wall_l*$wall_h + ($wall_l*$wall_dy)/2;
