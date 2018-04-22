@@ -23,9 +23,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 στην έκδοση 3 αυτής της άδειας.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
-
 //Στο φάκελο includes πρέπει να περιέχεται η γραμματοσειρά. 
-		//πάρε τις τιμές
+//πάρε τις τιμές
+ini_set('display_errors',0);
 define('INCLUDE_CHECK',true);
 //include ('database.php');
 require_once("connection.php");

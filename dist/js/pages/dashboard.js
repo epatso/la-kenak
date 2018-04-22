@@ -117,7 +117,9 @@ $(function () {
   });
 
   // The Calender
-  $('#calendar1').datepicker();
+  $('#calendar1').datepicker({
+    todayHighlight: true
+	});
   
 
   // SLIMSCROLL FOR CHAT WIDGET
@@ -125,7 +127,7 @@ $(function () {
     height: '250px'
   });
 
-  /* Morris.js Charts */
+  /* Morris.js Charts
   // Sales chart
   var area = new Morris.Area({
     element   : 'revenue-chart',
@@ -197,7 +199,7 @@ $(function () {
     donut.redraw();
     line.redraw();
   });
-
+	*/
   /* The todo list plugin */
   $('.todo-list').todoList({
     onCheck  : function () {

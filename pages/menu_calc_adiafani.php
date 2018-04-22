@@ -833,6 +833,7 @@ function showgraph(pout){
 			x+="&print=1";
 			window.open(x,"La-Kenak");
 		}else{
+			x+="&print=0";
 			document.getElementById('graph').innerHTML="<img src=\""+x+"\"></img>";
 		}
 	}else{

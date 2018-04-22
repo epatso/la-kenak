@@ -25,7 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 */
 //Στο φάκελο includes πρέπει να περιέχεται η γραμματοσειρά. 
 //πάρε τις τιμές
-//ini_set('display_errors',1); 
+ini_set('display_errors',0); 
 define('INCLUDE_CHECK',true);
 //include ('database.php');
 //require_once("connection.php");

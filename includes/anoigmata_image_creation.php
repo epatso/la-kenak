@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.html.
 Το παρόν σχόλιο πρέπει να παραμένει ως έχει ώστε να τηρείται η παραπάνω άδεια κατά τη διανομή.
 */
 //Στο φάκελο includes πρέπει να περιέχεται η γραμματοσειρά. 
-//ini_set('display_errors',1); 
+ini_set('display_errors',0); 
 //error_reporting(E_ALL);
 //πάρε τις τιμές
 //define('INCLUDE_CHECK',true);

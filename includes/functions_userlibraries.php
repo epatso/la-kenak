@@ -458,22 +458,36 @@ function get_usercalendar($start, $end){
 	$table_logs = "user_logs";
 	$where_user=array("user_id"=>$_SESSION['user_id']);
 	
+	$timestamp_start=strtotime($start);
+	$timestamp_end=strtotime($end);
+	
 	$data_meletes = $database->select($table_meletes,$columns,$where_user);
 	$data_logs = $database->select($table_logs,$columns,$where_user);
 	
 	$events = array();
 	foreach($data_meletes as $data){
-		//$date=substr($event["datetime"], 0 , 10);//αρχή 0, μήκος 10, πχ 2017-12-19 12:00:00
-		if($data["type"]==0){
-			$color="red";
-		}else{
-			$color="yellow";
+		
+		$date=strtotime($data["datetime"]);
+		
+		if($date>=$timestamp_start AND $date<=$timestamp_end){
+			
+			//$date=substr($event["datetime"], 0 , 10);//αρχή 0, μήκος 10, πχ 2017-12-19 12:00:00
+			if($data["type"]==0){
+				$color="red";
+			}else{
+				$color="yellow";
+			}
+			array_push($events, array("id"=>$data["id"],"title"=>$data["name"],"start"=>$data["datetime"],"allDay"=>"false","color"=>$color,"textColor"=>"black","address"=>$data["address"]));
+	
 		}
-		array_push($events, array("id"=>$data["id"],"title"=>$data["name"],"start"=>$data["datetime"],"allDay"=>"false","color"=>$color,"textColor"=>"black","address"=>$data["address"]));
 	}
 	
 	foreach($data_logs as $logs){
-		array_push($events, array("title"=>"Login from-".$logs["regIP"],"start"=>$logs["dt"],"allDay"=>"false","color"=>"green","textColor"=>"black","regIP"=>$data["regIP"]));
+		
+		$date=strtotime($logs["dt"]);
+		if($date>=$timestamp_start AND $date<=$timestamp_end){
+			array_push($events, array("title"=>"Login from-".$logs["regIP"],"start"=>$logs["dt"],"allDay"=>"false","color"=>"green","textColor"=>"black","regIP"=>$logs["regIP"]));
+		}
 	}
 	
 	return json_encode($events);
