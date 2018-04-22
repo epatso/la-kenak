@@ -500,17 +500,23 @@ function get_id($table, $id){
 
 //Δέχεται τον πίνακα, την μεταβλητή action με τιμές create/update και το id και την $array τιμών
 //Προσθέτει η κάνει update την array τιμών στις στήλες μετά το id
+//Παρόμοια της insert_iddata στο function_meleti_general.php - Διαχείριση
 function insert_id($table,$action,$id,$array){
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$columns = "*";
+	$return = "";
 	
 	$column_names = array_slice(get_columnnames($table), 1);
 	
-	$query = array();
+	if( count($column_names)==count($array) ){//Έλεγχος ότι οι στήλες είναι όσες οι τιμές που δηλώθηκαν. 
 	
+	$query = array();
 	for($i=0; $i<count($column_names); $i++){
 		if($array[$i]==""){$array[$i]=0;}
-		$query[$column_names[$i]] = $array[$i];
+		$query[$column_names[$i]] = check_input($array[$i], "string");
 	}
 	
 	if($action == "create" AND $id==0){
@@ -527,6 +533,9 @@ function insert_id($table,$action,$id,$array){
 			<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
 			Επιτυχής επεξεργασία</div>";
 	}
+	
+	}//Έλεγχος ισότητας array
+	
 	return $return;
 }
 

@@ -365,7 +365,11 @@ function get_usertickets($state=0){
 
 //Εισαγωγή νέου ticket στη βάση
 function insert_usertickets($title,$text){
+	
 	confirm_logged_in();
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$col = "*";
 	$tb_users= "core_users";
@@ -376,8 +380,8 @@ function insert_usertickets($title,$text){
 	
 	$insert_array=array(
 		"user_id"=>$_SESSION['user_id'],
-		"title"=>$title,
-		"text"=>$text,
+		"title"=>check_input($title, "string"),
+		"text"=>check_input($text, "string"),
 		"datetime"=>$datetime,
 		"state"=>1
 	);
@@ -393,6 +397,9 @@ function insert_usertickets($title,$text){
 //Σχολιασμός ticket στη βάση
 function comment_usertickets($id,$text){
 	confirm_logged_in();
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$col = "*";
 	$tb_users= "core_users";
@@ -404,7 +411,7 @@ function comment_usertickets($id,$text){
 	$insert_array=array(
 		"ticket_id"=>$id,
 		"responder_id"=>$_SESSION['user_id'],
-		"text"=>$text,
+		"text"=>check_input($text, "string"),
 		"datetime"=>$datetime
 	);
 	$insert = $database->insert($tb_responses, $insert_array);
@@ -504,31 +511,33 @@ function get_iddata_user($type, $id){
 //Προσθέτει η κάνει update την array τιμών στις στήλες μετά το id,user_id
 function insert_iddata_user($type,$action,$id,$array){
 	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$columns = "*";	
 	if($type=="material"){
 		$table="user_domika";
 		$query = array(
-			"material"=>$array[0],
-			"r"=>$array[1],
-			"l"=>$array[2],
-			"cp"=>$array[3],
-			"m_dry"=>$array[4],
-			"m_liquid"=>$array[5]
+			"material"=>check_input($array[0], "string"),
+			"r"=>check_input($array[1], "decimal"),
+			"l"=>check_input($array[2], "decimal"),
+			"cp"=>check_input($array[3], "decimal"),
+			"m_dry"=>check_input($array[4], "decimal"),
+			"m_liquid"=>check_input($array[5], "decimal")
 		);
 	}
 	if($type=="adiafani"){
 		$table="user_adiafani";
 		$query = array(
-			"name"=>$array[0],
-			"zwni"=>$array[1]
+			"name"=>check_input($array[0], "string"),
+			"zwni"=>check_input($array[1], "integer")
 		);
 	}
 	if($type=="diafani"){
 		$table="user_diafani";
 		$query = array(
-			"name"=>$array[0],
-			"zwni"=>$array[1]
+			"name"=>check_input($array[0], "string"),
+			"zwni"=>check_input($array[1], "integer")
 		);
 	}
 	

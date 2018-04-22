@@ -313,6 +313,9 @@ function get_admintickets($state=0){
 //Σχολιασμός ticket στη βάση - ΔΙΑΧΕΙΡΙΣΤΗΣ
 function admintickets_comment($id,$text){
 	confirm_logged_in();
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$col = "*";
 	$tb_users= "core_users";
@@ -324,7 +327,7 @@ function admintickets_comment($id,$text){
 	$insert_array=array(
 		"ticket_id"=>$id,
 		"responder_id"=>$_SESSION['user_id'],
-		"text"=>$text,
+		"text"=>check_input($text, "string"),
 		"datetime"=>$datetime
 	);
 	$insert = $database->insert($tb_responses, $insert_array);
@@ -516,27 +519,29 @@ function get_userdata($id){
 function update_userdata($action,$id,$values){
 	
 	confirm_admin();
-	require("functions_salt.php");
+	require("functions_salt.php");//create_hash($value)
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$table = "core_users";
 	$array = array();
 	
 		//τιμές
-		$array["usr"] = $values[0];
+		$array["usr"] = check_input($values[0], "string");
 		if($values[1]!=""){$array["pass"] = create_hash($values[1]);}
-		if($values[2]!=""){$array["email"] = $values[2];}
-		$array["onoma"] = $values[3];
-		$array["epwnymo"] = $values[4];
-		$array["eidikotita"] = $values[5];
-		$array["address"] = $values[6];
-		$array["address_x"] = $values[7];
-		$array["address_y"] = $values[8];
-		$array["address_z"] = $values[9];
-		$array["tel"] = $values[10];
-		$array["fax"] = $values[11];
-		$array["taytotita"] = $values[12];
-		$array["afm"] = $values[13];
-		$array["meletes_max"] = $values[14];
+		if($values[2]!=""){$array["email"] = check_input($values[2], "email");}
+		$array["onoma"] = check_input($values[3], "string");
+		$array["epwnymo"] = check_input($values[4], "string");
+		$array["eidikotita"] = check_input($values[5], "integer");
+		$array["address"] = check_input($values[6], "string");
+		$array["address_x"] = check_input($values[7], "string");
+		$array["address_y"] = check_input($values[8], "string");
+		$array["address_z"] = check_input($values[9], "string");
+		$array["tel"] = check_input($values[10], "integer");
+		$array["fax"] = check_input($values[11], "integer");
+		$array["taytotita"] = check_input($values[12], "string");
+		$array["afm"] = check_input($values[13], "integer");
+		$array["meletes_max"] = check_input($values[14], "integer");
 		$array["subscribtion_start"] = $values[15];
 		$array["subscribtion_end"] = $values[16];
 		//$datetime = new DateTime();

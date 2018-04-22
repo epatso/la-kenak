@@ -3063,6 +3063,7 @@ function insert_iddata($table,$action,$id,$array){
 	
 	$database = new medoo(DB_NAME);
 	$columns = "*";
+	$return = "";
 	$tables_limited = array(
 		"meletes_zone_sys_thermd",
 		"meletes_zone_sys_thermt",
@@ -3078,6 +3079,8 @@ function insert_iddata($table,$action,$id,$array){
 	
 	//Ονόματα στηλών στη mysql
 	$column_names = array_slice(get_columnnames($table), 3);
+	
+	if( count($column_names)==count($array) ){//Έλεγχος ότι οι στήλες είναι όσες οι τιμές που δηλώθηκαν. 
 	
 	//Array με τις επιλογές προσθήκης ή επεξεργασίας "column_name=>value"
 	$query = array();
@@ -3100,8 +3103,6 @@ function insert_iddata($table,$action,$id,$array){
 	$query_update = $query;
 	//Συνέννωση array με session και array τιμών σε insert. Σε update δεν απαιτείται
 	$query_insert=array_merge($session_array,$query);
-	
-	if( count($column_names)==count($array) ){//Έλεγχος ότι οι στήλες είναι όσες οι τιμές που δηλώθηκαν. 
 	
 	
 		if($action == "create" AND $id==0){

@@ -39,14 +39,20 @@ require("include_check.php");
 
 //Ανανεώνει το shoutbox η προσθέτει κείμενο
 function kenak_shoutbox($message){
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);	
 	date_default_timezone_set('Europe/Athens');
 	$datetime=date("Y-m-d H:i:s");
 	
-	
 	if($message!="0"){
 		confirm_logged_in();
-		$insert_array=array("user_id"=>$_SESSION['user_id'],"message"=>$message,"datetime"=>$datetime);
+		$insert_array=array(
+			"user_id"=>$_SESSION['user_id'],
+			"message"=>check_input($message, "string"),
+			"datetime"=>$datetime
+		);
 		$insert_shout = $database->insert("shoutbox",$insert_array);
 	}
 	
@@ -74,7 +80,7 @@ function kenak_shoutbox($message){
 			$data_user = $data_user[0];
 		
 		$return .= $data_user["onoma"]." ".$data_user["epwnymo"]." ";
-		if($data["user_id"]==1){
+		if($data["user_id"]==APPLICATION_ADMIN_ID){
 			$return .= " <span class=\"label bg-yellow\">Διαχειριστής<span>";
 		}
 		$return .= "</a>".$data["message"];

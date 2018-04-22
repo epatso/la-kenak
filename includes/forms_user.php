@@ -185,10 +185,10 @@ if(isset($_POST['submit']) AND $_POST['submit']=='Register'){//Υποβλήθη�
 		//Χώρος για εγγραφή χρηστών
 		
 		$insert_array = array();
-		$insert_array["usr"] = $_POST['username'];
+		$insert_array["usr"] = check_input($_POST['username'], "string");
 		$insert_array["pass"] = create_hash($_POST['pass1']);
 		$insert_array["is_admin"] = "0";
-		$insert_array["email"] = $_POST['email'];
+		$insert_array["email"] = check_input($_POST['email'], "email");
 		$insert_array["onoma"] = "";
 		$insert_array["epwnymo"] = "";
 		$insert_array["eidikotita"] = "1";
@@ -235,18 +235,18 @@ if(isset($_POST['submit']) AND $_POST['submit']=='save-userpref'){
 	$database = new medoo(DB_NAME);
 	$db_table = "core_users";
 	$update_parameters = array(
-		"email" => $_POST['email'],
-		"onoma" => $_POST['onoma'],
-		"epwnymo" => $_POST['epwnymo'],
-		"eidikotita" => $_POST['eidikotita'],
-		"address" => $_POST['address'],
-		"address_x" => $_POST['address_x'],
-		"address_y" => $_POST['address_y'],
-		"address_z" => $_POST['address_z'],
-		"tel" => $_POST['tel'],
-		"fax" => $_POST['fax'],
-		"taytotita" => $_POST['taytotita'],
-		"afm" => $_POST['afm']
+		"email" => check_input($_POST['email'], "email"),
+		"onoma" => check_input($_POST['onoma'], "string"),
+		"epwnymo" => check_input($_POST['epwnymo'], "string"),
+		"eidikotita" => check_input($_POST['eidikotita'], "integer"),
+		"address" => check_input($_POST['address'], "string"),
+		"address_x" => check_input($_POST['address_x'], "string"),
+		"address_y" => check_input($_POST['address_y'], "string"),
+		"address_z" => check_input($_POST['address_z'], "string"),
+		"tel" => check_input($_POST['tel'], "integer"),
+		"fax" => check_input($_POST['fax'], "integer"),
+		"taytotita" => check_input($_POST['taytotita'], "string"),
+		"afm" => check_input($_POST['afm'], "integer")
 		);
 	$where_parameters = array ("id" => $_SESSION['user_id']);
 	$update_user = $database->update($db_table,$update_parameters,$where_parameters);
@@ -455,7 +455,7 @@ if(isset($_POST['submit']) AND $_POST['submit']=='neameleti'){
 		$dt = date("Y-m-d H:i:s");
 		$insert_parameters = array(
 			"user_id" => $_SESSION['user_id'],
-			"name" => $_POST['onoma_meletis'],
+			"name" => check_input($_POST['onoma_meletis'], "string"),
 			"address_x" => $edra_x,
 			"address_y" => $edra_y,
 			"address_z" => $edra_z,
