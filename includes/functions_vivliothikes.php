@@ -833,7 +833,7 @@ function create_library_laws($type=0,$page=1,$like=""){
 	$count_end = $db_offset+10;
 	$previous_page=$page-1;
 	$next_page=$page+1;
-	if($page==$total_pages AND $count_laws<$count_end){$count_end=$count_laws;}
+	if($page==$total_pages AND $count<$count_end){$count_end=$count;}
 	
 	$laws = "<div class=\"box panel-info\">";
 	$laws .= "<div class=\"box-header\"> Πίνακας νομοθεσίας </div>";
