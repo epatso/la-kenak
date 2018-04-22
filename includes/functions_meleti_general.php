@@ -2995,30 +2995,31 @@ function array_roof($wallid){
 function insert_meleti_generaldata($name,$perigrafi,$type,$symptiksi,$address,$address_x,$address_y,$address_z,$ktirio,$kaek,$tmima,$tmima_ar,$xrisi,$climate,$height,$zone,$pros,$idioktitis,$idio_kathestos,$ypeythinos_type,$ypeythinos_name,$ypeythinos_tel,$ypeythinos_mail){
 	$database = new medoo(DB_NAME);
 	$where=array("AND"=>array("user_id"=>$_SESSION['user_id'],"id"=>$_SESSION['meleti_id']));
+	require("functions_interface.php");//check_input($value, $type)
 	$query_update = array(
-		"name"=>$name,
-		"perigrafi"=>$perigrafi,
-		"type"=>$type,
-		"symptiksi"=>$symptiksi,
-		"address"=>$address,
-		"address_x"=>$address_x,
-		"address_y"=>$address_y,
-		"address_z"=>$address_z,
-		"ktirio"=>$ktirio,
-		"kaek"=>$kaek,
-		"tmima"=>$tmima,
-		"tmima_ar"=>$tmima_ar,
-		"xrisi"=>$xrisi,
-		"climate"=>$climate,
-		"height"=>$height,
-		"zone"=>$zone,
-		"pros"=>$pros,
-		"idioktitis"=>$idioktitis,
-		"idio_kathestos"=>$idio_kathestos,
-		"ypeythinos_type"=>$ypeythinos_type,
-		"ypeythinos_name"=>$ypeythinos_name,
-		"ypeythinos_tel"=>$ypeythinos_tel,
-		"ypeythinos_mail"=>$ypeythinos_mail
+		"name"=>check_input($name, "string"),
+		"perigrafi"=>check_input($perigrafi, "string"),
+		"type"=>check_input($type, "integer"),
+		"symptiksi"=>check_input($symptiksi, "integer"),
+		"address"=>check_input($address, "string"),
+		"address_x"=>check_input($address_x, "string"),
+		"address_y"=>check_input($address_y, "string"),
+		"address_z"=>check_input($address_z, "string"),
+		"ktirio"=>check_input($ktirio, "string"),
+		"kaek"=>check_input($kaek, "string"),
+		"tmima"=>check_input($tmima, "string"),
+		"tmima_ar"=>check_input($tmima_ar, "string"),
+		"xrisi"=>check_input($xrisi, "integer"),
+		"climate"=>check_input($climate, "integer"),
+		"height"=>check_input($height, "integer"),
+		"zone"=>check_input($zone, "integer"),
+		"pros"=>check_input($pros, "decimal"),
+		"idioktitis"=>check_input($idioktitis, "string"),
+		"idio_kathestos"=>check_input($idio_kathestos, "integer"),
+		"ypeythinos_type"=>check_input($ypeythinos_type, "integer"),
+		"ypeythinos_name"=>check_input($ypeythinos_name, "string"),
+		"ypeythinos_tel"=>check_input($ypeythinos_tel, "integer"),
+		"ypeythinos_mail"=>check_input($ypeythinos_mail, "email")
 	);
 	$update = $database->update("user_meletes", $query_update, $where);
 	
@@ -3057,6 +3058,9 @@ function get_iddata($table, $id){
 //Δέχεται τον πίνακα, την μεταβλητή action με τιμές create/update και το id και την $array τιμών
 //Προσθέτει η κάνει update την array τιμών στις στήλες μετά το id,user_id,meleti_id.
 function insert_iddata($table,$action,$id,$array){
+	
+	require("functions_interface.php");//check_input($value, $type)
+	
 	$database = new medoo(DB_NAME);
 	$columns = "*";
 	$tables_limited = array(
@@ -3072,54 +3076,77 @@ function insert_iddata($table,$action,$id,$array){
 		"meletes_zone_sys_light"
 	);
 	
+	//Ονόματα στηλών στη mysql
 	$column_names = array_slice(get_columnnames($table), 3);
 	
+	//Array με τις επιλογές προσθήκης ή επεξεργασίας "column_name=>value"
 	$query = array();
+	//Array ανεξάρτητη των τιμών για τις 2 πρώτες στήλες κάθε πίνακα
 	$session_array=array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']);
 	
+	//Για κάθε στήλη το όνομα στήλης => τιμή που ορίστηκε
 	for($i=0; $i<count($column_names); $i++){
+		
+		//εάν τιμή κενή τότε προσθέτω 0 στην mysql. 
+		//Δεν είναι απόλυτα ορθό είναι safe περίπου εάν απαιτεί η βάση πάντα τιμή
 		if($array[$i]==""){$array[$i]=0;}
-		$query[$column_names[$i]] = $array[$i];
+		
+		//$query[ονομα στήλης]=τιμή
+		//Έλεγχος τιμής με function. Κυρίως strip html tags (σαν να είναι όλα string)
+		$query[$column_names[$i]] = check_input($array[$i], "string");
+	
 	}
+	
 	$query_update = $query;
+	//Συνέννωση array με session και array τιμών σε insert. Σε update δεν απαιτείται
 	$query_insert=array_merge($session_array,$query);
 	
+	if( count($column_names)==count($array) ){//Έλεγχος ότι οι στήλες είναι όσες οι τιμές που δηλώθηκαν. 
 	
-	if($action == "create" AND $id==0){
-		if(in_array($table, $tables_limited)){
-		$select = $database->select($table,$columns,array("zone_id"=>$query["zone_id"]));
-		$count_select = count($select);
-		}else{
-			$count_select=0;
-		}
-		if($count_select==0){
-		$insert = $database->insert($table, $query_insert);
-		$txt = "Επιτυχής προσθήκη";
-		}else{
-		$txt = "Έχει ήδη προστεθεί ".$count_select." στοιχείο για αυτή τη θερμική ζώνη. Σε αυτή την επιλογή δεν μπορείτε να προσθέσετε περισσότερα.";
-		}
-		$return = "<div class=\"alert alert-success alert-dismissable\">
+	
+		if($action == "create" AND $id==0){
+			//Κάποιοι πίνακες δεν παίρνουν πάνω από 1 σειρά ανά μελέτη. πχ δίκτυα διανομής. 
+			if(in_array($table, $tables_limited)){
+				$select = $database->select($table,$columns,array("zone_id"=>$query["zone_id"]));
+				$count_select = count($select);
+			}else{
+				$count_select=0;
+			}
+			
+			if($count_select==0){
+				$insert = $database->insert($table, $query_insert);
+				$txt = "Επιτυχής προσθήκη";
+			}else{
+				$txt = "Έχει ήδη προστεθεί ".$count_select." στοιχείο. Σε αυτή την επιλογή δεν μπορείτε να προσθέσετε περισσότερα.";
+			}
+			$return = "<div class=\"alert alert-success alert-dismissable\">
 				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
 				".$txt."</div>";
-	}
-	
-	if($action == "update"){
-		if($id!=0){
-			$where_user=array("AND"=>array("id"=>$id,"user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
-		}else{
-			$where_user=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
-		}
-		$data_inuser = $database->select($table,$columns,$where_user);
+		}//create
 		
-		if(count($data_inuser)!=0){
-			$update = $database->update($table, $query_update, $where_user);
-			$return = "<div class=\"alert alert-warning alert-dismissable\">
-				<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
-				Επιτυχής επεξεργασία</div>";
-		}
+		
+		if($action == "update"){
+			if($id!=0){
+				$where_user=array("AND"=>array("id"=>$id,"user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+			}else{
+				$where_user=array("AND"=>array("user_id"=>$_SESSION['user_id'],"meleti_id"=>$_SESSION['meleti_id']));
+			}
+			$data_inuser = $database->select($table,$columns,$where_user);
+			
+			//'Ελεγχος ότι εκεί που γίνεται update ανήκει στο χρήστη. 
+			if(count($data_inuser)!=0){
+				$update = $database->update($table, $query_update, $where_user);
+				$return = "<div class=\"alert alert-warning alert-dismissable\">
+					<button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>
+					Επιτυχής επεξεργασία</div>";
+			}
+		}//update
+		
+		
+	}//Έλεγχος ισότητας array
 	
-	}
 	return $return;
+	
 }
 
 //Δέχεται τον πίνακα και το id και διαγράφει την γραμμή που βρίσκεται το id
@@ -3148,6 +3175,7 @@ function get_columnnames($table){
 		array_push($columns, $data["Field"]);
 	}
 	return $columns;
+	//print_r($data_columns);
 }
 
 //Εύρεση διαθέσιμων ζωνών και ΜΘΧ και δημιουργία επιλογών για select

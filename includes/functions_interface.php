@@ -136,11 +136,54 @@ function menu_array(){
 	return $menu;
 }
 
+//Έλεγχος τιμής πριν το input
+function check_input($value, $type="string"){
+	
+	if($type=="string"){
+		if ($value != ""){
+			//Αφαιρεί κενά στην αρχή και το τέλος
+			$value=trim($value);
+			//αφαιρεί html tags, κωδικοποιεί ειδικούς χαρακτήρες
+			$value= filter_var($value, FILTER_SANITIZE_STRING);
+		}
+	}
+	if($type=="integer"){
+		if ($value != ""){
+			//αφήνει μόνο αριθμούς +,- και .
+			$value= filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+		}
+	}
+	if($type=="decimal"){
+		if ($value != ""){
+			//αφήνει μόνο αριθμούς +,- και .
+			$value= filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT);
+		}
+	}
+	if($type=="email"){
+		if ($value != ""){
+			//Αφαιρεί κενά στην αρχή και το τέλος
+			$value=trim($value);
+			//αφήνει μόνο αριθμούς +,- και .
+			$value= filter_var($value, FILTER_SANITIZE_EMAIL);
+		}
+	}
+	if($type=="url"){
+		if ($value != ""){
+			//Αφαιρεί κενά στην αρχή και το τέλος
+			$value=trim($value);
+			//αφήνει μόνο αριθμούς +,- και .
+			$value= filter_var($value, FILTER_SANITIZE_URL);
+		}
+	}
+	return $value;
+}
 
+//Έλεγχος mail
 function checkEmail($str){
 	return preg_match("/^[\.A-z0-9_\-\+]+[@][A-z0-9_\-]+([.][A-z0-9_\-]+)+[A-z]{1,4}$/", $str);
 }
 
+//Αποστολή mail
 function send_mail($from,$to,$subject,$body){
 	$headers = '';
 	$headers .= "From: $from\n";
